@@ -1,0 +1,38 @@
+{
+  "name": "mountain-huts-map",
+  "version": "0.1.0",
+  "description": "Map of alpine huts and bivouacs (Italian Alps + Bergen area), built to extend across Europe.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "wrangler types && astro dev",
+    "start": "wrangler types && astro dev",
+    "build": "wrangler types && astro check && astro build",
+    "preview": "wrangler types && astro preview",
+    "deploy": "npm run build && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "typecheck": "astro check",
+    "astro": "astro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alessiomartini/mountain-huts-map.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alessiomartini/mountain-huts-map/issues"
+  },
+  "homepage": "https://github.com/alessiomartini/mountain-huts-map#readme",
+  "dependencies": {
+    "@astrojs/cloudflare": "^14.3.1",
+    "astro": "^7.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.20.2",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.130.0"
+  }
+}

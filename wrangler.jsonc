@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mountain-huts-map",
+  "compatibility_date": "2026-09-10",
+  "compatibility_flags": ["nodejs_compat"]
+  // D1 binding for visits (Phase 5) and secrets (IP_SALT, MODERATION_TOKEN)
+  // are added when that phase lands. Local dev secrets go in .dev.vars
+  // (gitignored), production secrets via `wrangler secret put <NAME>`.
+}

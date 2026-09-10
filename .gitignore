@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+.astro/
+
+# cloudflare
+.wrangler/
+.dev.vars
+.dev.vars.*
+worker-configuration.d.ts
+
+# data pipeline
+scripts/.cache/
+scripts/out/
+scripts/input/*
+!scripts/input/.gitkeep
+!scripts/input/README.md
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# editors / os
+.DS_Store
+*.log
