@@ -1,0 +1,37 @@
+name: Data refresh check
+
+# Manual-only for now: runs the pipeline on GitHub's runners (which have
+# normal internet access, unlike some sandboxed dev environments) and
+# uploads the resulting dataset + review CSVs as an artifact, without
+# committing anything. This is a diagnostic/validation trigger; the real
+# scheduled monthly-refresh-and-PR workflow lands in a later phase.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run data:refresh
+
+      - name: Upload dataset + review CSVs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-refresh-output
+          path: |
+            src/data/huts.json
+            scripts/out/
+          retention-days: 14
