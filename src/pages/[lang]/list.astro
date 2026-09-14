@@ -1,0 +1,336 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
+import { displayName, displayElevation, displayLocationLine, displayMountainLabel, displayPrice } from '../../lib/format.ts';
+import huts from '../../data/huts.json';
+import type { Hut } from '../../lib/hut-schema.ts';
+
+export function getStaticPaths() {
+  return getLangStaticPaths();
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const typedHuts = huts as Hut[];
+---
+
+<BaseLayout lang={lang} title={`${t('list.title')} — ${t('site.title')}`} description={t('site.tagline')}>
+  <div class="list-page">
+    <h1>{t('list.title')}</h1>
+
+    <div class="list-controls">
+      <div class="list-controls__types">
+        <label class="filter-checkbox">
+          <input type="checkbox" value="bivacco" checked data-list-filter="type" /> {t('map.filters.bivacchi')}
+        </label>
+        <label class="filter-checkbox">
+          <input type="checkbox" value="rifugio" checked data-list-filter="type" /> {t('map.filters.rifugi')}
+        </label>
+      </div>
+      <input type="search" id="list-search" placeholder={t('map.filters.searchPlaceholder')} aria-label={t('map.filters.search')} />
+      <label class="list-controls__sort">
+        {t('list.sortBy')}
+        <select id="list-sort">
+          <option value="name">{t('list.sortName')}</option>
+          <option value="elevation">{t('list.sortElevation')}</option>
+          <option value="distance" id="sort-distance-option" disabled>{t('list.sortDistance')}</option>
+        </select>
+      </label>
+    </div>
+
+    <p id="list-results-count" class="list-results-count" aria-live="polite"></p>
+
+    <ul class="hut-list" id="hut-list">
+      {
+        typedHuts.map((hut) => {
+          const photo = hut.photos[0];
+          const mountainLabel = displayMountainLabel(hut, t);
+          const locationLine = displayLocationLine(hut);
+          return (
+            <li
+              class="hut-list__item"
+              data-hut-row
+              data-name={displayName(hut, lang)}
+              data-category={hut.category}
+              data-elevation={hut.elevation_m ?? ''}
+              data-lat={hut.coords.lat}
+              data-lon={hut.coords.lon}
+            >
+              <a href={`/${lang}/hut/${hut.slug}`} class="hut-list__link">
+                <div class="hut-list__photo">
+                  {photo ? (
+                    <img src={photo.thumb_url} alt="" loading="lazy" width="120" height="80" />
+                  ) : (
+                    <div class="hut-list__photo-placeholder" aria-hidden="true">🏔️</div>
+                  )}
+                </div>
+                <div class="hut-list__body">
+                  <span class={`badge badge--${hut.category}`}>{t(`category.${hut.category}`)}</span>
+                  <h2 class="hut-list__name">{displayName(hut, lang)}</h2>
+                  <p class="hut-list__meta">
+                    {displayElevation(hut, lang)}
+                    {mountainLabel ? ` · ${mountainLabel}` : ''}
+                  </p>
+                  {locationLine && <p class="hut-list__meta">{locationLine}</p>}
+                  <p class="hut-list__price">{displayPrice(hut, t)}</p>
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+
+  <script is:inline define:vars={{ resultsCountTemplate: t('map.filters.resultsCount') }}>
+    window.__LIST_PAGE_INIT__ = { resultsCountTemplate };
+  </script>
+  <script>
+    declare global {
+      interface Window {
+        __LIST_PAGE_INIT__?: { resultsCountTemplate: string };
+      }
+    }
+
+    interface Row {
+      el: HTMLElement;
+      name: string;
+      category: string;
+      elevation: number | null;
+      lat: number;
+      lon: number;
+    }
+
+    function normalize(s: string): string {
+      return s
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase();
+    }
+
+    // Haversine distance in km — same formula the "near me" feature on the map
+    // page would need, kept local here since the list page has no map/MapLibre.
+    function distanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a =
+        Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    let userLocation: { lat: number; lon: number } | null = null;
+    try {
+      const raw = sessionStorage.getItem('user-location');
+      if (raw) userLocation = JSON.parse(raw);
+    } catch {
+      // sessionStorage unavailable — distance sort just stays disabled below.
+    }
+
+    const rows: Row[] = [...document.querySelectorAll<HTMLElement>('[data-hut-row]')].map((el) => ({
+      el,
+      name: el.dataset.name ?? '',
+      category: el.dataset.category ?? '',
+      elevation: el.dataset.elevation ? Number(el.dataset.elevation) : null,
+      lat: Number(el.dataset.lat),
+      lon: Number(el.dataset.lon),
+    }));
+
+    const list = document.getElementById('hut-list');
+    const sortSelect = document.getElementById('list-sort') as HTMLSelectElement | null;
+    const distanceOption = document.getElementById('sort-distance-option') as HTMLOptionElement | null;
+    const searchInput = document.getElementById('list-search') as HTMLInputElement | null;
+    const resultsCountEl = document.getElementById('list-results-count');
+    const resultsCountTemplate = window.__LIST_PAGE_INIT__?.resultsCountTemplate ?? '{count}';
+
+    if (userLocation && distanceOption) distanceOption.disabled = false;
+
+    function applyListState(): void {
+      if (!list || !sortSelect) return;
+      const types = new Set(
+        [...document.querySelectorAll<HTMLInputElement>('[data-list-filter="type"]:checked')].map((el) => el.value),
+      );
+      const search = searchInput?.value ?? '';
+      const sortBy = sortSelect.value;
+
+      const visibleRows: Row[] = [];
+      for (const row of rows) {
+        const matches = types.has(row.category) && (!search || normalize(row.name).includes(normalize(search)));
+        row.el.hidden = !matches;
+        if (matches) visibleRows.push(row);
+      }
+
+      visibleRows.sort((a, b) => {
+        if (sortBy === 'elevation') {
+          if (a.elevation == null && b.elevation == null) return 0;
+          if (a.elevation == null) return 1;
+          if (b.elevation == null) return -1;
+          return a.elevation - b.elevation;
+        }
+        if (sortBy === 'distance' && userLocation) {
+          const da = distanceKm(userLocation.lat, userLocation.lon, a.lat, a.lon);
+          const db = distanceKm(userLocation.lat, userLocation.lon, b.lat, b.lon);
+          return da - db;
+        }
+        return a.name.localeCompare(b.name);
+      });
+
+      for (const row of visibleRows) list.appendChild(row.el);
+
+      if (resultsCountEl) resultsCountEl.textContent = resultsCountTemplate.replace('{count}', String(visibleRows.length));
+    }
+
+    document.querySelectorAll('[data-list-filter]').forEach((el) => el.addEventListener('change', applyListState));
+    searchInput?.addEventListener('input', applyListState);
+    sortSelect?.addEventListener('change', applyListState);
+
+    applyListState();
+  </script>
+</BaseLayout>
+
+<style>
+  .list-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  .list-page h1 {
+    font-size: 1.5rem;
+    margin: 0.2rem 0 1rem;
+  }
+
+  .list-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .list-controls__types {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+  }
+
+  #list-search {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .list-controls__sort {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .list-controls__sort select {
+    padding: 0.35rem 0.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .list-results-count {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
+  }
+
+  .hut-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .hut-list__item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .hut-list__link {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.6rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .hut-list__photo {
+    flex: 0 0 120px;
+    width: 120px;
+    height: 80px;
+    background: var(--color-bg-subtle);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .hut-list__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hut-list__photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .hut-list__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .hut-list__name {
+    margin: 0.1rem 0 0;
+    font-size: 1.05rem;
+  }
+
+  .hut-list__meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .hut-list__price {
+    margin: 0.15rem 0 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .hut-list__photo {
+      flex-basis: 84px;
+      width: 84px;
+      height: 64px;
+    }
+  }
+</style>
