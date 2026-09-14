@@ -11,7 +11,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { cached, THIRTY_DAYS_MS } from './lib/cache.ts';
 import { politeFetch } from './lib/http.ts';
-import { haversineMeters, pointInGeometry, type GeoJSONGeometry } from './lib/geo.ts';
+import { haversineMeters, isInBBox, pointInGeometry, type BBox, type GeoJSONGeometry } from './lib/geo.ts';
+import { REGIONS } from './regions.config.ts';
 
 export interface NearestPeak {
   name: string;
@@ -121,45 +122,90 @@ function guessCountry(lat: number, lon: number): string | null {
   return null;
 }
 
+// Named peaks and mountain-range relations are fetched ONCE PER REGION
+// (whole-bbox query, cached to disk) and matched locally against every
+// hut's coordinates in-memory — not one Overpass round-trip per hut. An
+// earlier version queried Overpass per-hut with `around:`, which is
+// correct but doesn't scale: measured against real data, it turned a few
+// hundred huts into a few hundred sequential Overpass calls and made a
+// single data:refresh run take the better part of an hour. This mirrors
+// the same "bulk fetch once, match locally" approach already used for
+// admin boundaries above.
+
 interface OverpassPeakElement {
   lat?: number;
   lon?: number;
   tags?: { name?: string; ele?: string };
 }
 
-async function findNearestNamedPeak(lat: number, lon: number): Promise<NearestPeak | null> {
-  const query = `[out:json][timeout:30];node["natural"="peak"]["name"](around:3000,${lat},${lon});out;`;
+interface RegionPeak {
+  name: string;
+  ele: number | null;
+  lat: number;
+  lon: number;
+}
+
+const peaksByRegion = new Map<string, RegionPeak[]>();
+
+async function getRegionPeaks(regionId: string, bbox: BBox): Promise<RegionPeak[]> {
+  const alreadyLoaded = peaksByRegion.get(regionId);
+  if (alreadyLoaded) return alreadyLoaded;
+
+  const [south, west, north, east] = bbox;
+  const query = `[out:json][timeout:90];node["natural"="peak"]["name"](${south},${west},${north},${east});out;`;
+  let peaks: RegionPeak[] = [];
   try {
-    const { data } = await cached('nearest-peak', query, THIRTY_DAYS_MS, async () => {
+    const { data } = await cached('region-peaks', `${regionId}:${query}`, THIRTY_DAYS_MS, async () => {
       const res = await politeFetch('https://overpass-api.de/api/interpreter', {
         method: 'POST',
         body: `data=${encodeURIComponent(query)}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         minDelayMs: 2000,
+        timeoutMs: 100_000,
       });
-      if (!res.ok) throw new Error(`Overpass nearest-peak responded ${res.status}`);
+      if (!res.ok) throw new Error(`Overpass region-peaks responded ${res.status}`);
       return (await res.json()) as { elements: OverpassPeakElement[] };
     });
-
-    let nearest: NearestPeak | null = null;
-    for (const el of data.elements) {
-      if (el.lat == null || el.lon == null || !el.tags?.name) continue;
-      const distance_m = haversineMeters({ lat, lon }, { lat: el.lat, lon: el.lon });
-      if (!nearest || distance_m < nearest.distance_m) {
-        nearest = { name: el.tags.name, ele: el.tags.ele ? Number.parseFloat(el.tags.ele) : null, distance_m: Math.round(distance_m) };
-      }
-    }
-    return nearest;
+    peaks = data.elements
+      .filter((el): el is Required<Pick<OverpassPeakElement, 'lat' | 'lon'>> & OverpassPeakElement => el.lat != null && el.lon != null && !!el.tags?.name)
+      .map((el) => ({ name: el.tags!.name!, ele: el.tags!.ele ? Number.parseFloat(el.tags!.ele!) : null, lat: el.lat, lon: el.lon }));
+    console.log(`[geocode-admin] ${regionId}: ${peaks.length} named peaks loaded`);
   } catch (err) {
-    console.warn(`[geocode-admin] nearest-peak lookup failed for (${lat},${lon}): ${(err as Error).message}`);
-    return null;
+    console.warn(`[geocode-admin] Failed to load named peaks for region "${regionId}": ${(err as Error).message}. nearest_peak will be null for this region.`);
   }
+  peaksByRegion.set(regionId, peaks);
+  return peaks;
+}
+
+const PEAK_SEARCH_RADIUS_M = 3000;
+
+async function findNearestNamedPeak(lat: number, lon: number): Promise<NearestPeak | null> {
+  const region = REGIONS.find((r) => isInBBox(lat, lon, r.bbox));
+  if (!region) return null; // outside every known region's bbox
+  const peaks = await getRegionPeaks(region.id, region.bbox);
+
+  let nearest: NearestPeak | null = null;
+  for (const peak of peaks) {
+    const distance_m = haversineMeters({ lat, lon }, { lat: peak.lat, lon: peak.lon });
+    if (distance_m > PEAK_SEARCH_RADIUS_M) continue;
+    if (!nearest || distance_m < nearest.distance_m) {
+      nearest = { name: peak.name, ele: peak.ele, distance_m: Math.round(distance_m) };
+    }
+  }
+  return nearest;
 }
 
 interface OverpassRelationGeomElement {
   members?: Array<{ role: string; geometry?: Array<{ lat: number; lon: number }> }>;
   tags?: { name?: string };
 }
+
+interface RegionRange {
+  name: string;
+  rings: [number, number][][]; // each outer-role way's geometry, as its own ring
+}
+
+const rangesByRegion = new Map<string, RegionRange[]>();
 
 /**
  * Best-effort "does a named mountain_range relation contain this point".
@@ -169,34 +215,54 @@ interface OverpassRelationGeomElement {
  * That only means a missed mountain_group, never a wrong one — the record
  * still carries nearest_peak either way.
  */
-async function findContainingMountainRange(lat: number, lon: number): Promise<string | null> {
-  const query = `[out:json][timeout:30];relation["natural"="mountain_range"]["name"](around:15000,${lat},${lon});out geom;`;
+async function getRegionRanges(regionId: string, bbox: BBox): Promise<RegionRange[]> {
+  const alreadyLoaded = rangesByRegion.get(regionId);
+  if (alreadyLoaded) return alreadyLoaded;
+
+  const [south, west, north, east] = bbox;
+  const query = `[out:json][timeout:90];relation["natural"="mountain_range"]["name"](${south},${west},${north},${east});out geom;`;
+  let ranges: RegionRange[] = [];
   try {
-    const { data } = await cached('mountain-range', query, THIRTY_DAYS_MS, async () => {
+    const { data } = await cached('region-ranges', `${regionId}:${query}`, THIRTY_DAYS_MS, async () => {
       const res = await politeFetch('https://overpass-api.de/api/interpreter', {
         method: 'POST',
         body: `data=${encodeURIComponent(query)}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         minDelayMs: 2000,
+        timeoutMs: 100_000,
       });
-      if (!res.ok) throw new Error(`Overpass mountain-range responded ${res.status}`);
+      if (!res.ok) throw new Error(`Overpass region-ranges responded ${res.status}`);
       return (await res.json()) as { elements: OverpassRelationGeomElement[] };
     });
-
     for (const el of data.elements) {
       if (!el.tags?.name) continue;
+      const rings: [number, number][][] = [];
       for (const member of el.members ?? []) {
         if (member.role !== 'outer' || !member.geometry) continue;
         const ring: [number, number][] = member.geometry.map((p) => [p.lon, p.lat]);
-        if (ring.length < 4) continue;
-        if (pointInGeometry(lon, lat, { type: 'Polygon', coordinates: [ring] })) return el.tags.name;
+        if (ring.length >= 4) rings.push(ring);
       }
+      if (rings.length > 0) ranges.push({ name: el.tags.name, rings });
     }
-    return null;
+    console.log(`[geocode-admin] ${regionId}: ${ranges.length} named mountain ranges loaded`);
   } catch (err) {
-    console.warn(`[geocode-admin] mountain-range lookup failed for (${lat},${lon}): ${(err as Error).message}`);
-    return null;
+    console.warn(`[geocode-admin] Failed to load mountain ranges for region "${regionId}": ${(err as Error).message}. mountain_group will rely on other sources for this region.`);
   }
+  rangesByRegion.set(regionId, ranges);
+  return ranges;
+}
+
+async function findContainingMountainRange(lat: number, lon: number): Promise<string | null> {
+  const region = REGIONS.find((r) => isInBBox(lat, lon, r.bbox));
+  if (!region) return null;
+  const ranges = await getRegionRanges(region.id, region.bbox);
+
+  for (const range of ranges) {
+    for (const ring of range.rings) {
+      if (pointInGeometry(lon, lat, { type: 'Polygon', coordinates: [ring] })) return range.name;
+    }
+  }
+  return null;
 }
 
 export interface GeoContextOptions {
