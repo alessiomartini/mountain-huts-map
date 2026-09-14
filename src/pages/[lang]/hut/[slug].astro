@@ -1,0 +1,487 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SafetyDisclaimer from '../../../components/SafetyDisclaimer.astro';
+import { getLangStaticPaths, useTranslations, type Lang } from '../../../i18n/index.ts';
+import { displayName, displayElevation, displayPrice, displayMountainLabel, displayLocationLine } from '../../../lib/format.ts';
+import huts from '../../../data/huts.json';
+import type { Hut, Facilities } from '../../../lib/hut-schema.ts';
+
+export function getStaticPaths() {
+  const typedHuts = huts as Hut[];
+  return getLangStaticPaths().flatMap(({ params: { lang } }) =>
+    typedHuts.map((hut) => ({ params: { lang, slug: hut.slug }, props: { hut } } as const)),
+  );
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const { hut } = Astro.props as { hut: Hut };
+const t = useTranslations(lang);
+
+const name = displayName(hut, lang);
+const mountainLabel = displayMountainLabel(hut, t);
+const locationLine = displayLocationLine(hut);
+const description = hut.description[lang] ?? hut.description.it ?? hut.description.en ?? null;
+const descriptionIsFallback = description !== null && hut.description[lang] == null;
+const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${hut.coords.lat},${hut.coords.lon}`;
+const coordsText = `${hut.coords.lat.toFixed(5)}, ${hut.coords.lon.toFixed(5)}`;
+const issueTitle = `Dati errati: ${hut.name} (${hut.slug})`;
+const issueUrl = `https://github.com/alessiomartini/mountain-huts-map/issues/new?title=${encodeURIComponent(issueTitle)}`;
+const ogImage = hut.photos[0]?.url;
+
+const FACILITY_ICONS: Record<keyof Facilities, string> = {
+  fireplace: '🔥',
+  stove: '♨️',
+  drinking_water: '💧',
+  blankets: '🛏️',
+  toilet: '🚻',
+  winter_room: '❄️',
+};
+const facilityEntries = (Object.keys(FACILITY_ICONS) as Array<keyof Facilities>)
+  .map((key) => ({ key, value: hut.facilities[key] }))
+  .filter((f) => f.value !== null);
+
+const mapPageHref = `/${lang}/?focus_lat=${hut.coords.lat}&focus_lon=${hut.coords.lon}`;
+---
+
+<BaseLayout lang={lang} title={`${name} — ${t('site.title')}`} description={description ?? t('site.tagline')} ogImage={ogImage}>
+  <article class="hut-detail">
+    <header class="hut-detail__header">
+      <span class={`badge badge--${hut.category}`}>{t(`category.${hut.category}`)}</span>
+      <h1>{name}</h1>
+      <p class="hut-detail__meta">
+        {displayElevation(hut, lang)}{mountainLabel ? ` · ${mountainLabel}` : ''}
+      </p>
+      {locationLine && <p class="hut-detail__meta">{locationLine}</p>}
+      <p class="hut-detail__verified">
+        {hut.verified ? `✓ ${t('hut.verified')}` : `⚠ ${t('hut.unverified')}`}
+      </p>
+    </header>
+
+    <SafetyDisclaimer lang={lang} />
+
+    {
+      hut.photos.length > 0 && (
+        <section class="hut-detail__gallery" aria-label={t('hut.gallery')}>
+          {hut.photos.map((photo, i) => (
+            <button type="button" class="gallery-thumb" data-lightbox-open data-photo-index={i}>
+              <img src={photo.thumb_url} alt={name} loading={i === 0 ? 'eager' : 'lazy'} />
+            </button>
+          ))}
+        </section>
+      )
+    }
+
+    {
+      description && (
+        <section class="hut-detail__description">
+          <p>{description}</p>
+          {descriptionIsFallback && <p class="hut-detail__description-note">{lang === 'it' ? t('hut.descriptionOnlyInEn') : t('hut.descriptionOnlyIn')}</p>}
+        </section>
+      )
+    }
+
+    <section class="hut-detail__sheet" aria-labelledby="technical-sheet-heading">
+      <h2 id="technical-sheet-heading">{t('hut.technicalSheet')}</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th scope="row">{t('hut.coordinates')}</th>
+            <td>
+              <span class="coords-value">{coordsText}</span>
+              <button type="button" id="copy-coords" data-copy-text={coordsText} data-copy-label={t('hut.copy')} data-copied-label={t('hut.copied')}>
+                {t('hut.copy')}
+              </button>
+              <div class="coord-links">
+                <a href={`https://www.openstreetmap.org/?mlat=${hut.coords.lat}&mlon=${hut.coords.lon}#map=16/${hut.coords.lat}/${hut.coords.lon}`} target="_blank" rel="noopener noreferrer">
+                  {t('hut.openInOsm')} ↗
+                </a>
+                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">{t('hut.openInGoogleMaps')} ↗</a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.elevation')}</th>
+            <td>{displayElevation(hut, lang)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.capacity')}</th>
+            <td>{hut.capacity != null ? t('hut.capacityBeds', { n: hut.capacity }) : t('common.notAvailable')}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.management')}</th>
+            <td>{t(`serviceLevel.${hut.service_level}`)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.manager')}</th>
+            <td>{hut.operator ?? t('common.notAvailable')}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.price')}</th>
+            <td>{displayPrice(hut, t)}</td>
+          </tr>
+          <tr>
+            <th scope="row">{t('hut.openingHours')}</th>
+            <td>{hut.access.opening_hours ?? t('common.notAvailable')}</td>
+          </tr>
+          {
+            facilityEntries.length > 0 && (
+              <tr>
+                <th scope="row">{t('hut.facilitiesAvailable')}</th>
+                <td>
+                  <ul class="facility-list">
+                    {facilityEntries.map((f) => (
+                      <li class={f.value ? '' : 'facility-list__item--absent'}>
+                        <span aria-hidden="true">{FACILITY_ICONS[f.key]}</span> {t(`hut.facility.${f.key}`)} {f.value ? '' : '✕'}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </tr>
+            )
+          }
+          {
+            hut.contact.phone && (
+              <tr>
+                <th scope="row">{t('hut.phone')}</th>
+                <td><a href={`tel:${hut.contact.phone}`}>{hut.contact.phone}</a></td>
+              </tr>
+            )
+          }
+          {
+            hut.contact.email && (
+              <tr>
+                <th scope="row">{t('hut.email')}</th>
+                <td><a href={`mailto:${hut.contact.email}`}>{hut.contact.email}</a></td>
+              </tr>
+            )
+          }
+          {
+            hut.contact.website && (
+              <tr>
+                <th scope="row">{t('hut.website')}</th>
+                <td><a href={hut.contact.website} target="_blank" rel="noopener noreferrer">{hut.contact.website} ↗</a></td>
+              </tr>
+            )
+          }
+        </tbody>
+      </table>
+    </section>
+
+    {
+      hut.links.length > 0 && (
+        <section class="hut-detail__links">
+          <h2>{t('hut.externalLinks')}</h2>
+          <ul>
+            {hut.links.map((link) => (
+              <li>
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {t(`hut.linkKind.${link.kind}`)}: {link.label} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="hut-detail__map">
+      <div id="mini-map" class="mini-map"></div>
+      <a href={mapPageHref} class="hut-detail__see-on-map">{t('hut.seeOnBigMap')} ↗</a>
+    </section>
+
+    <section class="hut-detail__who-has-been-here">
+      <h2>{t('hut.whoHasBeenHere')}</h2>
+      <p class="hut-detail__coming-soon">{t('hut.whoHasBeenHereComingSoon')}</p>
+    </section>
+
+    <section class="hut-detail__report">
+      <p>
+        {t('hut.foundError')}{' '}
+        <a href={issueUrl} target="_blank" rel="noopener noreferrer">{t('hut.reportOnGithub')} ↗</a>
+      </p>
+    </section>
+  </article>
+
+  {
+    hut.photos.length > 0 && (
+      <dialog id="lightbox" class="lightbox">
+        <button type="button" id="lightbox-close" aria-label={t('common.close')}>✕</button>
+        <img id="lightbox-image" src="" alt="" />
+        <p id="lightbox-credit" class="lightbox__credit"></p>
+      </dialog>
+    )
+  }
+
+  <script
+    is:inline
+    define:vars={{
+      lat: hut.coords.lat,
+      lon: hut.coords.lon,
+      category: hut.category,
+      photos: hut.photos.map((p) => ({ url: p.url, author: p.author, license: p.license })),
+      photoCreditTemplate: t('hut.photoCredit'),
+    }}
+  >
+    window.__HUT_DETAIL_INIT__ = { lat, lon, category, photos, photoCreditTemplate };
+  </script>
+  <script>
+    import { initMiniMap } from '../../../scripts/mini-map-client.ts';
+
+    declare global {
+      interface Window {
+        __HUT_DETAIL_INIT__?: {
+          lat: number;
+          lon: number;
+          category: 'bivacco' | 'rifugio';
+          photos: Array<{ url: string; author: string; license: string }>;
+          photoCreditTemplate: string;
+        };
+      }
+    }
+
+    const init = window.__HUT_DETAIL_INIT__;
+    if (init) {
+      initMiniMap({ containerId: 'mini-map', lat: init.lat, lon: init.lon, category: init.category });
+    }
+
+    const copyBtn = document.getElementById('copy-coords');
+    copyBtn?.addEventListener('click', async () => {
+      const text = copyBtn.dataset.copyText;
+      const copiedLabel = copyBtn.dataset.copiedLabel;
+      const originalLabel = copyBtn.dataset.copyLabel;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = copiedLabel ?? copyBtn.textContent;
+        setTimeout(() => {
+          copyBtn.textContent = originalLabel ?? copyBtn.textContent;
+        }, 1500);
+      } catch {
+        // Clipboard API unavailable (older browser / non-secure context) — the
+        // coordinates are already visible as plain text next to the button.
+      }
+    });
+
+    const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
+    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement | null;
+    const lightboxCredit = document.getElementById('lightbox-credit');
+    if (lightbox && lightboxImage && lightboxCredit && init) {
+      document.querySelectorAll<HTMLButtonElement>('[data-lightbox-open]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.photoIndex);
+          const photo = init.photos[index];
+          if (!photo) return;
+          lightboxImage.src = photo.url;
+          lightboxImage.alt = '';
+          lightboxCredit.textContent = init.photoCreditTemplate.replace('{author}', photo.author).replace('{license}', photo.license);
+          lightbox.showModal();
+        });
+      });
+      document.getElementById('lightbox-close')?.addEventListener('click', () => lightbox.close());
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) lightbox.close();
+      });
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .hut-detail {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hut-detail__header h1 {
+    margin: 0.3rem 0 0.2rem;
+    font-size: 1.6rem;
+  }
+
+  .hut-detail__meta {
+    margin: 0.1rem 0;
+    color: var(--color-text-muted);
+  }
+
+  .hut-detail__verified {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .hut-detail__gallery {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .gallery-thumb {
+    flex: 0 0 auto;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: 160px;
+    aspect-ratio: 16 / 10;
+  }
+
+  .gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hut-detail__description p {
+    line-height: 1.6;
+  }
+
+  .hut-detail__description-note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .hut-detail__sheet h2,
+  .hut-detail__links h2,
+  .hut-detail__who-has-been-here h2 {
+    font-size: 1.15rem;
+  }
+
+  .hut-detail__sheet table {
+    font-size: 0.92rem;
+  }
+
+  .hut-detail__sheet th,
+  .hut-detail__sheet td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  .hut-detail__sheet th {
+    width: 40%;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  .coords-value {
+    font-variant-numeric: tabular-nums;
+    margin-right: 0.5rem;
+  }
+
+  #copy-coords {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    min-height: 32px;
+  }
+
+  .coord-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-top: 0.4rem;
+    font-size: 0.85rem;
+  }
+
+  .facility-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .facility-list__item--absent {
+    color: var(--color-text-muted);
+    text-decoration: line-through;
+  }
+
+  .hut-detail__links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .hut-detail__map {
+    position: relative;
+  }
+
+  .mini-map {
+    height: 240px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-bg-subtle);
+  }
+
+  .hut-detail__see-on-map {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .hut-detail__coming-soon {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .hut-detail__report {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .lightbox {
+    border: none;
+    border-radius: var(--radius);
+    padding: 0;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: var(--color-surface);
+  }
+
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .lightbox img {
+    display: block;
+    max-width: 90vw;
+    max-height: 75vh;
+    object-fit: contain;
+  }
+
+  .lightbox__credit {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  #lightbox-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+</style>

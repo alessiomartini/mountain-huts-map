@@ -134,6 +134,7 @@ function elementToCandidate(el: OverpassElement, fetchedAt: string, countryHint:
     noCoords: lat == null || lon == null,
     elevationM: tags.ele ? Number.parseFloat(tags.ele) : null,
     capacity: tags.capacity ? Number.parseInt(tags.capacity, 10) : tags.beds ? Number.parseInt(tags.beds, 10) : null,
+    operator: tags.operator ?? null,
     price: tags.fee === 'no' ? { type: 'free' } : tags.fee === 'yes' ? { type: 'paid', currency: null, night_from: null, night_to: null, half_board_from: null, cai_member_discount: null, source_url: null, checked_on: null } : null,
     facilities: {
       fireplace: parseTriBool(tags.fireplace),

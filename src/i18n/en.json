@@ -88,6 +88,7 @@
       "winter_room": "Winter room"
     },
     "manager": "Manager",
+    "price": "Price",
     "phone": "Phone",
     "email": "Email",
     "website": "Website",
@@ -108,7 +109,10 @@
       "other": "Other link"
     },
     "verified": "Confirmed by multiple sources",
-    "unverified": "Single source, unverified"
+    "unverified": "Single source, unverified",
+    "whoHasBeenHere": "Who's been here",
+    "whoHasBeenHereComingSoon": "Soon you'll be able to read and share experiences from people who've visited this place.",
+    "gallery": "Photo gallery"
   },
   "list": {
     "title": "List of bivouacs and huts",

@@ -29,6 +29,7 @@ export interface MergedFields {
   coords: { lat: number; lon: number };
   elevation_m: number | null;
   capacity: number | null;
+  operator: string | null;
   price: Price;
   facilities: Facilities;
   access: { opening_hours: string | null; access_note_it: string | null; access_note_en: string | null };
@@ -168,6 +169,7 @@ export function mergeCluster(candidates: RawCandidate[]): MergeResult {
       coords,
       elevation_m,
       capacity: pick(sorted, (c) => c.capacity),
+      operator: pick(sorted, (c) => c.operator),
       price,
       facilities,
       access: {

@@ -28,6 +28,7 @@
       }
     },
     "capacity": 6,
+    "operator": null,
     "price": {
       "type": "free"
     },
@@ -65,11 +66,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-bivacco-citta-chivasso",
@@ -100,6 +101,7 @@
       }
     },
     "capacity": 9,
+    "operator": null,
     "price": {
       "type": "free"
     },
@@ -137,11 +139,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-bivacco-gervasutti",
@@ -169,6 +171,7 @@
       "nearest_peak": null
     },
     "capacity": 9,
+    "operator": null,
     "price": {
       "type": "free"
     },
@@ -206,11 +209,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-bivacco-rosazza",
@@ -235,6 +238,7 @@
       "nearest_peak": null
     },
     "capacity": 12,
+    "operator": null,
     "price": {
       "type": "free"
     },
@@ -266,11 +270,11 @@
       {
         "name": "abitarelestremo",
         "url": "https://www.abitarelestremo.it/",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-fannarakhytta",
@@ -298,6 +302,7 @@
       "nearest_peak": null
     },
     "capacity": 78,
+    "operator": "DNT (Den Norske Turistforening)",
     "price": {
       "type": "paid",
       "currency": null,
@@ -342,11 +347,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-geiterygghytta",
@@ -373,6 +378,7 @@
       "nearest_peak": null
     },
     "capacity": null,
+    "operator": null,
     "price": {
       "type": "paid",
       "currency": null,
@@ -411,11 +417,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-quintino-sella-felik",
@@ -443,6 +449,7 @@
       "nearest_peak": null
     },
     "capacity": 96,
+    "operator": "CAI Sezione di Varallo",
     "price": {
       "type": "paid",
       "currency": null,
@@ -495,11 +502,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-rifugio-duca-abruzzi",
@@ -527,6 +534,7 @@
       "nearest_peak": null
     },
     "capacity": 40,
+    "operator": "CAI Sezione di Roma",
     "price": {
       "type": "paid",
       "currency": null,
@@ -571,11 +579,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-rifugio-torino",
@@ -603,6 +611,7 @@
       "nearest_peak": null
     },
     "capacity": 152,
+    "operator": "CAI Sezione di Torino",
     "price": {
       "type": "paid",
       "currency": null,
@@ -655,11 +664,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   },
   {
     "id": "seed-rifugio-vittorio-sella",
@@ -687,6 +696,7 @@
       "nearest_peak": null
     },
     "capacity": 60,
+    "operator": "CAI Sezione di Torino",
     "price": {
       "type": "paid",
       "currency": null,
@@ -731,10 +741,10 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T16:28:27.132Z"
+        "fetched_at": "2026-09-14T20:57:01.370Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T16:28:27.132Z"
+    "updated_at": "2026-09-14T20:57:01.370Z"
   }
 ]

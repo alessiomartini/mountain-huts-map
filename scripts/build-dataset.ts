@@ -125,6 +125,7 @@ async function main() {
         nearest_peak: geo.nearest_peak,
       },
       capacity: merged.capacity,
+      operator: merged.operator,
       price: merged.price,
       facilities: merged.facilities,
       access: merged.access,

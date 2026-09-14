@@ -88,6 +88,7 @@
       "winter_room": "Locale invernale"
     },
     "manager": "Gestore",
+    "price": "Prezzo",
     "phone": "Telefono",
     "email": "Email",
     "website": "Sito web",
@@ -108,7 +109,10 @@
       "other": "Altro link"
     },
     "verified": "Confermato da più fonti",
-    "unverified": "Fonte singola, da verificare"
+    "unverified": "Fonte singola, da verificare",
+    "whoHasBeenHere": "Chi c'è stato",
+    "whoHasBeenHereComingSoon": "Presto potrai leggere e condividere qui le esperienze di chi ha visitato questo posto.",
+    "gallery": "Galleria foto"
   },
   "list": {
     "title": "Elenco bivacchi e rifugi",

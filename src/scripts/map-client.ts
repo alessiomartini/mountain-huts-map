@@ -175,11 +175,18 @@ export function initHutsMap(options: InitMapOptions): void {
   const defaultAltMin = elevations.length ? Math.min(...elevations) : 0;
   const defaultAltMax = elevations.length ? Math.max(...elevations) : 4000;
 
+  // A hut detail page's "open on the full map" link passes focus_lat/focus_lon
+  // so the map opens centered on that hut instead of the default overview.
+  const focusParams = new URLSearchParams(location.search);
+  const focusLat = Number(focusParams.get('focus_lat'));
+  const focusLon = Number(focusParams.get('focus_lon'));
+  const hasFocusPoint = Number.isFinite(focusLat) && Number.isFinite(focusLon) && focusParams.has('focus_lat');
+
   const map = new MapLibreMap({
     container: containerId,
     style: LIBERTY_STYLE_URL,
-    center: [10, 46],
-    zoom: 5,
+    center: hasFocusPoint ? [focusLon, focusLat] : [10, 46],
+    zoom: hasFocusPoint ? 13 : 5,
     attributionControl: { compact: true },
   });
   map.addControl(new NavigationControl({ showCompass: false }), 'top-right');

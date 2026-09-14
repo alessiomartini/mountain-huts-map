@@ -119,6 +119,7 @@ export const HutSchema = z.object({
   elevation_m: z.number().nullable(),
   location: LocationSchema,
   capacity: z.number().int().positive().nullable(),
+  operator: z.string().nullable(),
   price: PriceSchema,
   facilities: FacilitiesSchema,
   access: AccessSchema,

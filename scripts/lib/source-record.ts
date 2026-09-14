@@ -43,6 +43,7 @@ export interface RawCandidate {
 
   elevationM?: number | null;
   capacity?: number | null;
+  operator?: string | null;
   price?: Price | null;
   facilities?: Partial<Facilities>;
   access?: {

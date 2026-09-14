@@ -22,6 +22,7 @@ function validHut(overrides: Record<string, unknown> = {}): Record<string, unkno
       nearest_peak: null,
     },
     capacity: 9,
+    operator: null,
     price: { type: 'free' },
     facilities: { fireplace: null, stove: true, drinking_water: null, blankets: null, toilet: null, winter_room: null },
     access: { opening_hours: null, access_note_it: null, access_note_en: null },
