@@ -1,15 +1,19 @@
 ---
-// Placeholder for Phase 1 (scaffolding). Phase 3 replaces this with a
-// redirect to /it/ or /en/ based on Accept-Language.
+// Server-rendered (not prerendered) so it can read the visitor's
+// Accept-Language header at request time and redirect to /it/ or /en/
+// accordingly, defaulting to DEFAULT_LANG when the header is absent or
+// doesn't match a supported language.
+export const prerender = false;
+import { DEFAULT_LANG, isLang } from '../i18n/index.ts';
+
+function pickLang(acceptLanguage: string | null): string {
+  if (!acceptLanguage) return DEFAULT_LANG;
+  for (const part of acceptLanguage.split(',')) {
+    const code = part.split(';')[0]?.trim().slice(0, 2).toLowerCase();
+    if (code && isLang(code)) return code;
+  }
+  return DEFAULT_LANG;
+}
+
+return Astro.redirect(`/${pickLang(Astro.request.headers.get('accept-language'))}/`, 302);
 ---
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Mountain Huts Map</title>
-	</head>
-	<body>
-		<h1>Mountain Huts Map</h1>
-		<p>Scaffolding in progress.</p>
-	</body>
-</html>
