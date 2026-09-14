@@ -1,0 +1,88 @@
+---
+import { useTranslations, type Lang } from '../i18n/index.ts';
+import { displayElevation, displayLocationLine, displayMountainLabel, displayName, displayPrice } from '../lib/format.ts';
+import type { Hut } from '../lib/hut-schema.ts';
+
+interface Props {
+  lang: Lang;
+  hut: Hut;
+}
+const { lang, hut } = Astro.props;
+const t = useTranslations(lang);
+const mountainLabel = displayMountainLabel(hut, t);
+const locationLine = displayLocationLine(hut);
+const photo = hut.photos[0];
+---
+
+<template data-hut-card={hut.id}>
+  <article class="hut-card">
+    <div class="hut-card__photo">
+      {
+        photo ? (
+          <img src={photo.thumb_url} alt="" loading="lazy" width="320" height="200" />
+        ) : (
+          <div class="hut-card__photo-placeholder" role="img" aria-label={t('hut.noPhoto')}>
+            🏔️
+          </div>
+        )
+      }
+    </div>
+    <div class="hut-card__body">
+      <span class={`badge badge--${hut.category}`}>{t(`category.${hut.category}`)}</span>
+      <h3 class="hut-card__name">{displayName(hut, lang)}</h3>
+      <p class="hut-card__meta">{displayElevation(hut, lang)}{mountainLabel ? ` · ${mountainLabel}` : ''}</p>
+      {locationLine && <p class="hut-card__meta">{locationLine}</p>}
+      <p class="hut-card__price">{displayPrice(hut, t)}</p>
+      <a href={`/${lang}/hut/${hut.slug}`} class="hut-card__link">{t('map.hoverCard.seeSheet')}</a>
+    </div>
+  </article>
+</template>
+
+<style>
+  .hut-card {
+    width: 240px;
+    font-size: 0.85rem;
+  }
+  .hut-card__photo {
+    aspect-ratio: 16 / 10;
+    background: var(--color-bg-subtle);
+    overflow: hidden;
+  }
+  .hut-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hut-card__photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  .hut-card__body {
+    padding: 0.6rem 0.75rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .hut-card__name {
+    margin: 0.1rem 0 0;
+    font-size: 1rem;
+  }
+  .hut-card__meta {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+  .hut-card__price {
+    margin: 0.15rem 0 0;
+    font-weight: 600;
+  }
+  .hut-card__link {
+    margin-top: 0.4rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+</style>

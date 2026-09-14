@@ -1,1 +1,740 @@
-[]
+[
+  {
+    "id": "seed-bivacco-bafile",
+    "slug": "bivacco-bafile",
+    "name": "Bivacco Bafile",
+    "names": {
+      "it": "Bivacco Bafile"
+    },
+    "category": "bivacco",
+    "osm_type": "wilderness_hut",
+    "service_level": "unstaffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 42.459,
+      "lon": 13.563
+    },
+    "elevation_m": 2669,
+    "location": {
+      "country": "IT",
+      "region": "Abruzzo",
+      "province": "L'Aquila",
+      "municipality": "Pietracamela",
+      "mountain_group": "Gran Sasso d'Italia",
+      "nearest_peak": {
+        "name": "Corno Grande",
+        "ele": 2912,
+        "distance_m": 900
+      }
+    },
+    "capacity": 6,
+    "price": {
+      "type": "free"
+    },
+    "facilities": {
+      "fireplace": false,
+      "stove": false,
+      "drinking_water": null,
+      "blankets": false,
+      "toilet": null,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": null,
+      "en": null
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-bivacco-citta-chivasso",
+    "slug": "bivacco-citta-di-chivasso",
+    "name": "Bivacco Città di Chivasso",
+    "names": {
+      "it": "Bivacco Città di Chivasso"
+    },
+    "category": "bivacco",
+    "osm_type": "alpine_hut",
+    "service_level": "unstaffed",
+    "category_confidence": "low",
+    "coords": {
+      "lat": 45.449,
+      "lon": 7.171
+    },
+    "elevation_m": 2604,
+    "location": {
+      "country": "IT",
+      "region": "Piemonte",
+      "province": "Torino",
+      "municipality": "Noasca",
+      "mountain_group": null,
+      "nearest_peak": {
+        "name": "Levanna Centrale",
+        "ele": 3619,
+        "distance_m": 1800
+      }
+    },
+    "capacity": 9,
+    "price": {
+      "type": "free"
+    },
+    "facilities": {
+      "fireplace": false,
+      "stove": false,
+      "drinking_water": null,
+      "blankets": false,
+      "toilet": null,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": null,
+      "en": null
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-bivacco-gervasutti",
+    "slug": "bivacco-gervasutti",
+    "name": "Bivacco Gervasutti",
+    "names": {
+      "it": "Bivacco Gervasutti",
+      "en": "Gervasutti Bivouac"
+    },
+    "category": "bivacco",
+    "osm_type": "wilderness_hut",
+    "service_level": "unstaffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 45.847,
+      "lon": 6.977
+    },
+    "elevation_m": 2835,
+    "location": {
+      "country": "IT",
+      "region": "Valle d'Aosta",
+      "province": "Aosta",
+      "municipality": "Courmayeur",
+      "mountain_group": "Monte Bianco",
+      "nearest_peak": null
+    },
+    "capacity": 9,
+    "price": {
+      "type": "free"
+    },
+    "facilities": {
+      "fireplace": false,
+      "stove": false,
+      "drinking_water": null,
+      "blankets": false,
+      "toilet": null,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": null,
+      "en": null
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-bivacco-rosazza",
+    "slug": "bivacco-rosazza",
+    "name": "Bivacco Rosazza",
+    "names": {},
+    "category": "bivacco",
+    "osm_type": null,
+    "service_level": "unstaffed",
+    "category_confidence": "medium",
+    "coords": {
+      "lat": 45.687,
+      "lon": 7.96
+    },
+    "elevation_m": null,
+    "location": {
+      "country": "IT",
+      "region": null,
+      "province": null,
+      "municipality": null,
+      "mountain_group": null,
+      "nearest_peak": null
+    },
+    "capacity": 12,
+    "price": {
+      "type": "free"
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": null,
+      "drinking_water": null,
+      "blankets": null,
+      "toilet": null,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": null,
+      "en": null
+    },
+    "photos": [],
+    "links": [],
+    "sources": [
+      {
+        "name": "abitarelestremo",
+        "url": "https://www.abitarelestremo.it/",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": false,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-fannarakhytta",
+    "slug": "fannarakhytta",
+    "name": "Fannaråkhytta",
+    "names": {
+      "en": "Fannaråki Hut",
+      "no": "Fannaråkhytta"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "staffed",
+    "category_confidence": "medium",
+    "coords": {
+      "lat": 61.508,
+      "lon": 7.87
+    },
+    "elevation_m": 2062,
+    "location": {
+      "country": "NO",
+      "region": "Vestland",
+      "province": null,
+      "municipality": "Luster",
+      "mountain_group": "Jotunheimen",
+      "nearest_peak": null
+    },
+    "capacity": 78,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": true,
+      "drinking_water": true,
+      "blankets": true,
+      "toilet": true,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": "Reached via Skogadalsbøen or Turtagrø, a full day’s hike."
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": "https://www.dnt.no"
+    },
+    "description": {
+      "it": null,
+      "en": "A DNT-staffed lodge and former mountain observatory perched on the Fannaråki ridge in Jotunheimen, with sweeping views over the Hurrungane range."
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "DNT",
+        "url": "https://www.dnt.no",
+        "kind": "official"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": false,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-geiterygghytta",
+    "slug": "geiterygghytta",
+    "name": "Geiterygghytta",
+    "names": {
+      "no": "Geiterygghytta"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "self_service",
+    "category_confidence": "medium",
+    "coords": {
+      "lat": 60.628,
+      "lon": 7.489
+    },
+    "elevation_m": 1343,
+    "location": {
+      "country": "NO",
+      "region": null,
+      "province": null,
+      "municipality": null,
+      "mountain_group": null,
+      "nearest_peak": null
+    },
+    "capacity": null,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": null,
+      "drinking_water": null,
+      "blankets": null,
+      "toilet": null,
+      "winter_room": null
+    },
+    "access": {
+      "opening_hours": null,
+      "access_note_it": null,
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": null,
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": null,
+      "en": null
+    },
+    "photos": [],
+    "links": [],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": false,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-quintino-sella-felik",
+    "slug": "rifugio-quintino-sella-al-felik",
+    "name": "Rifugio Quintino Sella al Felik",
+    "names": {
+      "it": "Rifugio Quintino Sella al Felik",
+      "en": "Quintino Sella Hut at Felik"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "staffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 45.897,
+      "lon": 7.876
+    },
+    "elevation_m": 3585,
+    "location": {
+      "country": "IT",
+      "region": "Piemonte",
+      "province": "Vercelli",
+      "municipality": "Alagna Valsesia",
+      "mountain_group": "Monte Rosa",
+      "nearest_peak": null
+    },
+    "capacity": 96,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": true,
+      "drinking_water": true,
+      "blankets": true,
+      "toilet": true,
+      "winter_room": true
+    },
+    "access": {
+      "opening_hours": "Fine giugno - fine settembre",
+      "access_note_it": "Raggiungibile dalla funivia di Punta Indren.",
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": "+39 0163 91169",
+      "email": null,
+      "website": "https://www.rifugioquintinosella.it"
+    },
+    "description": {
+      "it": "Rifugio storico del CAI ai piedi del versante est del Monte Rosa, punto di appoggio classico per le ascensioni alla Piramide Vincent e a Punta Giordani.",
+      "en": null
+    },
+    "photos": [
+      {
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNhOGM4ZTgiLz48cG9seWdvbiBwb2ludHM9IjAsNjAwIDIwMCwyNTAgMzUwLDQyMCA1MDAsMTUwIDY1MCwzODAgODAwLDMwMCA4MDAsNjAwIiBmaWxsPSIjNWE2YjdhIi8+PHBvbHlnb24gcG9pbnRzPSIyMDAsMjUwIDI2MCwzMjAgMzUwLDQyMCIgZmlsbD0iI2U4ZWVmMiIvPjxwb2x5Z29uIHBvaW50cz0iNTAwLDE1MCA1NjAsMjMwIDY1MCwzODAiIGZpbGw9IiNlOGVlZjIiLz48Y2lyY2xlIGN4PSI2ODAiIGN5PSI5MCIgcj0iNDUiIGZpbGw9IiNmZmY2ZDkiLz48dGV4dCB4PSI0MDAiIHk9IjU2MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyYjNhNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRlc3QgcGxhY2Vob2xkZXIgcGhvdG88L3RleHQ+PC9zdmc+Cg==",
+        "thumb_url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNhOGM4ZTgiLz48cG9seWdvbiBwb2ludHM9IjAsNjAwIDIwMCwyNTAgMzUwLDQyMCA1MDAsMTUwIDY1MCwzODAgODAwLDMwMCA4MDAsNjAwIiBmaWxsPSIjNWE2YjdhIi8+PHBvbHlnb24gcG9pbnRzPSIyMDAsMjUwIDI2MCwzMjAgMzUwLDQyMCIgZmlsbD0iI2U4ZWVmMiIvPjxwb2x5Z29uIHBvaW50cz0iNTAwLDE1MCA1NjAsMjMwIDY1MCwzODAiIGZpbGw9IiNlOGVlZjIiLz48Y2lyY2xlIGN4PSI2ODAiIGN5PSI5MCIgcj0iNDUiIGZpbGw9IiNmZmY2ZDkiLz48dGV4dCB4PSI0MDAiIHk9IjU2MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjIiIGZpbGw9IiMyYjNhNDIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlRlc3QgcGxhY2Vob2xkZXIgcGhvdG88L3RleHQ+PC9zdmc+Cg==",
+        "author": "Test placeholder",
+        "license": "N/A — seed test data, not a real photo",
+        "source_url": "https://github.com/alessiomartini/mountain-huts-map"
+      }
+    ],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-rifugio-duca-abruzzi",
+    "slug": "rifugio-duca-degli-abruzzi",
+    "name": "Rifugio Duca degli Abruzzi",
+    "names": {
+      "it": "Rifugio Duca degli Abruzzi",
+      "en": "Duke of the Abruzzi Hut"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "staffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 42.469,
+      "lon": 13.563
+    },
+    "elevation_m": 2388,
+    "location": {
+      "country": "IT",
+      "region": "Abruzzo",
+      "province": "L'Aquila",
+      "municipality": "Pietracamela",
+      "mountain_group": "Gran Sasso d'Italia",
+      "nearest_peak": null
+    },
+    "capacity": 40,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": true,
+      "drinking_water": true,
+      "blankets": true,
+      "toilet": true,
+      "winter_room": false
+    },
+    "access": {
+      "opening_hours": "Tutto l’anno (parziale in inverno)",
+      "access_note_it": "Da Campo Imperatore, ai piedi del Corno Grande.",
+      "access_note_en": "From Campo Imperatore, at the foot of Corno Grande."
+    },
+    "contact": {
+      "phone": "+39 0861 959627",
+      "email": null,
+      "website": "https://www.rifugioducadegliabruzzi.it"
+    },
+    "description": {
+      "it": "Punto di partenza principale per le vie del Corno Grande, nel cuore del Parco Nazionale del Gran Sasso e Monti della Laga.",
+      "en": "The main starting point for routes up Corno Grande, in the heart of the Gran Sasso e Monti della Laga National Park."
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-rifugio-torino",
+    "slug": "rifugio-torino",
+    "name": "Rifugio Torino",
+    "names": {
+      "it": "Rifugio Torino",
+      "en": "Torino Hut"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "staffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 45.867,
+      "lon": 6.943
+    },
+    "elevation_m": 3375,
+    "location": {
+      "country": "IT",
+      "region": "Valle d'Aosta",
+      "province": "Aosta",
+      "municipality": "Courmayeur",
+      "mountain_group": "Monte Bianco",
+      "nearest_peak": null
+    },
+    "capacity": 152,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": true,
+      "drinking_water": true,
+      "blankets": true,
+      "toilet": true,
+      "winter_room": true
+    },
+    "access": {
+      "opening_hours": "Marzo - settembre",
+      "access_note_it": "Accesso dalla funivia Skyway Monte Bianco o dal versante francese.",
+      "access_note_en": "Accessible from the Skyway Monte Bianco cable car or from the French side."
+    },
+    "contact": {
+      "phone": "+39 0165 89968",
+      "email": null,
+      "website": "https://www.rifugiotorino.com"
+    },
+    "description": {
+      "it": "Uno dei rifugi più grandi delle Alpi, base per numerose vie di roccia e ghiaccio nel gruppo del Monte Bianco.",
+      "en": "One of the largest huts in the Alps, a base for many rock and ice routes in the Mont Blanc massif."
+    },
+    "photos": [
+      {
+        "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNjZmUwZDgiLz48cG9seWdvbiBwb2ludHM9IjAsNjAwIDE1MCwzMDAgMzAwLDQ1MCA0ODAsMTgwIDYyMCw0MDAgODAwLDI4MCA4MDAsNjAwIiBmaWxsPSIjM2Y1MTQ3Ii8+PHBvbHlnb24gcG9pbnRzPSI0ODAsMTgwIDU0MCwyNjAgNjIwLDQwMCIgZmlsbD0iI2YyZjVmMCIvPjxyZWN0IHg9IjM2MCIgeT0iNDcwIiB3aWR0aD0iOTAiIGhlaWdodD0iNzAiIGZpbGw9IiM3YTRiMzIiLz48cG9seWdvbiBwb2ludHM9IjM0NSw0NzAgNDA1LDQyMCA0NjUsNDcwIiBmaWxsPSIjNWMzYTI2Ii8+PHRleHQgeD0iNDAwIiB5PSI1NzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMmIzYTJmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UZXN0IHBsYWNlaG9sZGVyIHBob3RvPC90ZXh0Pjwvc3ZnPgo=",
+        "thumb_url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgODAwIDYwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI2MDAiIGZpbGw9IiNjZmUwZDgiLz48cG9seWdvbiBwb2ludHM9IjAsNjAwIDE1MCwzMDAgMzAwLDQ1MCA0ODAsMTgwIDYyMCw0MDAgODAwLDI4MCA4MDAsNjAwIiBmaWxsPSIjM2Y1MTQ3Ii8+PHBvbHlnb24gcG9pbnRzPSI0ODAsMTgwIDU0MCwyNjAgNjIwLDQwMCIgZmlsbD0iI2YyZjVmMCIvPjxyZWN0IHg9IjM2MCIgeT0iNDcwIiB3aWR0aD0iOTAiIGhlaWdodD0iNzAiIGZpbGw9IiM3YTRiMzIiLz48cG9seWdvbiBwb2ludHM9IjM0NSw0NzAgNDA1LDQyMCA0NjUsNDcwIiBmaWxsPSIjNWMzYTI2Ii8+PHRleHQgeD0iNDAwIiB5PSI1NzAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjMmIzYTJmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UZXN0IHBsYWNlaG9sZGVyIHBob3RvPC90ZXh0Pjwvc3ZnPgo=",
+        "author": "Test placeholder",
+        "license": "N/A — seed test data, not a real photo",
+        "source_url": "https://github.com/alessiomartini/mountain-huts-map"
+      }
+    ],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  },
+  {
+    "id": "seed-rifugio-vittorio-sella",
+    "slug": "rifugio-vittorio-sella",
+    "name": "Rifugio Vittorio Sella",
+    "names": {
+      "it": "Rifugio Vittorio Sella",
+      "en": "Vittorio Sella Hut"
+    },
+    "category": "rifugio",
+    "osm_type": "alpine_hut",
+    "service_level": "staffed",
+    "category_confidence": "high",
+    "coords": {
+      "lat": 45.514,
+      "lon": 7.322
+    },
+    "elevation_m": 2588,
+    "location": {
+      "country": "IT",
+      "region": "Valle d'Aosta",
+      "province": "Aosta",
+      "municipality": "Cogne",
+      "mountain_group": "Gran Paradiso",
+      "nearest_peak": null
+    },
+    "capacity": 60,
+    "price": {
+      "type": "paid",
+      "currency": null,
+      "night_from": null,
+      "night_to": null,
+      "half_board_from": null,
+      "cai_member_discount": null,
+      "source_url": null,
+      "checked_on": null
+    },
+    "facilities": {
+      "fireplace": null,
+      "stove": true,
+      "drinking_water": true,
+      "blankets": true,
+      "toilet": true,
+      "winter_room": true
+    },
+    "access": {
+      "opening_hours": "Giugno - settembre",
+      "access_note_it": "Da Valnontey, circa 2 ore di cammino.",
+      "access_note_en": null
+    },
+    "contact": {
+      "phone": "+39 0165 74310",
+      "email": null,
+      "website": null
+    },
+    "description": {
+      "it": "Base classica per la salita al Gran Paradiso dal versante di Valnontey, in un ampio vallone glaciale.",
+      "en": null
+    },
+    "photos": [],
+    "links": [
+      {
+        "label": "OpenStreetMap",
+        "url": "https://www.openstreetmap.org/",
+        "kind": "osm"
+      }
+    ],
+    "sources": [
+      {
+        "name": "seed-data",
+        "url": "https://github.com/alessiomartini/mountain-huts-map",
+        "fetched_at": "2026-09-14T16:28:27.132Z"
+      }
+    ],
+    "verified": true,
+    "updated_at": "2026-09-14T16:28:27.132Z"
+  }
+]

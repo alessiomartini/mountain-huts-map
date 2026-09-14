@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "Mountain Huts Map",
+    "tagline": "Bivouacs and mountain huts across the Italian Alps and beyond"
+  },
+  "nav": {
+    "map": "Map",
+    "list": "List",
+    "about": "About",
+    "attribution": "Attribution"
+  },
+  "lang": {
+    "it": "Italiano",
+    "en": "English"
+  },
+  "category": {
+    "bivacco": "Bivouac",
+    "rifugio": "Hut"
+  },
+  "serviceLevel": {
+    "staffed": "Staffed",
+    "self_service": "Self-service",
+    "unstaffed": "Unstaffed",
+    "unknown": "Not specified"
+  },
+  "price": {
+    "free": "Free",
+    "paid": "Paid",
+    "paidFrom": "from €{amount} a night"
+  },
+  "map": {
+    "layers": {
+      "title": "Layer",
+      "standard": "Standard",
+      "topo": "Topographic"
+    },
+    "filters": {
+      "title": "Filters",
+      "type": "Type",
+      "bivacchi": "Bivouacs",
+      "rifugi": "Huts",
+      "altitude": "Altitude",
+      "altitudeRange": "{min} – {max} m",
+      "priceOnlyFree": "Free only",
+      "facilities": "Facilities",
+      "facility": {
+        "drinking_water": "Drinking water",
+        "stove": "Stove/fireplace",
+        "winter_room": "Winter room",
+        "blankets": "Blankets"
+      },
+      "area": "Area",
+      "areaCountry": "Country",
+      "areaRegion": "Region",
+      "areaProvince": "Province",
+      "areaAny": "All",
+      "search": "Search by name",
+      "searchPlaceholder": "Bivouac or hut name…",
+      "resultsCount": "{count} results",
+      "reset": "Reset filters",
+      "nearMe": "Near me",
+      "nearMeError": "Could not get your location."
+    },
+    "hoverCard": {
+      "seeSheet": "See details"
+    },
+    "unnamedMountain": "{ele} m elevation"
+  },
+  "hut": {
+    "technicalSheet": "Technical sheet",
+    "coordinates": "Coordinates",
+    "copy": "Copy",
+    "copied": "Copied",
+    "openInOsm": "Open in OpenStreetMap",
+    "openInGoogleMaps": "Open in Google Maps",
+    "elevation": "Elevation",
+    "capacity": "Capacity",
+    "capacityBeds": "{n} beds",
+    "management": "Management",
+    "openingHours": "Opening period",
+    "facilitiesAvailable": "Facilities available",
+    "facility": {
+      "fireplace": "Fireplace",
+      "stove": "Stove",
+      "drinking_water": "Drinking water",
+      "blankets": "Blankets",
+      "toilet": "Toilet",
+      "winter_room": "Winter room"
+    },
+    "manager": "Manager",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website",
+    "externalLinks": "External links",
+    "descriptionOnlyIn": "Available in Italian only",
+    "descriptionOnlyInEn": "Available in English only",
+    "foundError": "Found an error?",
+    "reportOnGithub": "Report it on GitHub",
+    "seeOnBigMap": "Open on the full map",
+    "nearMountain": "near {name}",
+    "noPhoto": "No photo available",
+    "photoCredit": "{author} — {license}",
+    "linkKind": {
+      "wikipedia": "Wikipedia",
+      "official": "Official website",
+      "cai": "CAI listing",
+      "osm": "OpenStreetMap",
+      "other": "Other link"
+    },
+    "verified": "Confirmed by multiple sources",
+    "unverified": "Single source, unverified"
+  },
+  "list": {
+    "title": "List of bivouacs and huts",
+    "sortBy": "Sort by",
+    "sortName": "Name",
+    "sortElevation": "Elevation",
+    "sortDistance": "Distance",
+    "noElevation": "—"
+  },
+  "safety": {
+    "disclaimer": "Information on this site may be inaccurate or out of date. Always check weather conditions and opening status before you go: responsibility for the trip is the visitor's own."
+  },
+  "footer": {
+    "osmAttribution": "Map data © OpenStreetMap contributors",
+    "attributionLink": "Licenses and attribution"
+  },
+  "common": {
+    "close": "Close",
+    "loading": "Loading…",
+    "notAvailable": "—"
+  }
+}

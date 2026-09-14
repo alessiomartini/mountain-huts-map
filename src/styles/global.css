@@ -1,0 +1,122 @@
+:root {
+  --color-bg: #ffffff;
+  --color-bg-subtle: #f5f5f2;
+  --color-surface: #ffffff;
+  --color-border: #dcdcd6;
+  --color-text: #1c1c1a;
+  --color-text-muted: #5c5c56;
+  --color-primary: #2f5d3a;
+  --color-primary-contrast: #ffffff;
+  --color-bivacco: #b3541e;
+  --color-rifugio: #2f5d3a;
+  --color-focus: #1663c7;
+  --color-danger: #8a2f2f;
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.15);
+  --radius: 8px;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --header-height: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #16181a;
+    --color-bg-subtle: #1e2124;
+    --color-surface: #202327;
+    --color-border: #33383d;
+    --color-text: #f0f0ee;
+    --color-text-muted: #a8acaf;
+    --color-primary: #6fbf83;
+    --color-primary-contrast: #0d1a10;
+    --color-bivacco: #e2915a;
+    --color-rifugio: #6fbf83;
+    --color-focus: #6fa8f5;
+    --color-danger: #e08585;
+    --shadow-card: 0 2px 14px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-focus);
+}
+
+img {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -40px;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  z-index: 1000;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+button {
+  font: inherit;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  color: var(--color-primary-contrast);
+}
+
+.badge--bivacco {
+  background: var(--color-bivacco);
+}
+
+.badge--rifugio {
+  background: var(--color-rifugio);
+}

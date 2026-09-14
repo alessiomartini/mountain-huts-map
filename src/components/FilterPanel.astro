@@ -1,0 +1,271 @@
+---
+import { useTranslations, type Lang } from '../i18n/index.ts';
+import type { Hut } from '../lib/hut-schema.ts';
+
+interface Props {
+  lang: Lang;
+  huts: Hut[];
+}
+const { lang, huts } = Astro.props;
+const t = useTranslations(lang);
+
+const regionsByCountry = new Map<string, Set<string>>();
+for (const hut of huts) {
+  if (!hut.location.region) continue;
+  const set = regionsByCountry.get(hut.location.country) ?? new Set<string>();
+  set.add(hut.location.region);
+  regionsByCountry.set(hut.location.country, set);
+}
+const countries = [...new Set(huts.map((h) => h.location.country))].sort();
+const regions = [...new Set(huts.map((h) => h.location.region).filter((r): r is string => !!r))].sort();
+
+const elevations = huts.map((h) => h.elevation_m).filter((e): e is number => e != null);
+const minElevation = elevations.length ? Math.min(...elevations) : 0;
+const maxElevation = elevations.length ? Math.max(...elevations) : 4000;
+---
+
+<aside class="filter-panel" id="filter-panel">
+  <div class="filter-panel__header">
+    <h2>{t('map.filters.title')}</h2>
+    <button type="button" id="filter-panel-close" class="filter-panel__close" aria-label={t('common.close')}>✕</button>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-group__label" id="filter-type-label">{t('map.filters.type')}</span>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="type" value="bivacco" checked data-filter="type" />
+      {t('map.filters.bivacchi')}
+    </label>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="type" value="rifugio" checked data-filter="type" />
+      {t('map.filters.rifugi')}
+    </label>
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-search" class="filter-group__label">{t('map.filters.search')}</label>
+    <input type="search" id="filter-search" data-filter="search" placeholder={t('map.filters.searchPlaceholder')} />
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-group__label" id="filter-altitude-label">{t('map.filters.altitude')}</span>
+    <div class="filter-altitude">
+      <input type="number" id="filter-alt-min" data-filter="alt-min" min={minElevation} max={maxElevation} value={minElevation} aria-label={`${t('map.filters.altitude')} min`} />
+      <span aria-hidden="true">–</span>
+      <input type="number" id="filter-alt-max" data-filter="alt-max" min={minElevation} max={maxElevation} value={maxElevation} aria-label={`${t('map.filters.altitude')} max`} />
+      <span>m</span>
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-checkbox">
+      <input type="checkbox" id="filter-free-only" data-filter="free-only" />
+      {t('map.filters.priceOnlyFree')}
+    </label>
+  </div>
+
+  <div class="filter-group">
+    <span class="filter-group__label">{t('map.filters.facilities')}</span>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="fac" value="drinking_water" data-filter="facility" />
+      {t('map.filters.facility.drinking_water')}
+    </label>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="fac" value="stove" data-filter="facility" />
+      {t('map.filters.facility.stove')}
+    </label>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="fac" value="winter_room" data-filter="facility" />
+      {t('map.filters.facility.winter_room')}
+    </label>
+    <label class="filter-checkbox">
+      <input type="checkbox" name="fac" value="blankets" data-filter="facility" />
+      {t('map.filters.facility.blankets')}
+    </label>
+  </div>
+
+  <div class="filter-group">
+    <label for="filter-country" class="filter-group__label">{t('map.filters.areaCountry')}</label>
+    <select id="filter-country" data-filter="country">
+      <option value="">{t('map.filters.areaAny')}</option>
+      {countries.map((c) => <option value={c}>{c}</option>)}
+    </select>
+    <label for="filter-region" class="filter-group__label">{t('map.filters.areaRegion')}</label>
+    <select id="filter-region" data-filter="region">
+      <option value="">{t('map.filters.areaAny')}</option>
+      {regions.map((r) => <option value={r}>{r}</option>)}
+    </select>
+  </div>
+
+  <button type="button" id="filter-near-me" class="filter-near-me">📍 {t('map.filters.nearMe')}</button>
+
+  <div class="filter-footer">
+    <p id="filter-results-count" class="filter-results-count" aria-live="polite"></p>
+    <button type="button" id="filter-reset" class="filter-reset">{t('map.filters.reset')}</button>
+  </div>
+
+  <script is:inline type="application/json" id="region-by-country-data" set:html={JSON.stringify(Object.fromEntries([...regionsByCountry].map(([k, v]) => [k, [...v].sort()])))} />
+</aside>
+
+<button type="button" id="filter-panel-open" class="filter-panel__open" aria-expanded="false" aria-controls="filter-panel">
+  ☰ {t('map.filters.title')}
+</button>
+
+<style>
+  .filter-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 85vw;
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    padding: 1rem;
+    overflow-y: auto;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filter-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .filter-panel__header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .filter-panel__close {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--color-text);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .filter-group__label {
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .filter-altitude {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .filter-altitude input {
+    width: 5rem;
+  }
+  select,
+  input[type='search'],
+  input[type='number'] {
+    padding: 0.4rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .filter-near-me,
+  .filter-reset {
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-subtle);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .filter-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .filter-results-count {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .filter-panel__open {
+    display: none;
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 20;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (max-width: 700px) {
+    .filter-panel {
+      transform: translateX(-100%);
+      transition: transform 0.2s ease;
+      width: 85vw;
+      box-shadow: var(--shadow-card);
+    }
+    .filter-panel.is-open {
+      transform: translateX(0);
+    }
+    .filter-panel__close {
+      display: block;
+    }
+    .filter-panel__open {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const panel = document.getElementById('filter-panel')!;
+  const openBtn = document.getElementById('filter-panel-open')!;
+  const closeBtn = document.getElementById('filter-panel-close')!;
+  openBtn.addEventListener('click', () => {
+    panel.classList.add('is-open');
+    openBtn.setAttribute('aria-expanded', 'true');
+  });
+  closeBtn.addEventListener('click', () => {
+    panel.classList.remove('is-open');
+    openBtn.setAttribute('aria-expanded', 'false');
+  });
+
+  const countrySelect = document.getElementById('filter-country') as HTMLSelectElement;
+  const regionSelect = document.getElementById('filter-region') as HTMLSelectElement;
+  const regionByCountry = JSON.parse(document.getElementById('region-by-country-data')!.textContent || '{}') as Record<string, string[]>;
+  const allRegionOptions = [...regionSelect.options].map((o) => ({ value: o.value, label: o.textContent ?? '' }));
+
+  countrySelect.addEventListener('change', () => {
+    const allowed = countrySelect.value ? new Set(regionByCountry[countrySelect.value] ?? []) : null;
+    const current = regionSelect.value;
+    regionSelect.innerHTML = '';
+    for (const opt of allRegionOptions) {
+      if (opt.value !== '' && allowed && !allowed.has(opt.value)) continue;
+      const el = document.createElement('option');
+      el.value = opt.value;
+      el.textContent = opt.label;
+      regionSelect.appendChild(el);
+    }
+    if ([...regionSelect.options].some((o) => o.value === current)) regionSelect.value = current;
+    regionSelect.dispatchEvent(new Event('change'));
+  });
+</script>

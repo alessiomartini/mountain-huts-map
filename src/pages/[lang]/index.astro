@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FilterPanel from '../../components/FilterPanel.astro';
+import HutCardTemplate from '../../components/HutCardTemplate.astro';
+import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
+import { hutsToFeatureCollection } from '../../lib/geojson.ts';
+import huts from '../../data/huts.json';
+import type { Hut } from '../../lib/hut-schema.ts';
+
+export function getStaticPaths() {
+  return getLangStaticPaths();
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const typedHuts = huts as Hut[];
+const featureCollection = hutsToFeatureCollection(typedHuts, lang);
+---
+
+<BaseLayout lang={lang} title={t('site.title')} description={t('site.tagline')}>
+  <div class="map-page">
+    <FilterPanel lang={lang} huts={typedHuts} />
+
+    <div id="map-container" class="map-container"></div>
+
+    <div class="map-style-switcher" role="group" aria-label={t('map.layers.title')}>
+      <button type="button" data-map-style="standard" class="is-active">{t('map.layers.standard')}</button>
+      <button type="button" data-map-style="topo">{t('map.layers.topo')}</button>
+    </div>
+
+    <div id="hut-bottom-sheet" class="hut-bottom-sheet" hidden>
+      <button type="button" id="hut-bottom-sheet-close" class="hut-bottom-sheet__close" aria-label={t('common.close')}>✕</button>
+      <div id="hut-bottom-sheet-content"></div>
+    </div>
+  </div>
+
+  <div hidden>
+    {typedHuts.map((hut) => <HutCardTemplate lang={lang} hut={hut} />)}
+  </div>
+
+  <script
+    is:inline
+    define:vars={{
+      featureCollection,
+      lang,
+      resultsCountTemplate: t('map.filters.resultsCount'),
+      nearMeErrorMessage: t('map.filters.nearMeError'),
+    }}
+  >
+    window.__HUTS_MAP_INIT__ = { featureCollection, lang, resultsCountTemplate, nearMeErrorMessage };
+  </script>
+  <script>
+    import { initHutsMapFromGlobal } from '../../scripts/map-client.ts';
+    initHutsMapFromGlobal();
+  </script>
+</BaseLayout>
+
+<style>
+  .map-page {
+    position: relative;
+    height: calc(100vh - var(--header-height));
+  }
+  .map-container {
+    position: absolute;
+    inset: 0;
+  }
+  .map-style-switcher {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+  .map-style-switcher button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .map-style-switcher button.is-active {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+  }
+
+  .hut-bottom-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-surface);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    box-shadow: var(--shadow-card);
+    z-index: 30;
+    transform: translateY(100%);
+    transition: transform 0.2s ease;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  .hut-bottom-sheet.is-open {
+    transform: translateY(0);
+  }
+  .hut-bottom-sheet__close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .user-location-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #1663c7;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #1663c7;
+  }
+</style>

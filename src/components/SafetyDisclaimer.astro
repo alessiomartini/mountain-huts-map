@@ -1,0 +1,23 @@
+---
+import { useTranslations, type Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<p class="safety-disclaimer">⚠️ {t('safety.disclaimer')}</p>
+
+<style>
+  .safety-disclaimer {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin: 0;
+  }
+</style>

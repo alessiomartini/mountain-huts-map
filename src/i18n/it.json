@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "Mountain Huts Map",
+    "tagline": "Bivacchi e rifugi delle Alpi italiane e non solo"
+  },
+  "nav": {
+    "map": "Mappa",
+    "list": "Elenco",
+    "about": "Chi siamo",
+    "attribution": "Attribuzioni"
+  },
+  "lang": {
+    "it": "Italiano",
+    "en": "English"
+  },
+  "category": {
+    "bivacco": "Bivacco",
+    "rifugio": "Rifugio"
+  },
+  "serviceLevel": {
+    "staffed": "Gestito",
+    "self_service": "Non gestito, con servizio",
+    "unstaffed": "Non gestito",
+    "unknown": "Non specificato"
+  },
+  "price": {
+    "free": "Gratuito",
+    "paid": "A pagamento",
+    "paidFrom": "da €{amount} a notte"
+  },
+  "map": {
+    "layers": {
+      "title": "Livello",
+      "standard": "Standard",
+      "topo": "Topografico"
+    },
+    "filters": {
+      "title": "Filtri",
+      "type": "Tipo",
+      "bivacchi": "Bivacchi",
+      "rifugi": "Rifugi",
+      "altitude": "Altitudine",
+      "altitudeRange": "{min} – {max} m",
+      "priceOnlyFree": "Solo gratuiti",
+      "facilities": "Servizi",
+      "facility": {
+        "drinking_water": "Acqua potabile",
+        "stove": "Stufa/camino",
+        "winter_room": "Locale invernale",
+        "blankets": "Coperte"
+      },
+      "area": "Area",
+      "areaCountry": "Paese",
+      "areaRegion": "Regione",
+      "areaProvince": "Provincia",
+      "areaAny": "Tutte",
+      "search": "Cerca per nome",
+      "searchPlaceholder": "Nome del bivacco o rifugio…",
+      "resultsCount": "{count} risultati",
+      "reset": "Azzera filtri",
+      "nearMe": "Vicino a me",
+      "nearMeError": "Impossibile ottenere la posizione."
+    },
+    "hoverCard": {
+      "seeSheet": "Vedi scheda"
+    },
+    "unnamedMountain": "quota {ele} m"
+  },
+  "hut": {
+    "technicalSheet": "Scheda tecnica",
+    "coordinates": "Coordinate",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "openInOsm": "Apri in OpenStreetMap",
+    "openInGoogleMaps": "Apri in Google Maps",
+    "elevation": "Quota",
+    "capacity": "Capienza",
+    "capacityBeds": "{n} posti letto",
+    "management": "Gestione",
+    "openingHours": "Periodo di apertura",
+    "facilitiesAvailable": "Servizi disponibili",
+    "facility": {
+      "fireplace": "Camino",
+      "stove": "Stufa",
+      "drinking_water": "Acqua potabile",
+      "blankets": "Coperte",
+      "toilet": "Servizi igienici",
+      "winter_room": "Locale invernale"
+    },
+    "manager": "Gestore",
+    "phone": "Telefono",
+    "email": "Email",
+    "website": "Sito web",
+    "externalLinks": "Link esterni",
+    "descriptionOnlyIn": "Disponibile solo in italiano",
+    "descriptionOnlyInEn": "Disponibile solo in inglese",
+    "foundError": "Hai trovato un errore?",
+    "reportOnGithub": "Segnalalo su GitHub",
+    "seeOnBigMap": "Apri nella mappa grande",
+    "nearMountain": "presso {name}",
+    "noPhoto": "Nessuna foto disponibile",
+    "photoCredit": "{author} — {license}",
+    "linkKind": {
+      "wikipedia": "Wikipedia",
+      "official": "Sito ufficiale",
+      "cai": "Scheda CAI",
+      "osm": "OpenStreetMap",
+      "other": "Altro link"
+    },
+    "verified": "Confermato da più fonti",
+    "unverified": "Fonte singola, da verificare"
+  },
+  "list": {
+    "title": "Elenco bivacchi e rifugi",
+    "sortBy": "Ordina per",
+    "sortName": "Nome",
+    "sortElevation": "Quota",
+    "sortDistance": "Distanza",
+    "noElevation": "—"
+  },
+  "safety": {
+    "disclaimer": "Le informazioni su questo sito possono essere imprecise o non aggiornate. Verifica sempre condizioni meteo e apertura prima di partire: la responsabilità di chi va in montagna è personale."
+  },
+  "footer": {
+    "osmAttribution": "Dati mappa © collaboratori di OpenStreetMap",
+    "attributionLink": "Licenze e attribuzioni"
+  },
+  "common": {
+    "close": "Chiudi",
+    "loading": "Caricamento…",
+    "notAvailable": "—"
+  }
+}

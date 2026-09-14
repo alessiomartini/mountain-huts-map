@@ -1,0 +1,58 @@
+---
+import { LANGS, getRouteForLang, useTranslations, type Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const currentUrl = Astro.url;
+---
+
+<nav aria-label="Language" class="lang-switcher">
+  {
+    LANGS.map((code) => (
+      <a
+        href={getRouteForLang(currentUrl, code)}
+        aria-current={code === lang ? 'true' : undefined}
+        class="lang-switcher__link"
+        data-lang-link={code}
+        title={t(`lang.${code}`)}
+      >
+        {code.toUpperCase()}
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  // Remembers the visitor's manual language choice (spec: persist to localStorage).
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((link) => {
+    link.addEventListener('click', () => {
+      try {
+        localStorage.setItem('preferred-lang', link.dataset.langLink ?? '');
+      } catch {
+        // localStorage unavailable (private mode, etc.) — the click still navigates fine.
+      }
+    });
+  });
+</script>
+
+<style>
+  .lang-switcher {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .lang-switcher__link {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .lang-switcher__link[aria-current='true'] {
+    color: var(--color-text);
+    background: var(--color-bg-subtle);
+  }
+</style>
