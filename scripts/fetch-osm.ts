@@ -5,6 +5,7 @@
 // still runs (spec §5-bis).
 import { REGIONS, type Region } from './regions.config.ts';
 import { cached, THIRTY_DAYS_MS } from './lib/cache.ts';
+import { splitBBox } from './lib/geo.ts';
 import { politeFetch } from './lib/http.ts';
 import { classifyHut, type OsmHutTags } from './lib/classify.ts';
 import { makeId } from './lib/slug.ts';
@@ -29,6 +30,12 @@ interface OverpassResponse {
   elements: OverpassElement[];
 }
 
+// A region-sized bbox (e.g. the whole Italian Alps arc) reliably 504s on
+// the public Overpass instance — this was measured, not assumed: an
+// earlier version queried region.bbox directly and every region timed out
+// on both endpoints. Tiling to this size keeps each query answerable.
+const TILE_DEG = 1.5;
+
 function buildQuery(bbox: Region['bbox']): string {
   const [south, west, north, east] = bbox;
   const bboxStr = `${south},${west},${north},${east}`;
@@ -39,7 +46,7 @@ function buildQuery(bbox: Region['bbox']): string {
     '["amenity"="shelter"]["shelter_type"="weather_shelter"]',
   ];
   const clauses = filters.flatMap((f) => [`node${f}(${bboxStr});`, `way${f}(${bboxStr});`]);
-  return `[out:json][timeout:180];\n(\n  ${clauses.join('\n  ')}\n);\nout center tags;`;
+  return `[out:json][timeout:90];\n(\n  ${clauses.join('\n  ')}\n);\nout center tags;`;
 }
 
 async function queryOverpass(query: string): Promise<OverpassResponse> {
@@ -51,7 +58,7 @@ async function queryOverpass(query: string): Promise<OverpassResponse> {
         body: `data=${encodeURIComponent(query)}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         minDelayMs: 2000,
-        timeoutMs: 190_000,
+        timeoutMs: 100_000,
       });
       if (!res.ok) throw new Error(`Overpass ${endpoint} responded ${res.status}`);
       return (await res.json()) as OverpassResponse;
@@ -151,26 +158,39 @@ function parseTriBool(v: string | undefined): boolean | null {
 }
 
 export async function fetchOsmRegion(region: Region): Promise<RawCandidate[]> {
-  const query = buildQuery(region.bbox);
-  try {
-    const { data: response, fromCache } = await cached(
-      'overpass',
-      `${region.id}:${query}`,
-      THIRTY_DAYS_MS,
-      () => queryOverpass(query),
-    );
-    console.log(`[fetch-osm] ${region.name}: ${response.elements.length} elements${fromCache ? ' (cache)' : ''}`);
-    const fetchedAt = new Date().toISOString();
-    const candidates: RawCandidate[] = [];
-    for (const el of response.elements) {
-      const candidate = elementToCandidate(el, fetchedAt, region.country);
-      if (candidate) candidates.push(candidate);
+  const tiles = splitBBox(region.bbox, TILE_DEG);
+  const candidates: RawCandidate[] = [];
+  let failedTiles = 0;
+
+  for (let i = 0; i < tiles.length; i++) {
+    const query = buildQuery(tiles[i]);
+    try {
+      const { data: response, fromCache } = await cached(
+        'overpass',
+        `${region.id}:${query}`,
+        THIRTY_DAYS_MS,
+        () => queryOverpass(query),
+      );
+      const fetchedAt = new Date().toISOString();
+      let tileCandidateCount = 0;
+      for (const el of response.elements) {
+        const candidate = elementToCandidate(el, fetchedAt, region.country);
+        if (candidate) {
+          candidates.push(candidate);
+          tileCandidateCount++;
+        }
+      }
+      console.log(
+        `[fetch-osm] ${region.name} tile ${i + 1}/${tiles.length}: ${response.elements.length} elements, ${tileCandidateCount} candidates${fromCache ? ' (cache)' : ''}`,
+      );
+    } catch (err) {
+      failedTiles++;
+      console.warn(`[fetch-osm] ${region.name} tile ${i + 1}/${tiles.length} failed: ${(err as Error).message}. Continuing with remaining tiles.`);
     }
-    return candidates;
-  } catch (err) {
-    console.warn(`[fetch-osm] Region "${region.name}" failed entirely: ${(err as Error).message}. Continuing with 0 OSM records for this region.`);
-    return [];
   }
+
+  console.log(`[fetch-osm] ${region.name}: ${candidates.length} total candidates across ${tiles.length} tiles (${failedTiles} tile(s) failed)`);
+  return candidates;
 }
 
 export async function fetchOsmAll(): Promise<RawCandidate[]> {

@@ -32,9 +32,11 @@ function toArray<T>(value: T | T[] | undefined): T[] {
 }
 
 interface KmlPlacemarkNode {
-  name?: string;
-  description?: string;
-  Point?: { coordinates?: string };
+  // fast-xml-parser types text content by what it looks like (a numeric
+  // <name> parses as `number`), so these are `unknown` and coerced via asText().
+  name?: unknown;
+  description?: unknown;
+  Point?: { coordinates?: unknown };
 }
 
 interface KmlFolderNode {
@@ -42,16 +44,25 @@ interface KmlFolderNode {
   Folder?: KmlFolderNode | KmlFolderNode[];
 }
 
+// fast-xml-parser returns whatever primitive type the text content parses
+// as (a purely numeric <name> becomes a number, not a string), so every
+// text field coming out of the parser needs coercing before .trim().
+function asText(value: unknown): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  return String(value).trim();
+}
+
 function collectPlacemarks(folder: KmlFolderNode): KmlPlacemark[] {
   const result: KmlPlacemark[] = [];
   for (const placemark of toArray(folder.Placemark)) {
-    const coords = placemark.Point?.coordinates?.trim();
-    if (!coords || !placemark.name) continue;
+    const coords = asText(placemark.Point?.coordinates);
+    const name = asText(placemark.name);
+    if (!coords || !name) continue;
     const [lonStr, latStr] = coords.split(',');
     const lon = Number.parseFloat(lonStr);
     const lat = Number.parseFloat(latStr);
     if (Number.isNaN(lat) || Number.isNaN(lon)) continue;
-    result.push({ name: placemark.name.trim(), description: placemark.description?.trim() ?? null, lat, lon });
+    result.push({ name, description: asText(placemark.description) ?? null, lat, lon });
   }
   for (const sub of toArray(folder.Folder)) {
     result.push(...collectPlacemarks(sub));

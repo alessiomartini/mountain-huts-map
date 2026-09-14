@@ -14,6 +14,26 @@ export function isInBBox(lat: number, lon: number, bbox: BBox): boolean {
   return lat >= south && lat <= north && lon >= west && lon <= east;
 }
 
+/**
+ * Splits a bbox into a grid of tiles no larger than tileDeg×tileDeg. A
+ * region-sized bbox (e.g. all of the Italian Alps) is too large for a
+ * single Overpass query to answer before the public instance's own
+ * timeout — tiling trades one big fragile request for many small robust
+ * ones, each independently cacheable and independently retryable.
+ */
+export function splitBBox(bbox: BBox, tileDeg: number): BBox[] {
+  const [south, west, north, east] = bbox;
+  const tiles: BBox[] = [];
+  for (let lat = south; lat < north; lat += tileDeg) {
+    const tileNorth = Math.min(lat + tileDeg, north);
+    for (let lon = west; lon < east; lon += tileDeg) {
+      const tileEast = Math.min(lon + tileDeg, east);
+      tiles.push([lat, lon, tileNorth, tileEast]);
+    }
+  }
+  return tiles;
+}
+
 export function haversineMeters(a: LatLon, b: LatLon): number {
   const R = 6_371_000;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
