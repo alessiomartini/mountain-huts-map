@@ -12,7 +12,10 @@ dist/
 worker-configuration.d.ts
 
 # data pipeline
-scripts/.cache/
+scripts/.cache/*
+!scripts/.cache/boundaries/
+scripts/.cache/boundaries/*
+!scripts/.cache/boundaries/README.md
 scripts/out/
 scripts/input/*
 !scripts/input/.gitkeep
