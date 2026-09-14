@@ -133,5 +133,32 @@
     "close": "Chiudi",
     "loading": "Caricamento…",
     "notAvailable": "—"
+  },
+  "about": {
+    "title": "Chi siamo",
+    "intro": "Mountain Huts Map raccoglie in un'unica mappa bivacchi e rifugi alpini, partendo dalle Alpi italiane e dalla zona di Bergen, in Norvegia, con l'obiettivo di estendersi a tutta Europa.",
+    "noFakeDataTitle": "Niente dati inventati",
+    "noFakeDataBody": "Quota, coordinate e prezzi non vengono mai inventati: se una fonte non li riporta, restano vuoti (—) invece di essere stimati. Ogni scheda cita le fonti da cui provengono i dati.",
+    "testPhaseTitle": "Fase di test",
+    "testPhaseBody": "Il sito è attualmente in una fase di test con un piccolo numero di rifugi di esempio, scelti per coprire situazioni diverse (bivacchi e rifugi, gestiti e non gestiti, con e senza foto). I dati reali su scala europea sono in lavorazione.",
+    "contributeTitle": "Contribuire",
+    "contributeBody": "Il codice sorgente è pubblico su GitHub: segnalazioni di errori, correzioni e contributi sono benvenuti.",
+    "githubLink": "Vedi il repository su GitHub"
+  },
+  "attribution": {
+    "title": "Licenze e attribuzioni",
+    "mapDataTitle": "Dati della mappa",
+    "mapDataBody": "I dati geografici (posizione, quota, servizi) provengono principalmente da OpenStreetMap, disponibili con licenza Open Database License (ODbL).",
+    "osmContributors": "© collaboratori di OpenStreetMap",
+    "tilesTitle": "Tile della mappa",
+    "tilesStandardBody": "Lo stile mappa standard è fornito da OpenFreeMap, basato su dati OpenStreetMap.",
+    "tilesTopoBody": "Il livello topografico è fornito da OpenTopoMap (CC-BY-SA). Il servizio pubblico è pensato per un traffico moderato: in caso di traffico elevato è opportuno passare a un provider a pagamento o self-hosted.",
+    "libraryTitle": "Libreria mappa",
+    "libraryBody": "La mappa interattiva è realizzata con MapLibre GL JS (licenza BSD-3-Clause).",
+    "photosTitle": "Foto",
+    "photosBody": "Le foto provengono da Wikimedia Commons e da altre fonti indicate; autore e licenza di ciascuna foto sono riportati nella scheda del rifugio o bivacco corrispondente.",
+    "regionalSourcesTitle": "Fonti regionali",
+    "regionalSourcesBody": "Oltre a OpenStreetMap e Wikidata/Wikipedia, alcuni dati vengono incrociati con le seguenti fonti regionali:",
+    "seedDataNote": "Nota: i dati attualmente pubblicati sono un set di prova (seed data) inserito a mano per collaudare il sito, non un'estrazione dalle fonti sopra elencate."
   }
 }

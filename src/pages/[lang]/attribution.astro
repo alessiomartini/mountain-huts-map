@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
+
+export function getStaticPaths() {
+  return getLangStaticPaths();
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+
+// Kept in sync by hand with scripts/sources/*.ts — one entry per scraper module.
+const REGIONAL_SOURCES = [
+  { name: 'CAI — Rifugi e bivacchi', url: 'https://rifugi.cai.it/shelters' },
+  { name: 'CAI Bergamo — Geoportale rifugi e bivacchi', url: 'https://www.caibergamo.it/geoportale/rifugi-bivacchi' },
+  { name: 'Abitare l’Estremo', url: 'https://www.abitarelestremo.it' },
+  { name: 'DISKA', url: 'https://www.diska.it' },
+  { name: 'Parco delle Orobie Valtellinesi', url: 'https://www.parcorobievalt.com/rifugi-bivacchi' },
+  { name: 'Paesi di Valtellina', url: 'https://www.paesidivaltellina.eu/rifugiebivacchi.htm' },
+  { name: 'Hikes of the World', url: 'https://www.hikesoftheworld.com/region/bivacchi' },
+];
+---
+
+<BaseLayout lang={lang} title={`${t('attribution.title')} — ${t('site.title')}`} description={t('attribution.mapDataBody')}>
+  <article class="attribution-page">
+    <h1>{t('attribution.title')}</h1>
+
+    <section>
+      <h2>{t('attribution.mapDataTitle')}</h2>
+      <p>{t('attribution.mapDataBody')}</p>
+      <p>
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
+          {t('attribution.osmContributors')} ↗
+        </a>
+      </p>
+    </section>
+
+    <section>
+      <h2>{t('attribution.tilesTitle')}</h2>
+      <p>
+        {t('attribution.tilesStandardBody')}
+        {' '}
+        <a href="https://openfreemap.org" target="_blank" rel="noopener noreferrer">OpenFreeMap ↗</a>
+      </p>
+      <p>
+        {t('attribution.tilesTopoBody')}
+        {' '}
+        <a href="https://opentopomap.org/about" target="_blank" rel="noopener noreferrer">OpenTopoMap ↗</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>{t('attribution.libraryTitle')}</h2>
+      <p>
+        {t('attribution.libraryBody')}
+        {' '}
+        <a href="https://maplibre.org" target="_blank" rel="noopener noreferrer">MapLibre GL JS ↗</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>{t('attribution.photosTitle')}</h2>
+      <p>
+        {t('attribution.photosBody')}
+        {' '}
+        <a href="https://commons.wikimedia.org" target="_blank" rel="noopener noreferrer">Wikimedia Commons ↗</a>
+      </p>
+    </section>
+
+    <section>
+      <h2>{t('attribution.regionalSourcesTitle')}</h2>
+      <p>{t('attribution.regionalSourcesBody')}</p>
+      <ul>
+        {
+          REGIONAL_SOURCES.map((source) => (
+            <li>
+              <a href={source.url} target="_blank" rel="noopener noreferrer">
+                {source.name} ↗
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="attribution-page__note">{t('attribution.seedDataNote')}</p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .attribution-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1rem;
+    line-height: 1.6;
+  }
+
+  .attribution-page h1 {
+    font-size: 1.6rem;
+    margin: 0.2rem 0 1rem;
+  }
+
+  .attribution-page h2 {
+    font-size: 1.15rem;
+    margin-top: 1.5rem;
+  }
+
+  .attribution-page ul {
+    padding-left: 1.25rem;
+  }
+
+  .attribution-page__note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

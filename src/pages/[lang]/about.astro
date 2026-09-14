@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
+
+export function getStaticPaths() {
+  return getLangStaticPaths();
+}
+
+const { lang } = Astro.params as { lang: Lang };
+const t = useTranslations(lang);
+const REPO_URL = 'https://github.com/alessiomartini/mountain-huts-map';
+---
+
+<BaseLayout lang={lang} title={`${t('about.title')} — ${t('site.title')}`} description={t('about.intro')}>
+  <article class="about-page">
+    <h1>{t('about.title')}</h1>
+    <p>{t('about.intro')}</p>
+
+    <section>
+      <h2>{t('about.noFakeDataTitle')}</h2>
+      <p>{t('about.noFakeDataBody')}</p>
+    </section>
+
+    <section>
+      <h2>{t('about.testPhaseTitle')}</h2>
+      <p>{t('about.testPhaseBody')}</p>
+    </section>
+
+    <section>
+      <h2>{t('about.contributeTitle')}</h2>
+      <p>
+        {t('about.contributeBody')}
+        {' '}
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">{t('about.githubLink')} ↗</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1rem;
+    line-height: 1.6;
+  }
+
+  .about-page h1 {
+    font-size: 1.6rem;
+    margin: 0.2rem 0 1rem;
+  }
+
+  .about-page h2 {
+    font-size: 1.15rem;
+    margin-top: 1.5rem;
+  }
+</style>

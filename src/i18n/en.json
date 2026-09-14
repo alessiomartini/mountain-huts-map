@@ -133,5 +133,32 @@
     "close": "Close",
     "loading": "Loading…",
     "notAvailable": "—"
+  },
+  "about": {
+    "title": "About",
+    "intro": "Mountain Huts Map brings alpine bivouacs and huts together on a single map, starting with the Italian Alps and the Bergen area of Norway, with the goal of eventually covering all of Europe.",
+    "noFakeDataTitle": "No invented data",
+    "noFakeDataBody": "Elevation, coordinates, and prices are never invented: if a source doesn't report them, they're left blank (—) instead of being estimated. Every entry cites the sources its data comes from.",
+    "testPhaseTitle": "Testing phase",
+    "testPhaseBody": "The site is currently in a testing phase with a small number of example huts, chosen to cover a variety of situations (bivouacs and huts, staffed and unstaffed, with and without photos). Real data at European scale is in progress.",
+    "contributeTitle": "Contributing",
+    "contributeBody": "The source code is public on GitHub: bug reports, fixes, and contributions are welcome.",
+    "githubLink": "View the repository on GitHub"
+  },
+  "attribution": {
+    "title": "Licenses and attribution",
+    "mapDataTitle": "Map data",
+    "mapDataBody": "Geographic data (location, elevation, facilities) mainly comes from OpenStreetMap, available under the Open Database License (ODbL).",
+    "osmContributors": "© OpenStreetMap contributors",
+    "tilesTitle": "Map tiles",
+    "tilesStandardBody": "The standard map style is provided by OpenFreeMap, based on OpenStreetMap data.",
+    "tilesTopoBody": "The topographic layer is provided by OpenTopoMap (CC-BY-SA). Its public service is meant for moderate traffic: under high traffic, switch to a paid or self-hosted provider.",
+    "libraryTitle": "Map library",
+    "libraryBody": "The interactive map is built with MapLibre GL JS (BSD-3-Clause license).",
+    "photosTitle": "Photos",
+    "photosBody": "Photos come from Wikimedia Commons and other listed sources; each photo's author and license are shown on the corresponding hut's page.",
+    "regionalSourcesTitle": "Regional sources",
+    "regionalSourcesBody": "Besides OpenStreetMap and Wikidata/Wikipedia, some data is cross-checked against the following regional sources:",
+    "seedDataNote": "Note: the data currently published is a hand-entered test set (seed data) used to exercise the site, not an extraction from the sources listed above."
   }
 }

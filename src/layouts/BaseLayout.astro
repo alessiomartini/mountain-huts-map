@@ -56,7 +56,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
 
       <footer class="site-footer">
         <p class="site-footer__osm">
-          {t('footer.osmAttribution')} · <a href="/attribution">{t('footer.attributionLink')}</a>
+          {t('footer.osmAttribution')} · <a href={`/${lang}/attribution`}>{t('footer.attributionLink')}</a>
         </p>
         <SafetyDisclaimer lang={lang} />
       </footer>
