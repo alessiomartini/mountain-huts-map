@@ -1,0 +1,21 @@
+name: debug-fetch (throwaway)
+on:
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check live site for real vs seed data
+        run: |
+          echo "===== /it/list/ page: real-data hut names (should be PRESENT) ====="
+          curl -sS "https://mountain-huts-map.alemarti-2001.workers.dev/it/list/" -o list.html
+          grep -o 'Bivacco della Sassa\|Rifugio Talarico\|Bivacco Taveggia' list.html | sort -u || echo "(none found)"
+          echo
+          echo "===== seed test data names (should be ABSENT) ====="
+          grep -o 'Rifugio Torino\|Fannar.khytta' list.html | sort -u || echo "(none found, good)"
+          echo
+          echo "===== total hut-card-like link count on list page ====="
+          grep -o '/it/hut/[a-z0-9-]*' list.html | sort -u | wc -l
+          echo
+          echo "===== homepage sanity check (HTTP status) ====="
+          curl -sS -o /dev/null -w "HTTP %{http_code}\n" "https://mountain-huts-map.alemarti-2001.workers.dev/"
