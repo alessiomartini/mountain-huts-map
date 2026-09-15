@@ -199,7 +199,13 @@ export function initHutsMap(options: InitMapOptions): void {
       type: 'geojson',
       data,
       cluster: true,
-      clusterRadius: 50,
+      // Markers render at icon-size 0.85 on a 32px-wide pin (~27px on
+      // screen), so a cluster radius much bigger than that keeps points
+      // grouped well after they'd stop visually overlapping. 30px is close
+      // to the pin's own width — clusters now break apart into individual
+      // markers as soon as two pins wouldn't overlap, instead of waiting
+      // for a much wider gap.
+      clusterRadius: 30,
       clusterMaxZoom: 14,
     });
 

@@ -6,7 +6,7 @@
 import { REGIONS, type Region } from './regions.config.ts';
 import { cached, THIRTY_DAYS_MS } from './lib/cache.ts';
 import { splitBBox } from './lib/geo.ts';
-import { politeFetch } from './lib/http.ts';
+import { politeFetch, sleep } from './lib/http.ts';
 import { classifyHut, type OsmHutTags } from './lib/classify.ts';
 import { makeId } from './lib/slug.ts';
 import type { RawCandidate } from './lib/source-record.ts';
@@ -49,19 +49,41 @@ function buildQuery(bbox: Region['bbox']): string {
   return `[out:json][timeout:90];\n(\n  ${clauses.join('\n  ')}\n);\nout center tags;`;
 }
 
+// 429 (rate limited) and 504 (gateway timeout — usually the query queue
+// backing up under load) are transient: worth a couple of backoff+retries on
+// the same endpoint before writing it off and moving to the next one. Any
+// other failure (4xx, network abort) isn't worth retrying in place.
+const RETRY_ATTEMPTS_PER_ENDPOINT = 3;
+const RETRY_BASE_DELAY_MS = 10_000;
+
+async function queryOverpassEndpoint(endpoint: string, query: string): Promise<OverpassResponse> {
+  for (let attempt = 1; attempt <= RETRY_ATTEMPTS_PER_ENDPOINT; attempt++) {
+    const res = await politeFetch(endpoint, {
+      method: 'POST',
+      body: `data=${encodeURIComponent(query)}`,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      minDelayMs: 2000,
+      timeoutMs: 100_000,
+    });
+    if (res.ok) return (await res.json()) as OverpassResponse;
+
+    const isTransient = res.status === 429 || res.status === 504;
+    if (!isTransient || attempt === RETRY_ATTEMPTS_PER_ENDPOINT) {
+      throw new Error(`Overpass ${endpoint} responded ${res.status}`);
+    }
+    const retryAfterHeader = res.headers.get('Retry-After');
+    const delay = retryAfterHeader ? Number(retryAfterHeader) * 1000 : RETRY_BASE_DELAY_MS * attempt;
+    console.warn(`[fetch-osm] ${endpoint} responded ${res.status} (attempt ${attempt}/${RETRY_ATTEMPTS_PER_ENDPOINT}); retrying in ${Math.round(delay / 1000)}s...`);
+    await sleep(delay);
+  }
+  throw new Error(`Overpass ${endpoint}: unreachable`); // unreachable, satisfies the type checker
+}
+
 async function queryOverpass(query: string): Promise<OverpassResponse> {
   let lastError: unknown;
   for (const endpoint of OVERPASS_ENDPOINTS) {
     try {
-      const res = await politeFetch(endpoint, {
-        method: 'POST',
-        body: `data=${encodeURIComponent(query)}`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        minDelayMs: 2000,
-        timeoutMs: 100_000,
-      });
-      if (!res.ok) throw new Error(`Overpass ${endpoint} responded ${res.status}`);
-      return (await res.json()) as OverpassResponse;
+      return await queryOverpassEndpoint(endpoint, query);
     } catch (err) {
       lastError = err;
       console.warn(`[fetch-osm] ${endpoint} failed: ${(err as Error).message}. Trying next endpoint if any.`);
@@ -158,12 +180,13 @@ function parseTriBool(v: string | undefined): boolean | null {
   return null;
 }
 
+const COOLDOWN_RETRY_DELAY_MS = 30_000;
+
 export async function fetchOsmRegion(region: Region): Promise<RawCandidate[]> {
   const tiles = splitBBox(region.bbox, TILE_DEG);
   const candidates: RawCandidate[] = [];
-  let failedTiles = 0;
 
-  for (let i = 0; i < tiles.length; i++) {
+  async function processTile(i: number, label: string): Promise<boolean> {
     const query = buildQuery(tiles[i]);
     try {
       const { data: response, fromCache } = await cached(
@@ -182,15 +205,38 @@ export async function fetchOsmRegion(region: Region): Promise<RawCandidate[]> {
         }
       }
       console.log(
-        `[fetch-osm] ${region.name} tile ${i + 1}/${tiles.length}: ${response.elements.length} elements, ${tileCandidateCount} candidates${fromCache ? ' (cache)' : ''}`,
+        `[fetch-osm] ${region.name} tile ${label}: ${response.elements.length} elements, ${tileCandidateCount} candidates${fromCache ? ' (cache)' : ''}`,
       );
+      return true;
     } catch (err) {
-      failedTiles++;
-      console.warn(`[fetch-osm] ${region.name} tile ${i + 1}/${tiles.length} failed: ${(err as Error).message}. Continuing with remaining tiles.`);
+      console.warn(`[fetch-osm] ${region.name} tile ${label} failed: ${(err as Error).message}.`);
+      return false;
     }
   }
 
-  console.log(`[fetch-osm] ${region.name}: ${candidates.length} total candidates across ${tiles.length} tiles (${failedTiles} tile(s) failed)`);
+  const failedTileIndexes: number[] = [];
+  for (let i = 0; i < tiles.length; i++) {
+    const ok = await processTile(i, `${i + 1}/${tiles.length}`);
+    if (!ok) failedTileIndexes.push(i);
+  }
+
+  // A tile's own per-endpoint retries (queryOverpassEndpoint) handle brief
+  // blips; a tile still failing after those has more likely hit sustained
+  // congestion from our own preceding requests in this run. A longer
+  // cooldown before one final pass gives the server room to recover instead
+  // of hammering it again immediately.
+  let stillFailed = failedTileIndexes;
+  if (failedTileIndexes.length > 0) {
+    console.log(`[fetch-osm] ${region.name}: ${failedTileIndexes.length} tile(s) failed, retrying after a ${COOLDOWN_RETRY_DELAY_MS / 1000}s cooldown...`);
+    await sleep(COOLDOWN_RETRY_DELAY_MS);
+    stillFailed = [];
+    for (const i of failedTileIndexes) {
+      const ok = await processTile(i, `${i + 1}/${tiles.length} (retry)`);
+      if (!ok) stillFailed.push(i);
+    }
+  }
+
+  console.log(`[fetch-osm] ${region.name}: ${candidates.length} total candidates across ${tiles.length} tiles (${stillFailed.length} tile(s) failed)`);
   return candidates;
 }
 
