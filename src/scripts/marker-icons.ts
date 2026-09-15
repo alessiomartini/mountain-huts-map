@@ -16,5 +16,9 @@ function toDataUri(svg: string): string {
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
-export const RIFUGIO_ICON_URI = toDataUri(pinSvg(RIFUGIO_ICON, '#2f5d3a'));
-export const BIVACCO_ICON_URI = toDataUri(pinSvg(BIVACCO_ICON, '#b3541e'));
+// Brighter/more saturated than a first pass at #2f5d3a / #b3541e — those
+// read as muted, dark tones that wash out against green forest or brown
+// terrain on the topo map style. Same hues (green = rifugio, orange =
+// bivacco), just enough saturation/brightness to stay visible on both map styles.
+export const RIFUGIO_ICON_URI = toDataUri(pinSvg(RIFUGIO_ICON, '#1FA34D'));
+export const BIVACCO_ICON_URI = toDataUri(pinSvg(BIVACCO_ICON, '#F26522'));

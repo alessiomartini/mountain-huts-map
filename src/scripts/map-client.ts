@@ -192,20 +192,36 @@ export function initHutsMap(options: InitMapOptions): void {
   map.addControl(new NavigationControl({ showCompass: false }), 'top-right');
   map.addControl(new GeolocateControl({ positionOptions: { enableHighAccuracy: true } }), 'top-right');
 
+  let hutsInteractionsBound = false;
+
+  // Re-creates the huts source/layers from scratch every time it's called —
+  // safe to call again after a style switch. map.setStyle() diffs the whole
+  // style against the new one and drops anything (sources, layers) that
+  // isn't part of it, so 'huts' and its 3 layers don't survive switching to
+  // the topo style; explicitly removing stale bits first (rather than
+  // early-returning if 'huts' happens to still be there mid-transition)
+  // means this never silently no-ops. Click/hover handlers are bound once
+  // only (guarded below) since MapLibre dispatches layer-scoped events by
+  // layer *id*, so handlers registered once keep matching a layer recreated
+  // under the same id — re-binding on every switch would just stack
+  // duplicate handlers.
   function addHutsLayers(data: HutFeatureCollection): void {
-    if (map.getSource('huts')) return;
+    if (map.getLayer('unclustered')) map.removeLayer('unclustered');
+    if (map.getLayer('cluster-count')) map.removeLayer('cluster-count');
+    if (map.getLayer('clusters')) map.removeLayer('clusters');
+    if (map.getSource('huts')) map.removeSource('huts');
 
     map.addSource('huts', {
       type: 'geojson',
       data,
       cluster: true,
-      // Markers render at icon-size 0.85 on a 32px-wide pin (~27px on
+      // Markers render at icon-size 0.65 on a 32px-wide pin (~21px on
       // screen), so a cluster radius much bigger than that keeps points
-      // grouped well after they'd stop visually overlapping. 30px is close
+      // grouped well after they'd stop visually overlapping. 22px is close
       // to the pin's own width — clusters now break apart into individual
       // markers as soon as two pins wouldn't overlap, instead of waiting
       // for a much wider gap.
-      clusterRadius: 30,
+      clusterRadius: 22,
       clusterMaxZoom: 14,
     });
 
@@ -240,11 +256,14 @@ export function initHutsMap(options: InitMapOptions): void {
       filter: ['!', ['has', 'point_count']],
       layout: {
         'icon-image': ['case', ['==', ['get', 'category'], 'bivacco'], 'bivacco-icon', 'rifugio-icon'],
-        'icon-size': 0.85,
+        'icon-size': 0.65,
         'icon-anchor': 'bottom',
         'icon-allow-overlap': true,
       },
     });
+
+    if (hutsInteractionsBound) return;
+    hutsInteractionsBound = true;
 
     map.on('click', 'clusters', (e) => {
       const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
@@ -276,13 +295,20 @@ export function initHutsMap(options: InitMapOptions): void {
     setupHoverPopup(map);
   }
 
-  map.on('load', () => {
+  // setStyle() (used by the style switcher below) wipes any custom images
+  // added via addImage() along with the rest of the previous style, so the
+  // icons need reloading every time, not just on the initial 'load' — a
+  // symbol layer whose icon-image no longer exists renders nothing, which
+  // is why huts silently disappeared when switching to the topo style.
+  function loadIconsAndAddLayers(): void {
     Promise.all([rasterizeSvgIcon(RIFUGIO_ICON_URI), rasterizeSvgIcon(BIVACCO_ICON_URI)]).then(([rifugio, bivacco]) => {
       if (!map.hasImage('rifugio-icon')) map.addImage('rifugio-icon', rifugio);
       if (!map.hasImage('bivacco-icon')) map.addImage('bivacco-icon', bivacco);
       addHutsLayers(filterCollection(allFeatures, currentState));
     });
-  });
+  }
+
+  map.on('load', loadIconsAndAddLayers);
 
   // --- Hover popup (desktop) ---
   function isHoverCapable(): boolean {
@@ -364,7 +390,7 @@ export function initHutsMap(options: InitMapOptions): void {
       document.querySelectorAll('[data-map-style]').forEach((b) => b.classList.remove('is-active'));
       btn.classList.add('is-active');
       const styleName = btn.dataset.mapStyle;
-      map.once('styledata', () => addHutsLayers(filterCollection(allFeatures, currentState)));
+      map.once('styledata', loadIconsAndAddLayers);
       map.setStyle(styleName === 'topo' ? topoStyle() : LIBERTY_STYLE_URL);
     });
   });
