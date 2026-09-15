@@ -41,10 +41,10 @@ interface BoundarySource {
 // What to download and where to put it is documented in
 // scripts/.cache/boundaries/README.md (gitignored dir, like the rest of the cache).
 const BOUNDARY_SOURCES: BoundarySource[] = [
-  { countryCode: 'IT', level: 'region', cachePath: 'scripts/.cache/boundaries/istat-regioni.geojson', nameProperty: 'DEN_REG' },
-  { countryCode: 'IT', level: 'province', cachePath: 'scripts/.cache/boundaries/istat-province.geojson', nameProperty: 'DEN_UTS' },
-  { countryCode: 'IT', level: 'municipality', cachePath: 'scripts/.cache/boundaries/istat-comuni.geojson', nameProperty: 'COMUNE' },
-  { countryCode: 'NO', level: 'region', cachePath: 'scripts/.cache/boundaries/kartverket-fylker.geojson', nameProperty: 'navn' },
+  { countryCode: 'IT', level: 'region', cachePath: 'scripts/.cache/boundaries/istat-regioni.geojson', nameProperty: 'reg_name' },
+  { countryCode: 'IT', level: 'province', cachePath: 'scripts/.cache/boundaries/istat-province.geojson', nameProperty: 'prov_name' },
+  { countryCode: 'IT', level: 'municipality', cachePath: 'scripts/.cache/boundaries/istat-comuni.geojson', nameProperty: 'name' },
+  { countryCode: 'NO', level: 'region', cachePath: 'scripts/.cache/boundaries/kartverket-fylker.geojson', nameProperty: 'name' },
   { countryCode: 'NO', level: 'municipality', cachePath: 'scripts/.cache/boundaries/kartverket-kommuner.geojson', nameProperty: 'navn' },
 ];
 

@@ -24,6 +24,14 @@ jobs:
 
       - run: npm ci
 
+      - name: Unzip boundary archives
+        run: |
+          for z in scripts/.cache/boundaries/*.zip; do
+            [ -e "$z" ] || continue
+            echo "Unzipping $z"
+            unzip -o "$z" -d scripts/.cache/boundaries/
+          done
+
       - run: npm run data:refresh
 
       - name: Upload dataset + review CSVs

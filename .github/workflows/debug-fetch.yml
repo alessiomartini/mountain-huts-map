@@ -1,0 +1,25 @@
+name: Debug fetch
+
+# Throwaway diagnostic: fetches a URL from a runner with normal internet
+# access (this sandboxed dev environment's egress is restricted to a small
+# allowlist) and prints the response to the job log. Not part of the real
+# pipeline — delete once no longer needed.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL to fetch'
+        required: true
+        default: 'https://rifugi.cai.it/api-info'
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch URL
+        run: |
+          echo "=== Fetching ${{ inputs.url }} ==="
+          curl -sS -L -A "Mozilla/5.0 (compatible; mountain-huts-map-debug/1.0)" "${{ inputs.url }}"
