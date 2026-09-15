@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       skip_wikidata:
-        description: 'Skip Wikidata/Wikipedia/Commons enrichment (slowest step, ~51min; CAI now covers most of what it added for Italy)'
+        description: 'Skip Wikidata/Wikipedia/Commons enrichment (now batched — a few minutes, not ~51min; provides photos CAI does not yet)'
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
