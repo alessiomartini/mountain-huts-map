@@ -6,7 +6,12 @@ name: Data refresh check
 # committing anything. This is a diagnostic/validation trigger; the real
 # scheduled monthly-refresh-and-PR workflow lands in a later phase.
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_wikidata:
+        description: 'Skip Wikidata/Wikipedia/Commons enrichment (slowest step, ~51min; CAI now covers most of what it added for Italy)'
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -33,6 +38,8 @@ jobs:
           done
 
       - run: npm run data:refresh
+        env:
+          SKIP_WIKIDATA_ENRICHMENT: ${{ inputs.skip_wikidata }}
 
       - name: Upload dataset + review CSVs
         if: always()

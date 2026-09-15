@@ -57,8 +57,18 @@ async function main() {
   console.log('--- OSM (Overpass) ---');
   const osmCandidates = await fetchOsmAll();
 
-  console.log('\n--- Wikidata / Wikipedia / Commons ---');
-  const wikidataCandidates = await enrichWikidata(osmCandidates);
+  // Wikidata/Wikipedia enrichment is the slowest step (one candidate at a
+  // time, ~51min in the first live run) and now duplicates most of what
+  // cai.ts's real API already provides for Italy. Off by default; set
+  // SKIP_WIKIDATA_ENRICHMENT=true to skip it, unset/false to run it (e.g.
+  // for Norway, which CAI doesn't cover).
+  let wikidataCandidates: RawCandidate[] = [];
+  if (process.env.SKIP_WIKIDATA_ENRICHMENT === 'true') {
+    console.log('\n--- Wikidata / Wikipedia / Commons: skipped (SKIP_WIKIDATA_ENRICHMENT=true) ---');
+  } else {
+    console.log('\n--- Wikidata / Wikipedia / Commons ---');
+    wikidataCandidates = await enrichWikidata(osmCandidates);
+  }
 
   console.log('\n--- Regional scrapers ---');
   const scraperCandidates = await runAllScrapers();
