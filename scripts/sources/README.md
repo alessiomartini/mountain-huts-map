@@ -13,10 +13,14 @@ allowlist (npm/GitHub/etc.) and cannot reach any of these sites, so the
 selectors and API-detection heuristics here were written from the site
 descriptions in the project spec, not from live markup. They're built to
 degrade safely (return `[]` with a clear warning) rather than crash or
-silently mis-scrape, but **the first real `npm run data:refresh` run
-against the live internet will very likely need some selector adjustments**
-— check the console warnings after that run for which scrapers came back
-empty and why, then fix the selector in that file. `cai.ts` and
-`caibergamo.ts` are the most exploratory (they try to detect a JSON/GeoJSON
-API endpoint rather than parse HTML) and most likely to need a manual look
-at the live page's network tab to find the real data URL.
+silently mis-scrape, but **a live `npm run data:refresh` run against the
+real internet may still need selector adjustments** — check the console
+warnings for which scrapers came back empty and why, then fix the selector
+in that file.
+
+`abitarelestremo.ts`, `caibergamo.ts` and `parcorobievalt.ts` were removed
+after the first live run confirmed all three either 404'd or no longer
+matched any expected page structure, and their coverage is already
+superseded by `cai.ts`'s real API (`https://rifugi.cai.it/api/v1/shelters`,
+discovered via `https://rifugi.cai.it/docs/api-docs.json`'s OpenAPI spec —
+762 shelters, no auth required).

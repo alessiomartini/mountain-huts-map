@@ -1,6 +1,6 @@
 // Field-level merge for one cluster of RawCandidates (i.e. one real-world
 // hut, already grouped by cluster.ts). Precedence order per spec §2.2-bis:
-// overrides.json > OSM (coords) > CAI > abitarelestremo/diska > Wikidata > Wikipedia,
+// overrides.json > OSM (coords) > CAI > diska > Wikidata > Wikipedia,
 // generalized via SOURCE_PRECEDENCE for every other field. overrides.json
 // itself is applied later in build-dataset.ts, after this merge and after
 // the final `id` is known.

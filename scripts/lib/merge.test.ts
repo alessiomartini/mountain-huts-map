@@ -62,16 +62,16 @@ describe('mergeCluster', () => {
   });
 
   it('flags an elevation conflict beyond the 50m threshold but keeps the higher-precedence value', () => {
-    const abitarelestremoCandidate: RawCandidate = {
-      sourceName: 'abitarelestremo',
-      sourceUrl: 'https://www.abitarelestremo.it/x',
+    const diskaCandidate: RawCandidate = {
+      sourceName: 'diska',
+      sourceUrl: 'https://www.diska.it/x',
       fetchedAt: NOW,
       name: 'Rifugio Test',
       coords: { lat: 45.5, lon: 7.5 },
       elevationM: 2420, // 80m off from OSM's 2500
       scraperOnly: true,
     };
-    const result = mergeCluster([osmCandidate(), abitarelestremoCandidate]);
+    const result = mergeCluster([osmCandidate(), diskaCandidate]);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.record.elevation_m).toBe(2500); // OSM wins
@@ -198,8 +198,8 @@ describe('mergeCluster', () => {
       scraperOnly: true,
     };
     const b: RawCandidate = {
-      sourceName: 'abitarelestremo',
-      sourceUrl: 'https://www.abitarelestremo.it/x',
+      sourceName: 'paesidivaltellina',
+      sourceUrl: 'https://www.paesidivaltellina.eu/x',
       fetchedAt: NOW,
       name: 'Rifugio Corroborato',
       coords: { lat: 45.9, lon: 7.9 },

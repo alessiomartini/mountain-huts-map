@@ -282,7 +282,7 @@ const huts: Hut[] = [
     description: { it: null, en: null },
     photos: [],
     links: [],
-    sources: [{ name: 'abitarelestremo', url: 'https://www.abitarelestremo.it/', fetched_at: NOW }],
+    sources: [{ name: 'diska', url: 'https://www.diska.it/', fetched_at: NOW }],
     verified: false,
     updated_at: NOW,
   },

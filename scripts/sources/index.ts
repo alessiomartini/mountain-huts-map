@@ -1,20 +1,17 @@
-import { abitarelestremo } from './abitarelestremo.ts';
 import { diska } from './diska.ts';
 import { cai } from './cai.ts';
-import { caibergamo } from './caibergamo.ts';
-import { parcorobievalt } from './parcorobievalt.ts';
 import { paesidivaltellina } from './paesidivaltellina.ts';
 import { hikesoftheworld } from './hikesoftheworld.ts';
 import type { SiteScraper } from './types.ts';
 import type { RawCandidate } from '../lib/source-record.ts';
 
-// Priority order per spec §2.2-bis.
+// Priority order per spec §2.2-bis. abitarelestremo, caibergamo and
+// parcorobievalt were dropped: all three are already covered by the
+// official CAI API (see cai.ts) and had stopped returning any candidates
+// anyway (site restructures / no reachable endpoint).
 export const SCRAPERS: SiteScraper[] = [
-  abitarelestremo,
   diska,
   cai,
-  caibergamo,
-  parcorobievalt,
   paesidivaltellina,
   hikesoftheworld,
 ];

@@ -6,13 +6,13 @@
 import { existsSync, rmSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fetchHtml } from '../lib/scraper-base.ts';
-import { parcorobievalt } from './parcorobievalt.ts';
+import { paesidivaltellina } from './paesidivaltellina.ts';
 
 function mockRobotsAllowsEverything() {
   return new Response('', { status: 404 });
 }
 
-const CACHE_NAMESPACES = ['resilience-test', 'parcorobievalt'];
+const CACHE_NAMESPACES = ['resilience-test', 'paesidivaltellina'];
 
 beforeEach(() => {
   vi.restoreAllMocks();
@@ -67,7 +67,7 @@ describe('a scraper facing changed/unexpected HTML', () => {
     });
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    const candidates = await parcorobievalt.run();
+    const candidates = await paesidivaltellina.run();
 
     expect(candidates).toEqual([]);
     expect(warnSpy).toHaveBeenCalled();
@@ -81,6 +81,6 @@ describe('a scraper facing changed/unexpected HTML', () => {
     });
     vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-    await expect(parcorobievalt.run()).resolves.toEqual([]);
+    await expect(paesidivaltellina.run()).resolves.toEqual([]);
   });
 });
