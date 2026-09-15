@@ -1,0 +1,45 @@
+name: debug-fetch (throwaway)
+on:
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Research new source candidates
+        run: |
+          UA="mountain-huts-map-bot/1.0 (+https://github.com/alessiomartini/mountain-huts-map)"
+          fetch() {
+            echo "----- $1 -----"
+            curl -sS -A "$UA" -L --max-time 20 "$1" -o /tmp/page.html || echo "(fetch failed)"
+            wc -c /tmp/page.html 2>/dev/null || true
+            echo "--- title ---"
+            grep -io '<title>[^<]*</title>' /tmp/page.html | head -1
+            echo "--- license/terms/api keyword hits (with context) ---"
+            grep -ioE '.{60}(licen[cs]e|creative commons|cc[ -]by|terms of (use|service)|copyright|open ?data|gnu|gpl|api key|rest api|geojson|\.gpx|\.kml|export data|download.{0,15}(gpx|kml|csv|data)).{60}' /tmp/page.html | sort -u | head -15
+            echo
+          }
+          echo "===== 1. boudy.org ====="
+          fetch "https://www.boudy.org/"
+          fetch "https://www.boudy.org/robots.txt"
+          fetch "https://www.boudy.org/podminky.php?txt=en"
+          fetch "https://www.boudy.org/o-projektu.php?txt=en"
+
+          echo "===== 2. escursionismo.it/rifugi-bivacchi ====="
+          fetch "https://www.escursionismo.it/rifugi-bivacchi/"
+          fetch "https://www.escursionismo.it/robots.txt"
+
+          echo "===== 3. hutlists.com ====="
+          fetch "https://hutlists.com/?view=list"
+          fetch "https://hutlists.com/robots.txt"
+          fetch "https://hutlists.com/about"
+          fetch "https://hutlists.com/terms"
+
+          echo "===== 4. campcompass.eu ====="
+          fetch "https://www.campcompass.eu/"
+          fetch "https://www.campcompass.eu/robots.txt"
+
+          echo "===== 5. vindskyddskartan.se ====="
+          fetch "https://vindskyddskartan.se/en/places"
+          fetch "https://vindskyddskartan.se/robots.txt"
+          fetch "https://vindskyddskartan.se/en/about"
+          fetch "https://vindskyddskartan.se/en/api"
