@@ -211,17 +211,22 @@ export function initHutsMap(options: InitMapOptions): void {
     if (map.getLayer('clusters')) map.removeLayer('clusters');
     if (map.getSource('huts')) map.removeSource('huts');
 
+    // Pin SVGs are 32px wide natively; at ICON_SIZE they render at
+    // ICON_NATIVE_WIDTH_PX * ICON_SIZE on screen. Two pins visually touch
+    // once their centers are that many pixels apart, so CLUSTER_RADIUS_PX
+    // is set to exactly one pixel less — clusters hold until an instant
+    // before two markers would touch, then split apart, rather than
+    // needing a visible gap first.
+    const ICON_NATIVE_WIDTH_PX = 32;
+    const ICON_SIZE = 0.5;
+    const RENDERED_ICON_WIDTH_PX = ICON_NATIVE_WIDTH_PX * ICON_SIZE;
+    const CLUSTER_RADIUS_PX = RENDERED_ICON_WIDTH_PX - 1;
+
     map.addSource('huts', {
       type: 'geojson',
       data,
       cluster: true,
-      // Markers render at icon-size 0.65 on a 32px-wide pin (~21px on
-      // screen), so a cluster radius much bigger than that keeps points
-      // grouped well after they'd stop visually overlapping. 22px is close
-      // to the pin's own width — clusters now break apart into individual
-      // markers as soon as two pins wouldn't overlap, instead of waiting
-      // for a much wider gap.
-      clusterRadius: 22,
+      clusterRadius: CLUSTER_RADIUS_PX,
       clusterMaxZoom: 14,
     });
 
@@ -256,7 +261,7 @@ export function initHutsMap(options: InitMapOptions): void {
       filter: ['!', ['has', 'point_count']],
       layout: {
         'icon-image': ['case', ['==', ['get', 'category'], 'bivacco'], 'bivacco-icon', 'rifugio-icon'],
-        'icon-size': 0.65,
+        'icon-size': ICON_SIZE,
         'icon-anchor': 'bottom',
         'icon-allow-overlap': true,
       },
