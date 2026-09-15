@@ -185,7 +185,11 @@ export const cai: SiteScraper = {
       }
     }
 
-    const published = items.filter((item) => item.published && !item.deleted_at && item.geo?.coordinates);
+    let published = items.filter((item) => item.published && !item.deleted_at && item.geo?.coordinates);
+    if (process.env.CAI_DEBUG_LIMIT) {
+      const offset = Number(process.env.CAI_DEBUG_OFFSET ?? 0);
+      published = published.slice(offset, offset + Number(process.env.CAI_DEBUG_LIMIT));
+    }
     console.log(`[cai] ${published.length}/${items.length} published shelters with coordinates; fetching details (this takes a while, first run only)...`);
 
     const candidates: RawCandidate[] = [];
