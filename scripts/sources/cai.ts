@@ -11,8 +11,10 @@
 //     institution, and don't belong on a public map. Only `owner` (the
 //     institutional operator, e.g. "CAI Sezione di Varallo") is used; the
 //     CAI link in `links` covers anyone who wants the rest.
-//   - shelter photos (the `media` array) — CAI's own licensing terms for
-//     them aren't confirmed yet. Once that's settled, wire them in here.
+//   - shelter photos (the `media` array) — CAI confirmed by email they are
+//     not authorized to redistribute their shelter photos to third parties.
+//     Do not wire these in; Wikidata/Wikipedia/Commons (properly licensed)
+//     is the photo source instead.
 //
 // One list call per ~200 shelters, then one detail call per published
 // shelter to get its `fields` (the actual data lives there, not on the
