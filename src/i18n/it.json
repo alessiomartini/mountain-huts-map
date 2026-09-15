@@ -85,7 +85,15 @@
       "drinking_water": "Acqua potabile",
       "blankets": "Coperte",
       "toilet": "Servizi igienici",
-      "winter_room": "Locale invernale"
+      "winter_room": "Locale invernale",
+      "electricity": "Elettricità",
+      "restaurant": "Ristorante",
+      "shower": "Docce",
+      "wifi": "Wi-Fi",
+      "defibrillator": "Defibrillatore",
+      "wheelchair_accessible": "Accessibile ai disabili",
+      "pets_allowed": "Animali ammessi",
+      "credit_card": "Pagamento con carta"
     },
     "manager": "Gestore",
     "price": "Prezzo",

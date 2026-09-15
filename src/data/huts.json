@@ -38,7 +38,15 @@
       "drinking_water": null,
       "blankets": false,
       "toilet": null,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -66,11 +74,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-bivacco-citta-chivasso",
@@ -111,7 +119,15 @@
       "drinking_water": null,
       "blankets": false,
       "toilet": null,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -139,11 +155,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-bivacco-gervasutti",
@@ -181,7 +197,15 @@
       "drinking_water": null,
       "blankets": false,
       "toilet": null,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -209,11 +233,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-bivacco-rosazza",
@@ -248,7 +272,15 @@
       "drinking_water": null,
       "blankets": null,
       "toilet": null,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -268,13 +300,13 @@
     "links": [],
     "sources": [
       {
-        "name": "abitarelestremo",
-        "url": "https://www.abitarelestremo.it/",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "name": "diska",
+        "url": "https://www.diska.it/",
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-fannarakhytta",
@@ -319,7 +351,15 @@
       "drinking_water": true,
       "blankets": true,
       "toilet": true,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": true,
+      "restaurant": true,
+      "shower": false,
+      "wifi": false,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": false,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -347,11 +387,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-geiterygghytta",
@@ -395,7 +435,15 @@
       "drinking_water": null,
       "blankets": null,
       "toilet": null,
-      "winter_room": null
+      "winter_room": null,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": null,
@@ -417,11 +465,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": false,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-quintino-sella-felik",
@@ -466,7 +514,15 @@
       "drinking_water": true,
       "blankets": true,
       "toilet": true,
-      "winter_room": true
+      "winter_room": true,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": "Fine giugno - fine settembre",
@@ -502,11 +558,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-rifugio-duca-abruzzi",
@@ -551,7 +607,15 @@
       "drinking_water": true,
       "blankets": true,
       "toilet": true,
-      "winter_room": false
+      "winter_room": false,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": "Tutto l’anno (parziale in inverno)",
@@ -579,11 +643,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-rifugio-torino",
@@ -628,7 +692,15 @@
       "drinking_water": true,
       "blankets": true,
       "toilet": true,
-      "winter_room": true
+      "winter_room": true,
+      "electricity": true,
+      "restaurant": true,
+      "shower": true,
+      "wifi": true,
+      "defibrillator": true,
+      "wheelchair_accessible": false,
+      "pets_allowed": true,
+      "credit_card": true
     },
     "access": {
       "opening_hours": "Marzo - settembre",
@@ -664,11 +736,11 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   },
   {
     "id": "seed-rifugio-vittorio-sella",
@@ -713,7 +785,15 @@
       "drinking_water": true,
       "blankets": true,
       "toilet": true,
-      "winter_room": true
+      "winter_room": true,
+      "electricity": null,
+      "restaurant": null,
+      "shower": null,
+      "wifi": null,
+      "defibrillator": null,
+      "wheelchair_accessible": null,
+      "pets_allowed": null,
+      "credit_card": null
     },
     "access": {
       "opening_hours": "Giugno - settembre",
@@ -741,10 +821,10 @@
       {
         "name": "seed-data",
         "url": "https://github.com/alessiomartini/mountain-huts-map",
-        "fetched_at": "2026-09-14T20:57:01.370Z"
+        "fetched_at": "2026-09-15T11:09:50.557Z"
       }
     ],
     "verified": true,
-    "updated_at": "2026-09-14T20:57:01.370Z"
+    "updated_at": "2026-09-15T11:09:50.557Z"
   }
 ]

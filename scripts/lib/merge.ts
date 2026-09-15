@@ -110,7 +110,22 @@ export function mergeCluster(candidates: RawCandidate[]): MergeResult {
     Object.assign(namesByLang, c.namesByLang);
   }
 
-  const facilityKeys: Array<keyof Facilities> = ['fireplace', 'stove', 'drinking_water', 'blankets', 'toilet', 'winter_room'];
+  const facilityKeys: Array<keyof Facilities> = [
+    'fireplace',
+    'stove',
+    'drinking_water',
+    'blankets',
+    'toilet',
+    'winter_room',
+    'electricity',
+    'restaurant',
+    'shower',
+    'wifi',
+    'defibrillator',
+    'wheelchair_accessible',
+    'pets_allowed',
+    'credit_card',
+  ];
   const facilities = Object.fromEntries(
     facilityKeys.map((key) => [key, pick(sorted, (c) => c.facilities?.[key])]),
   ) as Facilities;

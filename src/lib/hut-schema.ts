@@ -50,6 +50,14 @@ const FacilitiesSchema = z.object({
   blankets: z.boolean().nullable(),
   toilet: z.boolean().nullable(),
   winter_room: z.boolean().nullable(),
+  electricity: z.boolean().nullable(),
+  restaurant: z.boolean().nullable(),
+  shower: z.boolean().nullable(),
+  wifi: z.boolean().nullable(),
+  defibrillator: z.boolean().nullable(),
+  wheelchair_accessible: z.boolean().nullable(),
+  pets_allowed: z.boolean().nullable(),
+  credit_card: z.boolean().nullable(),
 });
 
 const AccessSchema = z.object({

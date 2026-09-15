@@ -85,7 +85,15 @@
       "drinking_water": "Drinking water",
       "blankets": "Blankets",
       "toilet": "Toilet",
-      "winter_room": "Winter room"
+      "winter_room": "Winter room",
+      "electricity": "Electricity",
+      "restaurant": "Restaurant",
+      "shower": "Showers",
+      "wifi": "Wi-Fi",
+      "defibrillator": "Defibrillator",
+      "wheelchair_accessible": "Wheelchair accessible",
+      "pets_allowed": "Pets allowed",
+      "credit_card": "Card payment"
     },
     "manager": "Manager",
     "price": "Price",

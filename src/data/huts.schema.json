@@ -332,6 +332,54 @@
             "boolean",
             "null"
           ]
+        },
+        "electricity": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "restaurant": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "shower": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "wifi": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "defibrillator": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "wheelchair_accessible": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "pets_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "credit_card": {
+          "type": [
+            "boolean",
+            "null"
+          ]
         }
       },
       "required": [
@@ -340,7 +388,15 @@
         "drinking_water",
         "blankets",
         "toilet",
-        "winter_room"
+        "winter_room",
+        "electricity",
+        "restaurant",
+        "shower",
+        "wifi",
+        "defibrillator",
+        "wheelchair_accessible",
+        "pets_allowed",
+        "credit_card"
       ],
       "additionalProperties": false
     },

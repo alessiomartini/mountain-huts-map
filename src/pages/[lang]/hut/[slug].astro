@@ -35,6 +35,14 @@ const FACILITY_ICONS: Record<keyof Facilities, string> = {
   blankets: '🛏️',
   toilet: '🚻',
   winter_room: '❄️',
+  electricity: '🔌',
+  restaurant: '🍽️',
+  shower: '🚿',
+  wifi: '📶',
+  defibrillator: '⛑️',
+  wheelchair_accessible: '♿',
+  pets_allowed: '🐾',
+  credit_card: '💳',
 };
 const facilityEntries = (Object.keys(FACILITY_ICONS) as Array<keyof Facilities>)
   .map((key) => ({ key, value: hut.facilities[key] }))
