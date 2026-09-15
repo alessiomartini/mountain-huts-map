@@ -29,6 +29,19 @@ jobs:
 
       - run: npm ci
 
+      # scripts/.cache/ (gitignored) holds every source's 30-day disk cache —
+      # without this it's empty on every fresh runner, so even unchanged data
+      # gets re-fetched from scratch on every run. restore-keys falls back to
+      # the most recent cache available so it's still useful the first time
+      # a new key is used, and each run saves a fresh one for the next.
+      - name: Restore data pipeline cache
+        uses: actions/cache@v4
+        with:
+          path: scripts/.cache
+          key: data-pipeline-cache-${{ github.run_id }}
+          restore-keys: |
+            data-pipeline-cache-
+
       - name: Unzip boundary archives
         run: |
           for z in scripts/.cache/boundaries/*.zip; do
