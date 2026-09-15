@@ -185,8 +185,7 @@ export const cai: SiteScraper = {
       }
     }
 
-    let published = items.filter((item) => item.published && !item.deleted_at && item.geo?.coordinates);
-    if (process.env.CAI_DEBUG_LIMIT) published = published.slice(0, Number(process.env.CAI_DEBUG_LIMIT));
+    const published = items.filter((item) => item.published && !item.deleted_at && item.geo?.coordinates);
     console.log(`[cai] ${published.length}/${items.length} published shelters with coordinates; fetching details (this takes a while, first run only)...`);
 
     const candidates: RawCandidate[] = [];
