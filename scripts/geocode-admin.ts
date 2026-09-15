@@ -27,6 +27,14 @@ export interface GeoContext {
   municipality: string | null;
   mountain_group: string | null;
   nearest_peak: NearestPeak | null;
+  /**
+   * True when at least one admin level came back null even though boundary
+   * data for that level and country exists — and a point a few hundred
+   * meters to a few kilometers away *does* resolve it. That pattern means
+   * the hut sits right on (or in a polygon gap right next to) an
+   * administrative border, not that the location lookup is broken.
+   */
+  nearAdminBorder: boolean;
 }
 
 interface BoundarySource {
@@ -104,6 +112,50 @@ function locateAdmin(lat: number, lon: number, countryCode: string | null): Pick
     }
   }
   return result;
+}
+
+/** Destination point at `distanceM` meters from (lat, lon) along `bearingDeg`. */
+function offsetPoint(lat: number, lon: number, distanceM: number, bearingDeg: number): { lat: number; lon: number } {
+  const R = 6_371_000;
+  const bearing = (bearingDeg * Math.PI) / 180;
+  const lat1 = (lat * Math.PI) / 180;
+  const lon1 = (lon * Math.PI) / 180;
+  const angularDistance = distanceM / R;
+  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(angularDistance) + Math.cos(lat1) * Math.sin(angularDistance) * Math.cos(bearing));
+  const lon2 = lon1 + Math.atan2(Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(lat1), Math.cos(angularDistance) - Math.sin(lat1) * Math.sin(lat2));
+  return { lat: (lat2 * 180) / Math.PI, lon: (lon2 * 180) / Math.PI };
+}
+
+const BORDER_CHECK_RADII_M = [300, 1000, 3000];
+const BORDER_CHECK_BEARING_STEP_DEG = 45;
+
+/**
+ * Only meaningful for a level that's actually missing AND has boundary data
+ * loaded for this country (otherwise a missing file, not a border, explains
+ * the null — see the `warnedMissing` warning above). Samples a small ring of
+ * points around the original coordinate; if any of them resolves a level
+ * this point missed, the point is treated as sitting right on that border.
+ */
+function isNearAdminBorder(
+  lat: number,
+  lon: number,
+  countryCode: string | null,
+  admin: Pick<GeoContext, 'region' | 'province' | 'municipality'>,
+): boolean {
+  if (!countryCode) return false;
+  const boundaries = loadBoundaries();
+  const availableLevels = new Set(boundaries.filter((b) => b.countryCode === countryCode).map((b) => b.level));
+  const missingLevels = (['region', 'province', 'municipality'] as const).filter((lvl) => admin[lvl] === null && availableLevels.has(lvl));
+  if (missingLevels.length === 0) return false;
+
+  for (const radius of BORDER_CHECK_RADII_M) {
+    for (let bearing = 0; bearing < 360; bearing += BORDER_CHECK_BEARING_STEP_DEG) {
+      const p = offsetPoint(lat, lon, radius, bearing);
+      const nearbyAdmin = locateAdmin(p.lat, p.lon, countryCode);
+      if (missingLevels.some((lvl) => nearbyAdmin[lvl] !== null)) return true;
+    }
+  }
+  return false;
 }
 
 // Rough bounding boxes purely as a last-resort country guess when no
@@ -273,8 +325,9 @@ export interface GeoContextOptions {
 export async function resolveGeoContext(lat: number, lon: number, options: GeoContextOptions = {}): Promise<GeoContext> {
   const country = options.countryHint ?? guessCountry(lat, lon);
   const admin = locateAdmin(lat, lon, country);
+  const nearAdminBorder = isNearAdminBorder(lat, lon, country, admin);
   const mountain_group = options.mountainGroupHint ?? (await findContainingMountainRange(lat, lon));
   const nearest_peak = await findNearestNamedPeak(lat, lon);
 
-  return { country, ...admin, mountain_group, nearest_peak };
+  return { country, ...admin, mountain_group, nearest_peak, nearAdminBorder };
 }

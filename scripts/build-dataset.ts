@@ -143,6 +143,14 @@ async function main() {
       console.log(`[build-dataset] Applied override for ${id}`);
     }
 
+    if (geo.nearAdminBorder) {
+      needsReview.push({
+        id,
+        name: merged.name,
+        reason: 'Coordinates sit right on (or in a boundary-data gap next to) an administrative border — region/province/municipality may be incomplete.',
+      });
+    }
+
     for (const reason of merged.reviewReasons) needsReview.push({ id, name: merged.name, reason });
     if (merged.isScraperOnly) unverifiedRows.push({ id, name: merged.name, sources: merged.sources.map((s) => s.name).join(';') });
 
