@@ -23,7 +23,7 @@ const LIBERTY_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 // one cluster. Lower = markers stay separate even when close together /
 // overlapping; higher = they merge sooner. Tune this single number to
 // change when clustering kicks in — it's independent of marker icon size.
-const CLUSTER_RADIUS_PX = 8;
+const CLUSTER_RADIUS_PX = 9;
 
 // OpenTopoMap's public tile server is meant for moderate load (its published
 // policy asks for roughly 2 req/s per site) with mandatory attribution.
