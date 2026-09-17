@@ -1,0 +1,50 @@
+name: debug-fetch (throwaway)
+on:
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: refuges.info API doc (raw HTML, keyword grep)
+        run: |
+          curl -sS "https://www.refuges.info/api/doc/" -o doc.html
+          wc -c doc.html
+          echo "--- lines mentioning api/ endpoints ---"
+          grep -oE '/api/[a-zA-Z_/]+' doc.html | sort -u
+          echo "--- lines mentioning format, param, type=, nature= ---"
+          grep -ioE '.{30}(format=|type=|nature=|lat|lng|bbox|massif).{30}' doc.html | sort -u | head -40
+
+      - name: refuges.info live API call - bbox around Chamonix/Mont Blanc
+        run: |
+          curl -sS "https://www.refuges.info/api/bbox?format=json&nw_lat=46.0&nw_lng=6.7&se_lat=45.7&se_lng=7.2" -o bbox.json
+          wc -c bbox.json
+          echo "--- pretty (first 150 lines) ---"
+          jq . bbox.json 2>/dev/null | head -150 || head -c 3000 bbox.json
+          echo
+          echo "--- first id found ---"
+          jq -r '.. | .id? // empty' bbox.json 2>/dev/null | head -1 > first_id.txt || true
+          cat first_id.txt
+
+      - name: refuges.info single point detail
+        run: |
+          FIRST_ID=$(cat first_id.txt 2>/dev/null || true)
+          echo "Using id: $FIRST_ID"
+          if [ -n "$FIRST_ID" ]; then
+            curl -sS "https://www.refuges.info/api/point/$FIRST_ID?format=json" -o point.json
+            jq . point.json 2>/dev/null | head -150 || head -c 3000 point.json
+          fi
+
+      - name: UK/Scotland bothies - MBA site + community scraper
+        run: |
+          echo "--- mountainbothies.org.uk location-map page ---"
+          curl -sS -A "mountain-huts-map-bot/1.0" "https://www.mountainbothies.org.uk/bothies/location-map/" -o mba.html
+          wc -c mba.html
+          grep -ioE '.{40}(geojson|shapefile|\.json|/api/|download).{40}' mba.html | sort -u | head -20
+          echo
+          echo "--- samthomson/mbascraper README ---"
+          curl -sS "https://raw.githubusercontent.com/samthomson/mbascraper/master/README.md" -o mba_readme.md
+          cat mba_readme.md
+          echo
+          echo "--- mbascraper repo file listing ---"
+          curl -sS "https://api.github.com/repos/samthomson/mbascraper/contents/" -o repo_listing.json
+          jq -r '.[] | "\(.name) (\(.type))"' repo_listing.json
