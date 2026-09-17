@@ -34,6 +34,25 @@
       "standard": "Standard",
       "topo": "Topografico"
     },
+    "legend": {
+      "toggle": "Legenda",
+      "title": "Legenda",
+      "pinRifugio": "Rifugio",
+      "pinBivacco": "Bivacco",
+      "standard": {
+        "greenDark": "Verde intenso: bosco/vegetazione fitta",
+        "greenLight": "Verde chiaro: prati, parchi",
+        "white": "Bianco/grigio chiaro: aree urbanizzate",
+        "water": "Azzurro: acqua"
+      },
+      "topo": {
+        "green": "Verde: bosco e vegetazione",
+        "contours": "Linee marroni sottili: curve di livello (quota)",
+        "white": "Bianco: roccia nuda/neve in quota",
+        "water": "Azzurro: laghi e fiumi",
+        "borders": "Linee tratteggiate (anche in mare): confini amministrativi tra stati"
+      }
+    },
     "filters": {
       "title": "Filtri",
       "type": "Tipo",

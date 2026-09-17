@@ -19,6 +19,12 @@ import type { HutFeatureCollection, HutFeatureProperties } from '../lib/geojson.
 
 const LIBERTY_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 
+// Screen-pixel radius MapLibre uses to decide whether two points merge into
+// one cluster. Lower = markers stay separate even when close together /
+// overlapping; higher = they merge sooner. Tune this single number to
+// change when clustering kicks in — it's independent of marker icon size.
+const CLUSTER_RADIUS_PX = 8;
+
 // OpenTopoMap's public tile server is meant for moderate load (its published
 // policy asks for roughly 2 req/s per site) with mandatory attribution.
 // That's fine for this map, but self-host or use a paid provider before
@@ -58,7 +64,9 @@ function readStateFromUrl(defaults: { altMin: number; altMax: number }): FilterS
   const params = new URLSearchParams(location.search);
   const typeParam = params.get('type');
   return {
-    types: new Set(typeParam ? typeParam.split(',') : ['bivacco', 'rifugio']),
+    // Default to bivacchi only on first visit (no `type` in the URL yet);
+    // rifugi is an opt-in the visitor turns on themselves.
+    types: new Set(typeParam ? typeParam.split(',') : ['bivacco']),
     altMin: params.has('alt_min') ? Number(params.get('alt_min')) : defaults.altMin,
     altMax: params.has('alt_max') ? Number(params.get('alt_max')) : defaults.altMax,
     freeOnly: params.get('free') === '1',
@@ -211,16 +219,7 @@ export function initHutsMap(options: InitMapOptions): void {
     if (map.getLayer('clusters')) map.removeLayer('clusters');
     if (map.getSource('huts')) map.removeSource('huts');
 
-    // Pin SVGs are 32px wide natively; at ICON_SIZE they render at
-    // ICON_NATIVE_WIDTH_PX * ICON_SIZE on screen. Two pins visually touch
-    // once their centers are that many pixels apart, so CLUSTER_RADIUS_PX
-    // is set to exactly one pixel less — clusters hold until an instant
-    // before two markers would touch, then split apart, rather than
-    // needing a visible gap first.
-    const ICON_NATIVE_WIDTH_PX = 32;
     const ICON_SIZE = 0.5;
-    const RENDERED_ICON_WIDTH_PX = ICON_NATIVE_WIDTH_PX * ICON_SIZE;
-    const CLUSTER_RADIUS_PX = RENDERED_ICON_WIDTH_PX - 1;
 
     map.addSource('huts', {
       type: 'geojson',
@@ -389,12 +388,28 @@ export function initHutsMap(options: InitMapOptions): void {
     }, 200);
   });
 
+  // --- Legend ---
+  document.getElementById('map-legend-toggle')?.addEventListener('click', () => {
+    const legend = document.getElementById('map-legend');
+    const toggle = document.getElementById('map-legend-toggle');
+    if (!legend || !toggle) return;
+    legend.hidden = !legend.hidden;
+    toggle.setAttribute('aria-expanded', String(!legend.hidden));
+  });
+
+  function showLegendFor(styleName: string): void {
+    document.querySelectorAll<HTMLElement>('[data-legend-for]').forEach((el) => {
+      el.hidden = el.dataset.legendFor !== styleName;
+    });
+  }
+
   // --- Style switcher ---
   document.querySelectorAll<HTMLButtonElement>('[data-map-style]').forEach((btn) => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('[data-map-style]').forEach((b) => b.classList.remove('is-active'));
       btn.classList.add('is-active');
-      const styleName = btn.dataset.mapStyle;
+      const styleName = btn.dataset.mapStyle ?? 'standard';
+      showLegendFor(styleName);
       map.once('styledata', loadIconsAndAddLayers);
       map.setStyle(styleName === 'topo' ? topoStyle() : LIBERTY_STYLE_URL);
     });
@@ -463,7 +478,7 @@ export function initHutsMap(options: InitMapOptions): void {
   });
 
   document.getElementById('filter-reset')?.addEventListener('click', () => {
-    currentState = { types: new Set(['bivacco', 'rifugio']), altMin: defaultAltMin, altMax: defaultAltMax, freeOnly: false, facilities: new Set(), country: '', region: '', search: '' };
+    currentState = { types: new Set(['bivacco']), altMin: defaultAltMin, altMax: defaultAltMax, freeOnly: false, facilities: new Set(), country: '', region: '', search: '' };
     applyStateToForm(currentState);
     writeStateToUrl(currentState);
     const filtered = filterCollection(allFeatures, currentState);

@@ -7,8 +7,8 @@
   --color-text-muted: #5c5c56;
   --color-primary: #2f5d3a;
   --color-primary-contrast: #ffffff;
-  --color-bivacco: #b3541e;
-  --color-rifugio: #2f5d3a;
+  --color-bivacco: #d6293e;
+  --color-rifugio: #1565c0;
   --color-focus: #1663c7;
   --color-danger: #8a2f2f;
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.15);
@@ -27,8 +27,8 @@
     --color-text-muted: #a8acaf;
     --color-primary: #6fbf83;
     --color-primary-contrast: #0d1a10;
-    --color-bivacco: #e2915a;
-    --color-rifugio: #6fbf83;
+    --color-bivacco: #e8646b;
+    --color-rifugio: #5b9bf0;
     --color-focus: #6fa8f5;
     --color-danger: #e08585;
     --shadow-card: 0 2px 14px rgba(0, 0, 0, 0.5);

@@ -28,6 +28,30 @@ const featureCollection = hutsToFeatureCollection(typedHuts, lang);
       <button type="button" data-map-style="topo">{t('map.layers.topo')}</button>
     </div>
 
+    <button type="button" id="map-legend-toggle" class="map-legend-toggle" aria-expanded="false" aria-controls="map-legend">
+      ℹ️ {t('map.legend.toggle')}
+    </button>
+    <div id="map-legend" class="map-legend" hidden>
+      <h3>{t('map.legend.title')}</h3>
+      <ul class="map-legend__pins">
+        <li><span class="map-legend__swatch map-legend__swatch--rifugio" aria-hidden="true"></span>{t('map.legend.pinRifugio')}</li>
+        <li><span class="map-legend__swatch map-legend__swatch--bivacco" aria-hidden="true"></span>{t('map.legend.pinBivacco')}</li>
+      </ul>
+      <ul data-legend-for="standard">
+        <li><span class="map-legend__color" style="background:#a8d5a2" aria-hidden="true"></span>{t('map.legend.standard.greenDark')}</li>
+        <li><span class="map-legend__color" style="background:#d7ecd2" aria-hidden="true"></span>{t('map.legend.standard.greenLight')}</li>
+        <li><span class="map-legend__color" style="background:#f2f2ee;border:1px solid #ccc" aria-hidden="true"></span>{t('map.legend.standard.white')}</li>
+        <li><span class="map-legend__color" style="background:#a9cbe8" aria-hidden="true"></span>{t('map.legend.standard.water')}</li>
+      </ul>
+      <ul data-legend-for="topo" hidden>
+        <li><span class="map-legend__color" style="background:#8dc98d" aria-hidden="true"></span>{t('map.legend.topo.green')}</li>
+        <li><span class="map-legend__color" style="background:#a3712a" aria-hidden="true"></span>{t('map.legend.topo.contours')}</li>
+        <li><span class="map-legend__color" style="background:#f5f5f0;border:1px solid #ccc" aria-hidden="true"></span>{t('map.legend.topo.white')}</li>
+        <li><span class="map-legend__color" style="background:#8ec7e0" aria-hidden="true"></span>{t('map.legend.topo.water')}</li>
+        <li><span class="map-legend__dashed" aria-hidden="true"></span>{t('map.legend.topo.borders')}</li>
+      </ul>
+    </div>
+
     <div id="hut-bottom-sheet" class="hut-bottom-sheet" hidden>
       <button type="button" id="hut-bottom-sheet-close" class="hut-bottom-sheet__close" aria-label={t('common.close')}>✕</button>
       <div id="hut-bottom-sheet-content"></div>
@@ -118,6 +142,82 @@ const featureCollection = hutsToFeatureCollection(typedHuts, lang);
     min-width: 44px;
     min-height: 44px;
   }
+  .map-legend-toggle {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1rem;
+    z-index: 20;
+    padding: 0.5rem 0.9rem;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .map-legend {
+    position: absolute;
+    bottom: 4rem;
+    right: 1rem;
+    z-index: 20;
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 0.85rem 1rem;
+    max-width: 260px;
+    font-size: 0.82rem;
+  }
+  .map-legend h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  .map-legend ul {
+    list-style: none;
+    margin: 0 0 0.6rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .map-legend ul:last-child {
+    margin-bottom: 0;
+  }
+  .map-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+  }
+  .map-legend__pins li {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+  .map-legend__swatch {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .map-legend__swatch--rifugio {
+    background: var(--color-rifugio);
+  }
+  .map-legend__swatch--bivacco {
+    background: var(--color-bivacco);
+  }
+  .map-legend__color {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .map-legend__dashed {
+    width: 0.85rem;
+    height: 0;
+    border-top: 2px dashed #c0392b;
+    flex-shrink: 0;
+  }
+
   .user-location-marker {
     width: 16px;
     height: 16px;

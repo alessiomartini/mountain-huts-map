@@ -16,9 +16,13 @@ function toDataUri(svg: string): string {
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
 
-// Brighter/more saturated than a first pass at #2f5d3a / #b3541e — those
-// read as muted, dark tones that wash out against green forest or brown
-// terrain on the topo map style. Same hues (green = rifugio, orange =
-// bivacco), just enough saturation/brightness to stay visible on both map styles.
-export const RIFUGIO_ICON_URI = toDataUri(pinSvg(RIFUGIO_ICON, '#1FA34D'));
-export const BIVACCO_ICON_URI = toDataUri(pinSvg(BIVACCO_ICON, '#F26522'));
+// Green/orange (and before that, a darker green/rust) both sit inside
+// OpenTopoMap's own color range — its forest green and open-terrain tan are
+// close enough to those hues that pins nearly vanish into the basemap.
+// Blue/red aren't used as area fills on either map style (Liberty or
+// OpenTopoMap), so they stay legible against forest, bare terrain, snow, or
+// water alike. Keep in sync with --color-rifugio/--color-bivacco in
+// global.css, which color the same categories elsewhere on the site (hut
+// badges, filter chips).
+export const RIFUGIO_ICON_URI = toDataUri(pinSvg(RIFUGIO_ICON, '#1565C0'));
+export const BIVACCO_ICON_URI = toDataUri(pinSvg(BIVACCO_ICON, '#D6293E'));

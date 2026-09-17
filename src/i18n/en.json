@@ -34,6 +34,25 @@
       "standard": "Standard",
       "topo": "Topographic"
     },
+    "legend": {
+      "toggle": "Legend",
+      "title": "Legend",
+      "pinRifugio": "Hut",
+      "pinBivacco": "Bivouac",
+      "standard": {
+        "greenDark": "Dark green: forest/dense vegetation",
+        "greenLight": "Light green: grassland, parks",
+        "white": "White/light gray: built-up areas",
+        "water": "Blue: water"
+      },
+      "topo": {
+        "green": "Green: forest and vegetation",
+        "contours": "Thin brown lines: elevation contours",
+        "white": "White: bare rock/snow at altitude",
+        "water": "Blue: lakes and rivers",
+        "borders": "Dashed lines (including at sea): administrative borders between countries"
+      }
+    },
     "filters": {
       "title": "Filters",
       "type": "Type",
