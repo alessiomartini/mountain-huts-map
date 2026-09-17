@@ -5,36 +5,33 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: refuges.info API doc - bbox and point sections
+      - name: refuges.info exact documented example, with status codes
         run: |
-          curl -sS "https://www.refuges.info/api/doc/" -o doc.html
-          sed -E 's/<[^>]+>/ /g' doc.html | sed -E 's/[ \t]+/ /g' | sed '/^ *$/d' > doc.txt
-          echo "--- bbox section ---"
-          grep -n -i 'bbox' doc.txt | head -30
-          echo "--- point example (id 583) ---"
-          grep -n 'point?id=583' doc.txt
-          echo "--- context around first bbox match ---"
-          LINE=$(grep -n -i 'api/bbox' doc.txt | head -1 | cut -d: -f1)
-          sed -n "${LINE},$((LINE+30))p" doc.txt
+          echo "=== point id=583 format=xml (exact doc example) ==="
+          curl -sS -i "https://www.refuges.info/api/point?id=583&format=xml&format_texte=html" -o point_xml.txt
+          head -30 point_xml.txt
+          echo "size:"; wc -c point_xml.txt
 
-      - name: refuges.info point detail via documented example id=583
-        run: |
-          curl -sS "https://www.refuges.info/api/point?id=583&format=json" -o point583.json
-          wc -c point583.json
-          jq . point583.json 2>/dev/null || head -c 3000 point583.json
+          echo
+          echo "=== massif=351 exact doc example (no format specified) ==="
+          curl -sS -i "https://www.refuges.info/api/massif?massif=351&type_points=all&nb_points=22" -o massif_default.txt
+          head -30 massif_default.txt
+          wc -c massif_default.txt
 
-      - name: refuges.info bbox retry with several param name guesses
-        run: |
-          for PARAMS in "format=json&west=6.7&south=45.7&east=7.2&north=46.0" "format=json&lon_min=6.7&lat_min=45.7&lon_max=7.2&lat_max=46.0" "format=json&bbox=6.7,45.7,7.2,46.0" "format=json&nw_lng=6.7&nw_lat=46.0&se_lng=7.2&se_lat=45.7"; do
-            echo "=== trying: $PARAMS ==="
-            curl -sS "https://www.refuges.info/api/bbox?$PARAMS" -o bbox_try.json
-            wc -c bbox_try.json
-            head -c 500 bbox_try.json
-            echo
-          done
+          echo
+          echo "=== bbox world, no format ==="
+          curl -sS -i "https://www.refuges.info/api/bbox?bbox=world" -o bbox_world.txt
+          head -30 bbox_world.txt
+          wc -c bbox_world.txt
 
-      - name: refuges.info massif example (id 351, from doc)
-        run: |
-          curl -sS "https://www.refuges.info/api/massif?massif=351&type_points=all&format=json" -o massif351.json
-          wc -c massif351.json
-          jq . massif351.json 2>/dev/null | head -100 || head -c 2000 massif351.json
+          echo
+          echo "=== bbox literal doc example value, xml ==="
+          curl -sS -i "https://www.refuges.info/api/bbox?bbox=-13.00,44.05,17.00,49.79&format=xml" -o bbox_fr.txt
+          head -40 bbox_fr.txt
+          wc -c bbox_fr.txt
+
+          echo
+          echo "=== retry with a browser-like User-Agent, point id=583 json ==="
+          curl -sS -i -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" "https://www.refuges.info/api/point?id=583&format=json" -o point_ua.txt
+          head -30 point_ua.txt
+          wc -c point_ua.txt
