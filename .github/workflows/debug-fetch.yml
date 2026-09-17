@@ -5,46 +5,36 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - name: refuges.info API doc (raw HTML, keyword grep)
+      - name: refuges.info API doc - bbox and point sections
         run: |
           curl -sS "https://www.refuges.info/api/doc/" -o doc.html
-          wc -c doc.html
-          echo "--- lines mentioning api/ endpoints ---"
-          grep -oE '/api/[a-zA-Z_/]+' doc.html | sort -u
-          echo "--- lines mentioning format, param, type=, nature= ---"
-          grep -ioE '.{30}(format=|type=|nature=|lat|lng|bbox|massif).{30}' doc.html | sort -u | head -40
+          sed -E 's/<[^>]+>/ /g' doc.html | sed -E 's/[ \t]+/ /g' | sed '/^ *$/d' > doc.txt
+          echo "--- bbox section ---"
+          grep -n -i 'bbox' doc.txt | head -30
+          echo "--- point example (id 583) ---"
+          grep -n 'point?id=583' doc.txt
+          echo "--- context around first bbox match ---"
+          LINE=$(grep -n -i 'api/bbox' doc.txt | head -1 | cut -d: -f1)
+          sed -n "${LINE},$((LINE+30))p" doc.txt
 
-      - name: refuges.info live API call - bbox around Chamonix/Mont Blanc
+      - name: refuges.info point detail via documented example id=583
         run: |
-          curl -sS "https://www.refuges.info/api/bbox?format=json&nw_lat=46.0&nw_lng=6.7&se_lat=45.7&se_lng=7.2" -o bbox.json
-          wc -c bbox.json
-          echo "--- pretty (first 150 lines) ---"
-          jq . bbox.json 2>/dev/null | head -150 || head -c 3000 bbox.json
-          echo
-          echo "--- first id found ---"
-          jq -r '.. | .id? // empty' bbox.json 2>/dev/null | head -1 > first_id.txt || true
-          cat first_id.txt
+          curl -sS "https://www.refuges.info/api/point?id=583&format=json" -o point583.json
+          wc -c point583.json
+          jq . point583.json 2>/dev/null || head -c 3000 point583.json
 
-      - name: refuges.info single point detail
+      - name: refuges.info bbox retry with several param name guesses
         run: |
-          FIRST_ID=$(cat first_id.txt 2>/dev/null || true)
-          echo "Using id: $FIRST_ID"
-          if [ -n "$FIRST_ID" ]; then
-            curl -sS "https://www.refuges.info/api/point/$FIRST_ID?format=json" -o point.json
-            jq . point.json 2>/dev/null | head -150 || head -c 3000 point.json
-          fi
+          for PARAMS in "format=json&west=6.7&south=45.7&east=7.2&north=46.0" "format=json&lon_min=6.7&lat_min=45.7&lon_max=7.2&lat_max=46.0" "format=json&bbox=6.7,45.7,7.2,46.0" "format=json&nw_lng=6.7&nw_lat=46.0&se_lng=7.2&se_lat=45.7"; do
+            echo "=== trying: $PARAMS ==="
+            curl -sS "https://www.refuges.info/api/bbox?$PARAMS" -o bbox_try.json
+            wc -c bbox_try.json
+            head -c 500 bbox_try.json
+            echo
+          done
 
-      - name: UK/Scotland bothies - MBA site + community scraper
+      - name: refuges.info massif example (id 351, from doc)
         run: |
-          echo "--- mountainbothies.org.uk location-map page ---"
-          curl -sS -A "mountain-huts-map-bot/1.0" "https://www.mountainbothies.org.uk/bothies/location-map/" -o mba.html
-          wc -c mba.html
-          grep -ioE '.{40}(geojson|shapefile|\.json|/api/|download).{40}' mba.html | sort -u | head -20
-          echo
-          echo "--- samthomson/mbascraper README ---"
-          curl -sS "https://raw.githubusercontent.com/samthomson/mbascraper/master/README.md" -o mba_readme.md
-          cat mba_readme.md
-          echo
-          echo "--- mbascraper repo file listing ---"
-          curl -sS "https://api.github.com/repos/samthomson/mbascraper/contents/" -o repo_listing.json
-          jq -r '.[] | "\(.name) (\(.type))"' repo_listing.json
+          curl -sS "https://www.refuges.info/api/massif?massif=351&type_points=all&format=json" -o massif351.json
+          wc -c massif351.json
+          jq . massif351.json 2>/dev/null | head -100 || head -c 2000 massif351.json
