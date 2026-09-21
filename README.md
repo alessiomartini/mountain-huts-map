@@ -4,8 +4,12 @@ A map of alpine huts and bivouacs (`bivacco` / `rifugio`), starting from the
 Italian Alps and the Bergen (Norway) area, built so new regions are a
 one-line config change rather than a refactor.
 
-Status: scaffolding only (Phase 1 of the build). Data pipeline, map UI,
-i18n, and the visits backend land in later phases.
+Status: test phase, deployed at `mountain-huts-map.workers.dev`. The data
+pipeline, map UI (MapLibre, filters, hut detail pages), and i18n (it/en) are
+built and live with a small sample of huts chosen to cover different cases
+(bivacco/rifugio, staffed/unstaffed, with/without photos); full European-scale
+data is still being produced. The "chi c'è stato" (visits) feature and its
+Cloudflare D1 backend are not built yet — see `FUTURE-ARCHITECTURE.md`.
 
 ## Stack
 
