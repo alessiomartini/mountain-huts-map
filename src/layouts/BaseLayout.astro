@@ -35,6 +35,13 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     {ogImage && <meta property="og:image" content={ogImage} />}
+    <script is:inline>
+      // Apply the stored light/dark choice before first paint (no flash).
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
   </head>
   <body>
     <a href="#main" class="skip-link">{lang === 'it' ? 'Vai al contenuto' : 'Skip to content'}</a>
@@ -47,6 +54,14 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
           <a href={`/${lang}/list`}>{t('nav.list')}</a>
           <a href={`/${lang}/about`}>{t('nav.about')}</a>
         </nav>
+        <button
+          type="button"
+          class="theme-btn"
+          data-to-light={t('theme.toLight')}
+          data-to-dark={t('theme.toDark')}
+          aria-label={t('theme.toDark')}>
+          ☾
+        </button>
         <LangSwitcher lang={lang} />
       </header>
 
@@ -61,6 +76,32 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
         <SafetyDisclaimer lang={lang} />
       </footer>
     </div>
+    <script is:inline>
+      // Light/dark toggle: default follows the system, the button stores a choice.
+      (() => {
+        const root = document.documentElement;
+        const btns = document.querySelectorAll('.theme-btn');
+        const media = matchMedia('(prefers-color-scheme: dark)');
+        const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : media.matches);
+        const label = () =>
+          btns.forEach((b) => {
+            b.textContent = isDark() ? '☀' : '☾';
+            b.title = isDark() ? b.dataset.toLight : b.dataset.toDark;
+            b.setAttribute('aria-label', b.title);
+          });
+        label();
+        media.addEventListener('change', label);
+        btns.forEach((b) =>
+          b.addEventListener('click', () => {
+            root.dataset.theme = isDark() ? 'light' : 'dark';
+            try {
+              localStorage.setItem('theme', root.dataset.theme);
+            } catch {}
+            label();
+          }),
+        );
+      })();
+    </script>
   </body>
 </html>
 
@@ -104,6 +145,21 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
   .site-header__nav a:hover,
   .site-header__nav a:focus-visible {
     color: var(--color-text);
+  }
+
+  .theme-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0.3rem 0.55rem;
+  }
+  .theme-btn:hover {
+    border-color: var(--color-text-muted);
   }
 
   .site-main {

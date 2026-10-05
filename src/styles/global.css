@@ -15,10 +15,13 @@
   --radius: 8px;
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --header-height: 56px;
+  color-scheme: light;
 }
 
+/* Dark tokens apply when the system is dark (unless the header button chose
+   light) or when the button chose dark: data-theme on <html>, see BaseLayout. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --color-bg: #16181a;
     --color-bg-subtle: #1e2124;
     --color-surface: #202327;
@@ -32,7 +35,24 @@
     --color-focus: #6fa8f5;
     --color-danger: #e08585;
     --shadow-card: 0 2px 14px rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
   }
+}
+:root[data-theme='dark'] {
+  --color-bg: #16181a;
+  --color-bg-subtle: #1e2124;
+  --color-surface: #202327;
+  --color-border: #33383d;
+  --color-text: #f0f0ee;
+  --color-text-muted: #a8acaf;
+  --color-primary: #6fbf83;
+  --color-primary-contrast: #0d1a10;
+  --color-bivacco: #e8646b;
+  --color-rifugio: #5b9bf0;
+  --color-focus: #6fa8f5;
+  --color-danger: #e08585;
+  --shadow-card: 0 2px 14px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
 }
 
 * {
