@@ -8,7 +8,6 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 ## Da fare
 - [x] Pipeline dei dati, mappa MapLibre con filtri, pagine dei rifugi, it/en
 - [ ] Dataset completo (oggi c'è un campione di test)
-- [ ] Dominio di produzione
 - [ ] Funzione "chi c'è stato"
 - [ ] Widget per note/feedback
 - [ ] Dati della pagina di attribuzione
@@ -76,6 +75,13 @@ of 2026-09-21, not the (currently stale-sounding) "scaffolding only" line
 that used to be in the README — the map, hut detail pages, filters, i18n,
 and data pipeline are built and deployed; see README.md for what's live.
 
+### Niente dominio di produzione (2026-10-19)
+
+Un dominio proprio (es. rifugi.qualcosa.it) costa ~10 €/anno e serve solo per un indirizzo più bello.
+Scelta la soluzione più semplice: l'indirizzo resta https://mountain-huts-map.alemarti-2001.workers.dev,
+impostato in `astro.config.mjs` (prima puntava a `mountain-huts-map.workers.dev`, che non esiste).
+GitHub Pages del repo spento (era un 404).
+
 ### Fonte ut.no (2026-10-18)
 
 L'API GraphQL di ut.no risponde 403 alle query anonime sulle hytte e il sito non ha sitemap, quindi
@@ -100,13 +106,11 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
   `data-refresh-check.yml` workflow is manual-only ("the real scheduled
   monthly-refresh-and-PR workflow lands in a later phase" per its own
   comment).
-- **Production domain**: `astro.config.mjs` has a `TODO: replace with the
-  real production domain once one exists` — the site currently only has the
-  `mountain-huts-map.workers.dev` default.
 - **Attribution page data**: README says `/attribution` is "the canonical
   list" of source licenses; confirm it's kept in sync as new sources are
   added in `scripts/sources/`.
 
 ## Log
+- 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento
 - 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione
 - 2026-10-15: creata la roadmap per Projects Overview
