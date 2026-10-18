@@ -24,48 +24,17 @@ feedback, not per-hut) via a small widget, in the same spirit as the
 "chi c'è stato" feature but simpler (no moderation UI, no per-hut
 association needed for a first version).
 
-**Ground rule: notes must never be stored only in the visitor's browser
-(localStorage) — they need to reach Alessio.** They must be persisted in
-Cloudflare D1 from the start, written through a Cloudflare Worker API route
-(this project deploys to Cloudflare Workers already, so no new hosting is
-needed — see `astro.config.mjs` / `wrangler.jsonc`).
-
-**When to build this**: after the visits/D1 backend (Phase 5) lands, or
-alongside it — not now. Building the note-storage plumbing twice (once for
-notes, once for visits) is wasted work; if both are needed around the same
-time, design one D1 schema/worker that serves both.
-
-**Open decision: dedicated D1 vs. shared D1 across Alessio's sites.**
-
-- **Option A — dedicated D1 for mountain-huts-map.** Same pattern Alessio
-  already uses in `ear-training`, `geopolitics-atlas`, `eating-amsterdam`,
-  and `markets-first-principles`: one D1 database bound to this Worker only.
-  Simplest schema (`notes(id, text, created_at, ...)`, no `site` column
-  needed), and a bug in this site's worker/schema can't affect any other
-  site. Slightly more Cloudflare resources to manage (one more D1 database,
-  one more binding) as the number of sites grows.
-
-- **Option B — one shared D1 across all of Alessio's sites.** A single
-  `notes` table with a `site` column
-  (`notes(id, site, page, text, created_at, ...)`) used by every site's
-  Worker. Less infrastructure to provision per new site, but couples sites
-  together: a bug or migration mistake in the shared worker/schema risks
-  breaking note-taking for every site at once, not just this one.
-
-No decision has been made yet — pick whichever pattern Alessio is leaning
-toward for his other sites at the time this is built, and stay consistent.
-
-Either way, the rough shape is:
-
-1. D1 table (see schema sketch above, either variant).
-2. A Worker route (or Astro server-rendered endpoint, `export const
-   prerender = false`, same technique already used by `src/pages/index.astro`
-   for its own server logic) that accepts a POST with the note text and
-   inserts a row.
-3. A small client widget (new Astro/TS component) that POSTs to that route.
-   No localStorage involved at any point.
-4. Basic abuse mitigation (rate limiting / simple validation) before this is
-   public — not designed yet.
+**Decided (2026-10-19): use the shared `site-notes` backend** (repo
+`alessiomartini/site-notes`: one Cloudflare Worker + one D1 for the notes of
+all of Alessio's sites). `mountain-huts-map` is already in its `SITES` list and
+its workers.dev origin is allowed, so no D1, binding or Worker route is needed
+here: the widget is a small client component that POSTs
+`{text, page, context, website}` to
+`https://site-notes.alemarti-2001.workers.dev/mountain-huts-map/notes`
+(`website` = hidden honeypot field; `context` = active filters / selected hut).
+Notes always reach the server, never only localStorage. Rate limiting, if
+needed, belongs in `site-notes`, not here. This no longer waits for the
+visits/D1 backend (Phase 5).
 
 ## Decisioni e cose provate
 
@@ -111,6 +80,7 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
   added in `scripts/sources/`.
 
 ## Log
+- 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`
 - 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento
 - 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione
 - 2026-10-15: creata la roadmap per Projects Overview
