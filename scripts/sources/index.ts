@@ -2,6 +2,7 @@ import { diska } from './diska.ts';
 import { cai } from './cai.ts';
 import { paesidivaltellina } from './paesidivaltellina.ts';
 import { hikesoftheworld } from './hikesoftheworld.ts';
+import { utno } from './utno.ts';
 import type { SiteScraper } from './types.ts';
 import type { RawCandidate } from '../lib/source-record.ts';
 
@@ -14,6 +15,7 @@ export const SCRAPERS: SiteScraper[] = [
   cai,
   paesidivaltellina,
   hikesoftheworld,
+  utno,
 ];
 
 /**
