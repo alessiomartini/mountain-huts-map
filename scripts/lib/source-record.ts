@@ -74,6 +74,9 @@ export interface RawCandidate {
 // everything else uses this general ranking.
 export const SOURCE_PRECEDENCE: Record<string, number> = {
   overrides: 100,
+  // DNT's own record: above OSM so its betjent/selvbetjent/ubetjent and beds win
+  // over OSM's guessed service_level; coords still come from OSM (merge.ts).
+  utno: 95,
   osm: 90,
   cai: 80,
   diska: 70,

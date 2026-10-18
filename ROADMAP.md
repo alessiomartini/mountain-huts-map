@@ -14,6 +14,7 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 - [ ] Dati della pagina di attribuzione
 
 ## Idee
+- [ ] Fonte "dny-hytte" per la Norvegia: dominio non trovato (dny-hytte.no/.com non risolvono), serve l'indirizzo esatto
 
 ### Planned: user note / feedback widget
 
@@ -75,6 +76,13 @@ of 2026-09-21, not the (currently stale-sounding) "scaffolding only" line
 that used to be in the README — the map, hut detail pages, filters, i18n,
 and data pipeline are built and deployed; see README.md for what's live.
 
+### Fonte ut.no (2026-10-18)
+
+L'API GraphQL di ut.no risponde 403 alle query anonime sulle hytte e il sito non ha sitemap, quindi
+`scripts/sources/utno.ts` parte dai rifugi OSM con `website=ut.no/hytte/<id>` (~800 in tutta la Norvegia)
+e legge la pagina pubblica. Limite: le hytte che OSM non collega a ut.no restano fuori; ut.no ha precedenza
+su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
+
 ### Known gaps in the current code
 
 - **Visits / "chi c'è stato" feature**: `src/pages/[lang]/hut/[slug].astro`
@@ -100,5 +108,5 @@ and data pipeline are built and deployed; see README.md for what's live.
   added in `scripts/sources/`.
 
 ## Log
-- 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico)
+- 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione
 - 2026-10-15: creata la roadmap per Projects Overview

@@ -24,3 +24,9 @@ matched any expected page structure, and their coverage is already
 superseded by `cai.ts`'s real API (`https://rifugi.cai.it/api/v1/shelters`,
 discovered via `https://rifugi.cai.it/docs/api-docs.json`'s OpenAPI spec —
 762 shelters, no auth required).
+
+`utno.ts` (Norway, DNT's ut.no) was written against the live site: the
+GraphQL API at `api.ut.no/v1/graphql` refuses anonymous cabin queries (403)
+and there is no sitemap, so it starts from the OSM huts whose `website`
+points to `ut.no/hytte/<id>` and reads each public cabin page's
+`__NEXT_DATA__` (beds, betjent/selvbetjent/ubetjent, phone, owner, booking).
