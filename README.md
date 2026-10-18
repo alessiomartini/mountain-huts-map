@@ -9,7 +9,7 @@ pipeline, map UI (MapLibre, filters, hut detail pages), and i18n (it/en) are
 built and live with a small sample of huts chosen to cover different cases
 (bivacco/rifugio, staffed/unstaffed, with/without photos); full European-scale
 data is still being produced. The "chi c'è stato" (visits) feature and its
-Cloudflare D1 backend are not built yet — see `FUTURE-ARCHITECTURE.md`.
+Cloudflare D1 backend are not built yet — see `ROADMAP.md`.
 
 ## Stack
 
