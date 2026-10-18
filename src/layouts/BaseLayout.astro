@@ -12,7 +12,7 @@ interface Props {
 }
 const { lang, title, description, ogImage } = Astro.props;
 const t = useTranslations(lang);
-const siteUrl = Astro.site ?? new URL('https://mountain-huts-map.workers.dev');
+const siteUrl = Astro.site ?? new URL('https://mountain-huts-map.alemarti-2001.workers.dev');
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
 ---
 

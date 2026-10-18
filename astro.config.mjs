@@ -5,8 +5,8 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 
-// TODO: replace with the real production domain once one exists (see README).
-const SITE = 'https://mountain-huts-map.workers.dev';
+// No custom domain: the workers.dev address is the site's only address.
+const SITE = 'https://mountain-huts-map.alemarti-2001.workers.dev';
 
 export default defineConfig({
   site: SITE,
