@@ -80,7 +80,7 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
   added in `scripts/sources/`.
 
 ## Log
-- 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`
+- 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`; installabile come app a sé dal telefono (manifest con nome, icona e perimetro propri)
 - 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento
 - 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione
 - 2026-10-15: creata la roadmap per Projects Overview
