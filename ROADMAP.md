@@ -10,7 +10,7 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 - [ ] Dataset completo (oggi c'è un campione di test)
 - [ ] Funzione "chi c'è stato"
 - [ ] Widget per note/feedback
-- [ ] Dati della pagina di attribuzione
+- [x] Dati della pagina di attribuzione
 
 ## Idee
 - [ ] Fonte "dny-hytte" per la Norvegia: dominio non trovato (dny-hytte.no/.com non risolvono), serve l'indirizzo esatto
@@ -79,7 +79,10 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
   list" of source licenses; confirm it's kept in sync as new sources are
   added in `scripts/sources/`.
 
+- **Dati della pagina di attribuzione (fatto)**: l'elenco sta in `scripts/sources/attribution.ts` (chiave = `sourceName` dello scraper), letto da `attribution.astro`; `attribution.test.ts` fallisce se uno scraper non ha voce o se una voce senza scraper non è marcata `retired`. Tre voci (CAI Bergamo, Abitare l'Estremo, Parco delle Orobie Valtellinesi) non hanno più un modulo (assorbite da `cai.ts`) ma restano visibili, marcate `retired`. Nessun campo licenza: nessun modulo ne dichiara una. Non fatto: contatore dei rifugi per fonte (`sources[].name` in huts.json c'è, ma i nomi sono le chiavi degli scraper e il dataset da 5204 rifugi non è più un campione: da rivedere anche `seedDataNote`, ormai obsoleta).
+
 ## Log
+- 2026-10-20: 🤖 pagina di attribuzione guidata dai dati: elenco delle fonti in `scripts/sources/attribution.ts`, con test che lo confronta con gli scraper
 - 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`; installabile come app a sé dal telefono (manifest con nome, icona e perimetro propri)
 - 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento
 - 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione

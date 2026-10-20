@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SOURCE_ATTRIBUTION } from '../../../scripts/sources/attribution.ts';
 import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
 
 export function getStaticPaths() {
@@ -9,17 +10,9 @@ export function getStaticPaths() {
 const { lang } = Astro.params as { lang: Lang };
 const t = useTranslations(lang);
 
-// Kept in sync by hand with scripts/sources/*.ts — one entry per scraper module.
-const REGIONAL_SOURCES = [
-  { name: 'CAI — Rifugi e bivacchi', url: 'https://rifugi.cai.it/shelters' },
-  { name: 'CAI Bergamo — Geoportale rifugi e bivacchi', url: 'https://www.caibergamo.it/geoportale/rifugi-bivacchi' },
-  { name: 'Abitare l’Estremo', url: 'https://www.abitarelestremo.it' },
-  { name: 'DISKA', url: 'https://www.diska.it' },
-  { name: 'Parco delle Orobie Valtellinesi', url: 'https://www.parcorobievalt.com/rifugi-bivacchi' },
-  { name: 'Paesi di Valtellina', url: 'https://www.paesidivaltellina.eu/rifugiebivacchi.htm' },
-  { name: 'Hikes of the World', url: 'https://www.hikesoftheworld.com/region/bivacchi' },
-  { name: 'UT.no — Den Norske Turistforening', url: 'https://ut.no' },
-];
+// Single source of truth: scripts/sources/attribution.ts (checked against the
+// scrapers by attribution.test.ts).
+const REGIONAL_SOURCES = Object.values(SOURCE_ATTRIBUTION);
 ---
 
 <BaseLayout lang={lang} title={`${t('attribution.title')} — ${t('site.title')}`} description={t('attribution.mapDataBody')}>
