@@ -191,5 +191,16 @@
     "regionalSourcesTitle": "Regional sources",
     "regionalSourcesBody": "Besides OpenStreetMap and Wikidata/Wikipedia, some data is cross-checked against the following regional sources:",
     "seedDataNote": "Note: the data currently published is a hand-entered test set (seed data) used to exercise the site, not an extraction from the sources listed above."
+  },
+  "notes": {
+    "button": "Note",
+    "title": "Leave a note",
+    "label": "Your note or feedback",
+    "placeholder": "A mistake, an idea, a missing hut…",
+    "send": "Send",
+    "sending": "Sending…",
+    "sent": "Thanks, note sent.",
+    "error": "Could not send. Please try again shortly.",
+    "empty": "Write something before sending."
   }
 }

@@ -9,7 +9,7 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 - [x] Pipeline dei dati, mappa MapLibre con filtri, pagine dei rifugi, it/en
 - [ ] Dataset completo (oggi c'è un campione di test)
 - [ ] Funzione "chi c'è stato"
-- [ ] Widget per note/feedback
+- [x] Widget per note/feedback
 - [x] Dati della pagina di attribuzione
 
 ## Idee
@@ -17,7 +17,7 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 
 ### Planned: user note / feedback widget
 
-- [ ] Planned: user note / feedback widget
+- [x] Planned: user note / feedback widget
 
 Not started. Idea: let visitors leave a short free-text note (general site
 feedback, not per-hut) via a small widget, in the same spirit as the
@@ -81,7 +81,12 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
 
 - **Dati della pagina di attribuzione (fatto)**: l'elenco sta in `scripts/sources/attribution.ts` (chiave = `sourceName` dello scraper), letto da `attribution.astro`; `attribution.test.ts` fallisce se uno scraper non ha voce o se una voce senza scraper non è marcata `retired`. Tre voci (CAI Bergamo, Abitare l'Estremo, Parco delle Orobie Valtellinesi) non hanno più un modulo (assorbite da `cai.ts`) ma restano visibili, marcate `retired`. Nessun campo licenza: nessun modulo ne dichiara una. Non fatto: contatore dei rifugi per fonte (`sources[].name` in huts.json c'è, ma i nomi sono le chiavi degli scraper e il dataset da 5204 rifugi non è più un campione: da rivedere anche `seedDataNote`, ormai obsoleta).
 
+### Widget note/feedback (fatto 2026-10-24)
+
+Pulsante flottante "Nota" in basso a destra (sopra la legenda) su tutte le pagine, in it/en (chiavi `notes.*` nei dizionari). Apre un pannello con textarea (max 2000 caratteri), invia con `POST` JSON `{text, page, context, website}` a `site-notes` (`/mountain-huts-map/notes`); `website` è il campo honeypot nascosto. Pulsante disabilitato durante l'invio, stati di successo/errore, Escape chiude. Codice: `src/components/NoteWidget.astro`, logica pura (payload) in `src/lib/notes.ts` con test. `context` = `lang=…; hut=<slug>` (solo nelle pagine rifugio) `; filters=<query string>`: i filtri della mappa sono già nell'URL, quindi nessun refactor. Limiti: il rifugio selezionato nella bottom sheet della mappa non è nel contesto (c'è solo lo slug nelle pagine di dettaglio); le note non passano da localStorage, quindi se l'invio fallisce il testo resta nella textarea ma non viene salvato altrove.
+
 ## Log
+- 2026-10-24: 🤖 widget note/feedback verso site-notes
 - 2026-10-20: 🤖 pagina di attribuzione guidata dai dati: elenco delle fonti in `scripts/sources/attribution.ts`, con test che lo confronta con gli scraper
 - 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`; installabile come app a sé dal telefono (manifest con nome, icona e perimetro propri)
 - 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento

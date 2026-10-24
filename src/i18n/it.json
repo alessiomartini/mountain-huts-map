@@ -191,5 +191,16 @@
     "regionalSourcesTitle": "Fonti regionali",
     "regionalSourcesBody": "Oltre a OpenStreetMap e Wikidata/Wikipedia, alcuni dati vengono incrociati con le seguenti fonti regionali:",
     "seedDataNote": "Nota: i dati attualmente pubblicati sono un set di prova (seed data) inserito a mano per collaudare il sito, non un'estrazione dalle fonti sopra elencate."
+  },
+  "notes": {
+    "button": "Nota",
+    "title": "Lascia una nota",
+    "label": "La tua nota o segnalazione",
+    "placeholder": "Un errore, un'idea, un rifugio mancante…",
+    "send": "Invia",
+    "sending": "Invio…",
+    "sent": "Grazie, nota inviata.",
+    "error": "Invio non riuscito. Riprova tra poco.",
+    "empty": "Scrivi qualcosa prima di inviare."
   }
 }
