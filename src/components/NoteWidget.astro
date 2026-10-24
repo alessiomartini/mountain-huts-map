@@ -1,0 +1,195 @@
+---
+import { useTranslations, type Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="note-widget" data-lang={lang} data-msg-sending={t('notes.sending')} data-msg-sent={t('notes.sent')} data-msg-error={t('notes.error')} data-msg-empty={t('notes.empty')} data-label-send={t('notes.send')}>
+  <button type="button" class="note-widget__toggle" aria-expanded="false" aria-controls="note-panel">✎ {t('notes.button')}</button>
+  <form id="note-panel" class="note-widget__panel" hidden novalidate>
+    <h2 class="note-widget__title">{t('notes.title')}</h2>
+    <label for="note-text" class="note-widget__label">{t('notes.label')}</label>
+    <textarea id="note-text" name="text" rows="4" maxlength="2000" placeholder={t('notes.placeholder')}></textarea>
+    <input type="text" name="website" class="note-widget__hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <div class="note-widget__row">
+      <button type="submit" class="note-widget__send">{t('notes.send')}</button>
+      <button type="button" class="note-widget__close" aria-label={t('common.close')}>✕</button>
+    </div>
+    <p class="note-widget__status" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<script>
+  import { buildPayload, NOTES_ENDPOINT } from '../lib/notes.ts';
+
+  const root = document.querySelector<HTMLElement>('.note-widget');
+  if (root) {
+    const toggle = root.querySelector<HTMLButtonElement>('.note-widget__toggle')!;
+    const form = root.querySelector<HTMLFormElement>('.note-widget__panel')!;
+    const textarea = form.querySelector<HTMLTextAreaElement>('textarea')!;
+    const honeypot = form.querySelector<HTMLInputElement>('input[name="website"]')!;
+    const send = form.querySelector<HTMLButtonElement>('.note-widget__send')!;
+    const status = form.querySelector<HTMLElement>('.note-widget__status')!;
+    const lang = root.dataset.lang ?? '';
+    const msg = root.dataset;
+
+    const setOpen = (open: boolean) => {
+      form.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) textarea.focus();
+      else toggle.focus();
+    };
+    toggle.addEventListener('click', () => setOpen(form.hidden === true));
+    form.querySelector('.note-widget__close')!.addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !form.hidden) setOpen(false);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = buildPayload(textarea.value, honeypot.value, {
+        lang,
+        pathname: location.pathname,
+        search: location.search,
+      });
+      if (!payload) {
+        status.textContent = msg.msgEmpty ?? '';
+        status.dataset.state = 'error';
+        textarea.focus();
+        return;
+      }
+      send.disabled = true;
+      status.dataset.state = '';
+      status.textContent = msg.msgSending ?? '';
+      try {
+        const res = await fetch(NOTES_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        textarea.value = '';
+        status.dataset.state = 'ok';
+        status.textContent = msg.msgSent ?? '';
+      } catch {
+        status.dataset.state = 'error';
+        status.textContent = msg.msgError ?? '';
+      } finally {
+        send.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  .note-widget {
+    position: fixed;
+    right: 0.75rem;
+    bottom: 4.5rem;
+    z-index: 900;
+    font-size: 0.85rem;
+  }
+  .note-widget__toggle {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    font: inherit;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  }
+  .note-widget__toggle:hover {
+    border-color: var(--color-text-muted);
+  }
+  .note-widget__panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.5rem);
+    width: min(20rem, calc(100vw - 1.5rem));
+    box-sizing: border-box;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+  .note-widget__panel[hidden] {
+    display: none;
+  }
+  .note-widget__title {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+  }
+  .note-widget__label {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--color-text-muted);
+  }
+  .note-widget__panel textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    font: inherit;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.4rem;
+  }
+  .note-widget__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .note-widget__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  .note-widget__send {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    border: 0;
+    border-radius: 4px;
+    padding: 0.4rem 1rem;
+    font: inherit;
+    cursor: pointer;
+  }
+  .note-widget__send:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .note-widget__close {
+    background: none;
+    border: 0;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font: inherit;
+    padding: 0.3rem;
+  }
+  .note-widget__status {
+    margin: 0.4rem 0 0;
+    min-height: 1.2em;
+    color: var(--color-text-muted);
+  }
+  .note-widget__status[data-state='error'] {
+    color: var(--color-danger);
+  }
+  .note-widget__toggle:focus-visible,
+  .note-widget__send:focus-visible,
+  .note-widget__close:focus-visible,
+  .note-widget__panel textarea:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+</style>
