@@ -49,3 +49,7 @@ list. In short:
 Bivouacs and huts are in alpine terrain. Information on this site can be
 inaccurate or out of date — always verify conditions and opening status
 before you go. Responsibility for the trip is the visitor's.
+
+## Monthly data refresh
+
+`.github/workflows/data-refresh-monthly.yml` runs `npm run data:refresh` and the tests on the 1st of each month (or manually) and opens/updates a PR from `data/refresh` when `src/data/huts.json` changes. The repo setting "Allow GitHub Actions to create and approve pull requests" must be enabled by the owner.

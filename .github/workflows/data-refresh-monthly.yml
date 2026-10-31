@@ -1,0 +1,79 @@
+name: Data refresh monthly
+
+# Runs the data pipeline once a month (and on demand), and if src/data/huts.json
+# changed, pushes it to the fixed branch data/refresh and opens/updates a PR.
+# Never commits to main. Needs the repo setting
+# "Allow GitHub Actions to create and approve pull requests" (Settings > Actions > General).
+on:
+  schedule:
+    - cron: '0 3 1 * *'
+  workflow_dispatch:
+    inputs:
+      skip_wikidata:
+        description: 'Skip Wikidata/Wikipedia/Commons enrichment'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: data-refresh-monthly
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Restore data pipeline cache
+        uses: actions/cache@v4
+        with:
+          path: scripts/.cache
+          key: data-pipeline-cache-${{ github.run_id }}
+          restore-keys: |
+            data-pipeline-cache-
+
+      - name: Unzip boundary archives
+        run: |
+          for z in scripts/.cache/boundaries/*.zip; do
+            [ -e "$z" ] || continue
+            unzip -o "$z" -d scripts/.cache/boundaries/
+          done
+
+      - run: npm run data:refresh
+        env:
+          SKIP_WIKIDATA_ENRICHMENT: ${{ inputs.skip_wikidata || 'false' }}
+
+      - run: npm run test
+
+      - name: Commit to data/refresh and open or update the PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- src/data/huts.json; then
+            echo "huts.json unchanged: nothing to do."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B data/refresh
+          git add src/data/huts.json
+          git commit -m "Aggiornamento mensile del dataset dei rifugi"
+          git push --force origin data/refresh
+          if [ -z "$(gh pr list --head data/refresh --state open --json number --jq '.[0].number')" ]; then
+            gh pr create --base main --head data/refresh \
+              --title "Aggiornamento mensile del dataset" \
+              --body "Rigenerato con \`npm run data:refresh\` (test passati). Controllare il diff di \`src/data/huts.json\` prima del merge."
+          else
+            echo "PR already open: branch updated."
+          fi
