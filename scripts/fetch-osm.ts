@@ -240,13 +240,24 @@ export async function fetchOsmRegion(region: Region): Promise<RawCandidate[]> {
   return candidates;
 }
 
+/** Region bboxes may touch or overlap: keep the first candidate per OSM element. */
+export function dedupeByExternalId(candidates: RawCandidate[]): RawCandidate[] {
+  const seen = new Set<string>();
+  return candidates.filter((c) => {
+    if (!c.externalId) return true;
+    if (seen.has(c.externalId)) return false;
+    seen.add(c.externalId);
+    return true;
+  });
+}
+
 export async function fetchOsmAll(): Promise<RawCandidate[]> {
   const all: RawCandidate[] = [];
   for (const region of REGIONS) {
     const candidates = await fetchOsmRegion(region);
     all.push(...candidates);
   }
-  return all;
+  return dedupeByExternalId(all);
 }
 
 // Allow running standalone: `npx tsx scripts/fetch-osm.ts`
