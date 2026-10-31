@@ -12,6 +12,7 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 - [x] Widget per note/feedback
 - [x] Dati della pagina di attribuzione
 - [x] Contatore dei rifugi per fonte nella pagina di attribuzione e nota sul dataset aggiornata
+- [x] Attribuzione di OpenStreetMap (ODbL), Wikidata (CC0) e Wikipedia (CC BY-SA 4.0) nel registro, con licenza e contatore
 
 ## Idee
 - [ ] Fonte "dny-hytte" per la Norvegia: dominio non trovato (dny-hytte.no/.com non risolvono), serve l'indirizzo esatto
@@ -81,13 +82,14 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
   added in `scripts/sources/`.
 
 - **Dati della pagina di attribuzione (fatto)**: l'elenco sta in `scripts/sources/attribution.ts` (chiave = `sourceName` dello scraper), letto da `attribution.astro`; `attribution.test.ts` fallisce se uno scraper non ha voce o se una voce senza scraper non è marcata `retired`. Tre voci (CAI Bergamo, Abitare l'Estremo, Parco delle Orobie Valtellinesi) non hanno più un modulo (assorbite da `cai.ts`) ma restano visibili, marcate `retired`. Nessun campo licenza: nessun modulo ne dichiara una. Fatto poi (2026-10-31): contatore dei rifugi per fonte (calcolato in build da huts.json con `src/lib/source-counts.ts`, un rifugio conta una volta per fonte; 0 per le fonti ritirate o senza rifugi) e `seedDataNote` sostituita da `datasetNote` (numero di rifugi letto da huts.json, nessuna affermazione sulla completezza).
+- **Lockfile ri-sincronizzato (2026-10-31)**: `npm ci` falliva perché `package-lock.json` non era allineato a `package.json` (mancavano `@emnapi/core` e `@emnapi/runtime`, opzionali). `npm install` senza nuove dipendenze né bump: diff di ~30 righe, `npm ci` ora funziona. Il campo `license` del registro è opzionale e valorizzato solo per osm/wikidata/wikipedia (licenze verificate); le fonti da pipeline sono elencate in `PIPELINE_SOURCES`. Attribuzione della mappa non toccata: il footer cita già OSM e lo stile OpenFreeMap porta la sua.
 
 ### Widget note/feedback (fatto 2026-10-24)
 
 Pulsante flottante "Nota" in basso a destra (sopra la legenda) su tutte le pagine, in it/en (chiavi `notes.*` nei dizionari). Apre un pannello con textarea (max 2000 caratteri), invia con `POST` JSON `{text, page, context, website}` a `site-notes` (`/mountain-huts-map/notes`); `website` è il campo honeypot nascosto. Pulsante disabilitato durante l'invio, stati di successo/errore, Escape chiude. Codice: `src/components/NoteWidget.astro`, logica pura (payload) in `src/lib/notes.ts` con test. `context` = `lang=…; hut=<slug>` (solo nelle pagine rifugio) `; filters=<query string>`: i filtri della mappa sono già nell'URL, quindi nessun refactor. Limiti: il rifugio selezionato nella bottom sheet della mappa non è nel contesto (c'è solo lo slug nelle pagine di dettaglio); le note non passano da localStorage, quindi se l'invio fallisce il testo resta nella textarea ma non viene salvato altrove.
 
 ## Log
-- 2026-10-31: 🤖 pagina di attribuzione: contatore dei rifugi per fonte calcolato in build e nota sul dataset aggiornata (la vecchia nota sul set di prova era obsoleta)
+- 2026-10-31: 🤖 pagina di attribuzione: contatore dei rifugi per fonte calcolato in build e nota sul dataset aggiornata (la vecchia nota sul set di prova era obsoleta); aggiunte le voci osm/wikidata/wikipedia (con licenza) e test che ogni fonte di huts.json abbia una voce; ripristinato `package-lock.json` (mancavano `@emnapi/*`, `npm ci` falliva)
 - 2026-10-24: 🤖 widget note/feedback verso site-notes
 - 2026-10-20: 🤖 pagina di attribuzione guidata dai dati: elenco delle fonti in `scripts/sources/attribution.ts`, con test che lo confronta con gli scraper
 - 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`; installabile come app a sé dal telefono (manifest con nome, icona e perimetro propri)
