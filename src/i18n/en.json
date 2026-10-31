@@ -170,8 +170,8 @@
     "intro": "Mountain Huts Map brings alpine bivouacs and huts together on a single map, starting with the Italian Alps and the Bergen area of Norway, with the goal of eventually covering all of Europe.",
     "noFakeDataTitle": "No invented data",
     "noFakeDataBody": "Elevation, coordinates, and prices are never invented: if a source doesn't report them, they're left blank (—) instead of being estimated. Every entry cites the sources its data comes from.",
-    "testPhaseTitle": "Testing phase",
-    "testPhaseBody": "The site is currently in a testing phase with a small number of example huts, chosen to cover a variety of situations (bivouacs and huts, staffed and unstaffed, with and without photos). Real data at European scale is in progress.",
+    "testPhaseTitle": "Data coverage",
+    "testPhaseBody": "The dataset currently covers the Italian Alps and Apennines and the Bergen area (Vestland, Norway); more European regions will be added. Data may be incomplete or out of date.",
     "contributeTitle": "Contributing",
     "contributeBody": "The source code is public on GitHub: bug reports, fixes, and contributions are welcome.",
     "githubLink": "View the repository on GitHub"
