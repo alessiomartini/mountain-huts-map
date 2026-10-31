@@ -79,6 +79,12 @@ const hutCount = huts.length;
               <a href={source.url} target="_blank" rel="noopener noreferrer">
                 {source.name} ↗
               </a>
+              {source.license && (
+                <>
+                  {' '}
+                  <a href={source.license.url} target="_blank" rel="noopener noreferrer">{source.license.name} ↗</a>
+                </>
+              )}
               {' '}
               <span class="attribution-page__count">({t('attribution.hutCount', { count: source.count })})</span>
             </li>

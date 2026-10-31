@@ -3,12 +3,14 @@
 // (see types.ts). attribution.test.ts fails if a scraper in SCRAPERS has no
 // entry here, or if an entry is neither a live scraper nor marked `retired`.
 //
-// No licence/terms field on purpose: none of the scraper modules state one,
-// and we do not invent them. Add `license` here only once it is verified.
+// `license` is optional: only set where verified (no scraper module states one,
+// and we do not invent them). Present for the open-data sources below.
 export interface SourceAttribution {
   /** Display name shown on the attribution page. */
   name: string;
   url: string;
+  /** Verified licence of the data, shown next to the source. */
+  license?: { name: string; url: string };
   /**
    * No scraper module any more (dropped, coverage moved to another source).
    * Still credited because data from it may remain in the dataset.
@@ -25,5 +27,23 @@ export const SOURCE_ATTRIBUTION: Record<string, SourceAttribution> = {
   parcorobievalt: { name: 'Parco delle Orobie Valtellinesi', url: 'https://www.parcorobievalt.com/rifugi-bivacchi', retired: true },
   paesidivaltellina: { name: 'Paesi di Valtellina', url: 'https://www.paesidivaltellina.eu/rifugiebivacchi.htm' },
   hikesoftheworld: { name: 'Hikes of the World', url: 'https://www.hikesoftheworld.com/region/bivacchi' },
+  osm: {
+    name: 'OpenStreetMap',
+    url: 'https://www.openstreetmap.org/copyright',
+    license: { name: 'ODbL 1.0', url: 'https://opendatacommons.org/licenses/odbl/1-0/' },
+  },
+  wikidata: {
+    name: 'Wikidata',
+    url: 'https://www.wikidata.org',
+    license: { name: 'CC0', url: 'https://creativecommons.org/publicdomain/zero/1.0/' },
+  },
+  wikipedia: {
+    name: 'Wikipedia',
+    url: 'https://www.wikipedia.org',
+    license: { name: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+  },
   utno: { name: 'UT.no — Den Norske Turistforening', url: 'https://ut.no' },
 };
+
+/** Sources fed by dedicated pipeline scripts (fetch-osm.ts, enrich-wikidata.ts), not by a SCRAPERS module. */
+export const PIPELINE_SOURCES: readonly string[] = ['osm', 'wikidata', 'wikipedia'];
