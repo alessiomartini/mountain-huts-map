@@ -190,7 +190,8 @@
     "photosBody": "Photos come from Wikimedia Commons and other listed sources; each photo's author and license are shown on the corresponding hut's page.",
     "regionalSourcesTitle": "Regional sources",
     "regionalSourcesBody": "Besides OpenStreetMap and Wikidata/Wikipedia, some data is cross-checked against the following regional sources:",
-    "seedDataNote": "Note: the data currently published is a hand-entered test set (seed data) used to exercise the site, not an extraction from the sources listed above."
+    "hutCount": "{count} huts",
+    "datasetNote": "The published dataset contains {count} huts and bivouacs. The number next to each source is how many of them cite it among their sources; a hut can cite several, and 0 means no hut currently cites it (for instance a source that is no longer active)."
   },
   "notes": {
     "button": "Note",

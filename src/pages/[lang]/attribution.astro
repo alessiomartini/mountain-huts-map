@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SOURCE_ATTRIBUTION } from '../../../scripts/sources/attribution.ts';
+import huts from '../../data/huts.json';
+import { countHutsBySource } from '../../lib/source-counts.ts';
 import { getLangStaticPaths, useTranslations, type Lang } from '../../i18n/index.ts';
 
 export function getStaticPaths() {
@@ -12,7 +14,13 @@ const t = useTranslations(lang);
 
 // Single source of truth: scripts/sources/attribution.ts (checked against the
 // scrapers by attribution.test.ts).
-const REGIONAL_SOURCES = Object.values(SOURCE_ATTRIBUTION);
+// Counts come from huts.json at build time; retired sources show 0.
+const counts = countHutsBySource(huts);
+const REGIONAL_SOURCES = Object.entries(SOURCE_ATTRIBUTION).map(([key, source]) => ({
+  ...source,
+  count: counts[key] ?? 0,
+}));
+const hutCount = huts.length;
 ---
 
 <BaseLayout lang={lang} title={`${t('attribution.title')} — ${t('site.title')}`} description={t('attribution.mapDataBody')}>
@@ -71,11 +79,13 @@ const REGIONAL_SOURCES = Object.values(SOURCE_ATTRIBUTION);
               <a href={source.url} target="_blank" rel="noopener noreferrer">
                 {source.name} ↗
               </a>
+              {' '}
+              <span class="attribution-page__count">({t('attribution.hutCount', { count: source.count })})</span>
             </li>
           ))
         }
       </ul>
-      <p class="attribution-page__note">{t('attribution.seedDataNote')}</p>
+      <p class="attribution-page__note">{t('attribution.datasetNote', { count: hutCount })}</p>
     </section>
   </article>
 </BaseLayout>
@@ -100,6 +110,11 @@ const REGIONAL_SOURCES = Object.values(SOURCE_ATTRIBUTION);
 
   .attribution-page ul {
     padding-left: 1.25rem;
+  }
+
+  .attribution-page__count {
+    color: var(--color-text-muted);
+    font-size: 0.9em;
   }
 
   .attribution-page__note {
