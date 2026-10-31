@@ -190,7 +190,8 @@
     "photosBody": "Le foto provengono da Wikimedia Commons e da altre fonti indicate; autore e licenza di ciascuna foto sono riportati nella scheda del rifugio o bivacco corrispondente.",
     "regionalSourcesTitle": "Fonti regionali",
     "regionalSourcesBody": "Oltre a OpenStreetMap e Wikidata/Wikipedia, alcuni dati vengono incrociati con le seguenti fonti regionali:",
-    "seedDataNote": "Nota: i dati attualmente pubblicati sono un set di prova (seed data) inserito a mano per collaudare il sito, non un'estrazione dalle fonti sopra elencate."
+    "hutCount": "{count} rifugi",
+    "datasetNote": "Il dataset pubblicato contiene {count} rifugi e bivacchi. Il numero accanto a ciascuna fonte indica quanti di essi la citano tra le proprie fonti; un rifugio può citarne più di una, e 0 indica che nessun rifugio attualmente la cita (ad esempio una fonte non più attiva)."
   },
   "notes": {
     "button": "Nota",
