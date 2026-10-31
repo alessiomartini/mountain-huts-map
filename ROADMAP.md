@@ -10,7 +10,8 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
 - [ ] Dataset completo (oggi: dataset reale con 5204 rifugi per Alpi/Appennini italiani e Bergen, non più un campione di test)
   - [ ] Aggiungere regioni in `scripts/regions.config.ts` (alps-fr/ch/at, Pirenei, Tatra...)
   - [ ] Rieseguire `npm run data:refresh` da una rete con accesso a Overpass: l'ultimo `huts.json` non contiene rifugi con fonte ut.no
-  - [ ] Workflow mensile di refresh + PR (oggi `data-refresh-check.yml` è solo manuale)
+  - [x] Workflow mensile di refresh + PR (`data-refresh-monthly.yml`)
+  - [ ] Alessio: abilitare in Settings > Actions > General "Allow GitHub Actions to create and approve pull requests" e lanciare una volta il workflow a mano
 - [ ] Funzione "chi c'è stato"
 - [x] Widget per note/feedback
 - [x] Dati della pagina di attribuzione
@@ -67,6 +68,10 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
 
 `src/data/huts.json` è versionato e contiene già un dataset reale (5204 rifugi; fonti osm, wikidata, wikipedia, cai), non più il campione di test: il testo "Fase di test" in /about era obsoleto ed è stato sostituito con la copertura reale. Cosa manca per "completo": (1) `regions.config.ts` ha solo alps-it, apennines, bergen; (2) nessun rifugio cita ut.no, quindi l'ultimo refresh è precedente a quella fonte; (3) nessun refresh pianificato (solo `data-refresh-check.yml` manuale, che non committa nulla). Il sito non rigenera i dati in build, e non va fatto (il deploy dipenderebbe dalla rete): il dataset resta un file versionato aggiornato via PR. Non verificato `data:refresh` in locale: dalla sandbox Overpass risponde con connessione resettata.
 
+### Refresh mensile (2026-10-31)
+
+`.github/workflows/data-refresh-monthly.yml` (cron il 1° del mese alle 03:00 UTC + manuale): `npm ci`, `data:refresh`, `test`; se `huts.json` cambia lo pusha sul branch fisso `data/refresh` (force) e apre o aggiorna la PR con `gh`. Solo azioni ufficiali, non tocca main né il deploy. Richiede l'impostazione del repo "Allow GitHub Actions to create and approve pull requests" (da abilitare a mano). Non provato in CI da qui. Se il refresh fallisce a metà il file non viene scritto (vedi `build-dataset.ts`), quindi nessuna PR.
+
 ### Known gaps in the current code
 
 - **Visits / "chi c'è stato" feature**: `src/pages/[lang]/hut/[slug].astro`
@@ -96,6 +101,7 @@ su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
 Pulsante flottante "Nota" in basso a destra (sopra la legenda) su tutte le pagine, in it/en (chiavi `notes.*` nei dizionari). Apre un pannello con textarea (max 2000 caratteri), invia con `POST` JSON `{text, page, context, website}` a `site-notes` (`/mountain-huts-map/notes`); `website` è il campo honeypot nascosto. Pulsante disabilitato durante l'invio, stati di successo/errore, Escape chiude. Codice: `src/components/NoteWidget.astro`, logica pura (payload) in `src/lib/notes.ts` con test. `context` = `lang=…; hut=<slug>` (solo nelle pagine rifugio) `; filters=<query string>`: i filtri della mappa sono già nell'URL, quindi nessun refactor. Limiti: il rifugio selezionato nella bottom sheet della mappa non è nel contesto (c'è solo lo slug nelle pagine di dettaglio); le note non passano da localStorage, quindi se l'invio fallisce il testo resta nella textarea ma non viene salvato altrove.
 
 ## Log
+- 2026-10-31: 🤖 workflow mensile `data-refresh-monthly.yml` (refresh + test + PR su `data/refresh`); serve l'impostazione Actions per creare PR
 - 2026-10-31: 🤖 indagine sul dataset completo: `huts.json` è già reale (5204 rifugi, IT + Bergen); corretto il testo obsoleto "fase di test" in /about e README; sotto-compiti per regioni, refresh con ut.no e workflow mensile
 - 2026-10-31: 🤖 pagina di attribuzione: contatore dei rifugi per fonte calcolato in build e nota sul dataset aggiornata (la vecchia nota sul set di prova era obsoleta); aggiunte le voci osm/wikidata/wikipedia (con licenza) e test che ogni fonte di huts.json abbia una voce; ripristinato `package-lock.json` (mancavano `@emnapi/*`, `npm ci` falliva)
 - 2026-10-24: 🤖 widget note/feedback verso site-notes
