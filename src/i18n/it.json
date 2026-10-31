@@ -170,8 +170,8 @@
     "intro": "Mountain Huts Map raccoglie in un'unica mappa bivacchi e rifugi alpini, partendo dalle Alpi italiane e dalla zona di Bergen, in Norvegia, con l'obiettivo di estendersi a tutta Europa.",
     "noFakeDataTitle": "Niente dati inventati",
     "noFakeDataBody": "Quota, coordinate e prezzi non vengono mai inventati: se una fonte non li riporta, restano vuoti (—) invece di essere stimati. Ogni scheda cita le fonti da cui provengono i dati.",
-    "testPhaseTitle": "Fase di test",
-    "testPhaseBody": "Il sito è attualmente in una fase di test con un piccolo numero di rifugi di esempio, scelti per coprire situazioni diverse (bivacchi e rifugi, gestiti e non gestiti, con e senza foto). I dati reali su scala europea sono in lavorazione.",
+    "testPhaseTitle": "Copertura dei dati",
+    "testPhaseBody": "Il dataset copre per ora le Alpi e gli Appennini italiani e la zona di Bergen (Vestland, Norvegia); altre regioni europee verranno aggiunte. I dati possono essere incompleti o non aggiornati.",
     "contributeTitle": "Contribuire",
     "contributeBody": "Il codice sorgente è pubblico su GitHub: segnalazioni di errori, correzioni e contributi sono benvenuti.",
     "githubLink": "Vedi il repository su GitHub"
