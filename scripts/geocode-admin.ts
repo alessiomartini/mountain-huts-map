@@ -13,6 +13,7 @@ import { cached, THIRTY_DAYS_MS } from './lib/cache.ts';
 import { politeFetch } from './lib/http.ts';
 import { haversineMeters, isInBBox, pointInGeometry, type BBox, type GeoJSONGeometry } from './lib/geo.ts';
 import { REGIONS } from './regions.config.ts';
+import { countryAt } from './lib/country.ts';
 
 export interface NearestPeak {
   name: string;
@@ -323,7 +324,8 @@ export interface GeoContextOptions {
 }
 
 export async function resolveGeoContext(lat: number, lon: number, options: GeoContextOptions = {}): Promise<GeoContext> {
-  const country = options.countryHint ?? guessCountry(lat, lon);
+  // Polygon first (a region bbox overlaps neighbouring countries); hint and bbox guess only as fallback.
+  const country = countryAt(lat, lon) ?? options.countryHint ?? guessCountry(lat, lon);
   const admin = locateAdmin(lat, lon, country);
   const nearAdminBorder = isNearAdminBorder(lat, lon, country, admin);
   const mountain_group = options.mountainGroupHint ?? (await findContainingMountainRange(lat, lon));

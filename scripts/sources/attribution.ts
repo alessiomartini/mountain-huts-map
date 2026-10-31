@@ -42,8 +42,13 @@ export const SOURCE_ATTRIBUTION: Record<string, SourceAttribution> = {
     url: 'https://www.wikipedia.org',
     license: { name: 'CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/' },
   },
+  naturalearth: {
+    name: 'Natural Earth — country boundaries',
+    url: 'https://www.naturalearthdata.com/about/terms-of-use/',
+    license: { name: 'Public domain', url: 'https://www.naturalearthdata.com/about/terms-of-use/' },
+  },
   utno: { name: 'UT.no — Den Norske Turistforening', url: 'https://ut.no' },
 };
 
 /** Sources fed by dedicated pipeline scripts (fetch-osm.ts, enrich-wikidata.ts), not by a SCRAPERS module. */
-export const PIPELINE_SOURCES: readonly string[] = ['osm', 'wikidata', 'wikipedia'];
+export const PIPELINE_SOURCES: readonly string[] = ['osm', 'wikidata', 'wikipedia', 'naturalearth'];
