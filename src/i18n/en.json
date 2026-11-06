@@ -192,16 +192,5 @@
     "regionalSourcesBody": "Besides OpenStreetMap and Wikidata/Wikipedia, some data is cross-checked against the following regional sources:",
     "hutCount": "{count} huts",
     "datasetNote": "The published dataset contains {count} huts and bivouacs. The number next to each source is how many of them cite it among their sources; a hut can cite several, and 0 means no hut currently cites it (for instance a source that is no longer active)."
-  },
-  "notes": {
-    "button": "Note",
-    "title": "Leave a note",
-    "label": "Your note or feedback",
-    "placeholder": "A mistake, an idea, a missing hut…",
-    "send": "Send",
-    "sending": "Sending…",
-    "sent": "Thanks, note sent.",
-    "error": "Server not reachable: note kept on this device, it will be resent on your next visit.",
-    "empty": "Write something before sending."
   }
 }
