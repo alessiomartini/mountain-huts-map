@@ -201,7 +201,7 @@
     "send": "Invia",
     "sending": "Invio…",
     "sent": "Grazie, nota inviata.",
-    "error": "Invio non riuscito. Riprova tra poco.",
+    "error": "Server non raggiungibile: nota tenuta su questo dispositivo, sarà reinviata alla prossima visita.",
     "empty": "Scrivi qualcosa prima di inviare."
   }
 }

@@ -201,7 +201,7 @@
     "send": "Send",
     "sending": "Sending…",
     "sent": "Thanks, note sent.",
-    "error": "Could not send. Please try again shortly.",
+    "error": "Server not reachable: note kept on this device, it will be resent on your next visit.",
     "empty": "Write something before sending."
   }
 }
