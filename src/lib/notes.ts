@@ -40,3 +40,56 @@ export function buildPayload(
     website: honeypot,
   };
 }
+
+// Local queue: a note stays in localStorage until the server accepted it
+// (same pattern as markets-first-principles / job-research-website).
+export const QUEUE_KEY = 'site-notes.pending';
+const MAX_QUEUE = 20;
+
+type Store = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+
+export function readQueue(store: Store): NotePayload[] {
+  try {
+    const list = JSON.parse(store.getItem(QUEUE_KEY) ?? '[]');
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeQueue(store: Store, list: NotePayload[]): void {
+  try {
+    if (list.length) store.setItem(QUEUE_KEY, JSON.stringify(list.slice(-MAX_QUEUE)));
+    else store.removeItem(QUEUE_KEY);
+  } catch {
+    /* storage full or blocked: nothing more to do */
+  }
+}
+
+export function enqueue(store: Store, note: NotePayload): void {
+  writeQueue(store, [...readQueue(store), note]);
+}
+
+/** POSTs a note; throws on network errors and on non-2xx (4xx included, so the widget shows the error). */
+export async function postNote(note: NotePayload, doFetch: typeof fetch = fetch): Promise<void> {
+  const res = await doFetch(NOTES_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(note),
+  });
+  if (!res.ok) throw new Error(String(res.status));
+}
+
+/** Resends queued notes one by one; keeps those that still fail. Notes the server rejects with 4xx are dropped (they never will be accepted). */
+export async function flushQueue(store: Store, doFetch: typeof fetch = fetch): Promise<void> {
+  const left: NotePayload[] = [];
+  for (const note of readQueue(store)) {
+    try {
+      await postNote(note, doFetch);
+    } catch (e) {
+      const status = Number((e as Error).message);
+      if (!(status >= 400 && status < 500)) left.push(note);
+    }
+  }
+  writeQueue(store, left);
+}

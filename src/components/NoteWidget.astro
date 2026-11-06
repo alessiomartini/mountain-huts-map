@@ -24,7 +24,7 @@ const t = useTranslations(lang);
 </div>
 
 <script>
-  import { buildPayload, NOTES_ENDPOINT } from '../lib/notes.ts';
+  import { buildPayload, enqueue, flushQueue, postNote } from '../lib/notes.ts';
 
   const root = document.querySelector<HTMLElement>('.note-widget');
   if (root) {
@@ -36,6 +36,7 @@ const t = useTranslations(lang);
     const status = form.querySelector<HTMLElement>('.note-widget__status')!;
     const lang = root.dataset.lang ?? '';
     const msg = root.dataset;
+    flushQueue(localStorage).catch(() => {});
 
     const setOpen = (open: boolean) => {
       form.hidden = !open;
@@ -66,16 +67,14 @@ const t = useTranslations(lang);
       status.dataset.state = '';
       status.textContent = msg.msgSending ?? '';
       try {
-        const res = await fetch(NOTES_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(String(res.status));
+        await postNote(payload);
         textarea.value = '';
         status.dataset.state = 'ok';
         status.textContent = msg.msgSent ?? '';
       } catch {
+        // Keep the note locally; it is resent at the next page load.
+        enqueue(localStorage, payload);
+        textarea.value = '';
         status.dataset.state = 'error';
         status.textContent = msg.msgError ?? '';
       } finally {

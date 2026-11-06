@@ -30,3 +30,29 @@ describe('buildPayload', () => {
     expect(buildPayload('a'.repeat(MAX_NOTE_LENGTH + 50), '', loc)?.text.length).toBe(MAX_NOTE_LENGTH);
   });
 });
+
+import { enqueue, flushQueue, readQueue } from './notes.ts';
+
+describe('queue', () => {
+  const mem = () => {
+    const m = new Map<string, string>();
+    return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem: (k: string) => void m.delete(k) };
+  };
+  const note = { text: 'x', page: '/it/', context: '', website: '' };
+  it('keeps notes while the server fails and empties the queue on success', async () => {
+    const store = mem();
+    enqueue(store, note);
+    await flushQueue(store, (async () => new Response('', { status: 500 })) as typeof fetch);
+    expect(readQueue(store)).toHaveLength(1);
+    const calls: string[] = [];
+    await flushQueue(store, (async (_u: unknown, init: RequestInit) => { calls.push(String(init.body)); return new Response('{}', { status: 201 }); }) as typeof fetch);
+    expect(readQueue(store)).toHaveLength(0);
+    expect(JSON.parse(calls[0])).toEqual(note);
+  });
+  it('drops notes rejected with 4xx', async () => {
+    const store = mem();
+    enqueue(store, note);
+    await flushQueue(store, (async () => new Response('', { status: 400 })) as typeof fetch);
+    expect(readQueue(store)).toHaveLength(0);
+  });
+});
