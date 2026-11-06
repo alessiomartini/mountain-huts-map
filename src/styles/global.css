@@ -140,3 +140,8 @@ table {
 .badge--rifugio {
   background: var(--color-rifugio);
 }
+
+/* Feedback button (public/notes-widget.js): sits above the map legend, as the old note button did. */
+body .sn-w {
+  bottom: 4.5rem;
+}

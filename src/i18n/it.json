@@ -192,16 +192,5 @@
     "regionalSourcesBody": "Oltre a OpenStreetMap e Wikidata/Wikipedia, alcuni dati vengono incrociati con le seguenti fonti regionali:",
     "hutCount": "{count} rifugi",
     "datasetNote": "Il dataset pubblicato contiene {count} rifugi e bivacchi. Il numero accanto a ciascuna fonte indica quanti di essi la citano tra le proprie fonti; un rifugio può citarne più di una, e 0 indica che nessun rifugio attualmente la cita (ad esempio una fonte non più attiva)."
-  },
-  "notes": {
-    "button": "Nota",
-    "title": "Lascia una nota",
-    "label": "La tua nota o segnalazione",
-    "placeholder": "Un errore, un'idea, un rifugio mancante…",
-    "send": "Invia",
-    "sending": "Invio…",
-    "sent": "Grazie, nota inviata.",
-    "error": "Server non raggiungibile: nota tenuta su questo dispositivo, sarà reinviata alla prossima visita.",
-    "empty": "Scrivi qualcosa prima di inviare."
   }
 }
