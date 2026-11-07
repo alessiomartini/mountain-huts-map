@@ -143,6 +143,26 @@
     "unverified": "Fonte singola, da verificare",
     "whoHasBeenHere": "Chi c'è stato",
     "whoHasBeenHereComingSoon": "Presto potrai leggere e condividere qui le esperienze di chi ha visitato questo posto.",
+    "visits": {
+      "empty": "Nessuna esperienza ancora. Sii il primo a raccontare la tua.",
+      "shareTitle": "Racconta la tua visita",
+      "text": "La tua esperienza (10-1000 caratteri)",
+      "month": "Mese della visita (facoltativo)",
+      "name": "Nome da mostrare (facoltativo)",
+      "submit": "Invia",
+      "sending": "Invio in corso…",
+      "thanks": "Grazie! La tua esperienza comparirà dopo la verifica.",
+      "moderationNote": "Le esperienze vengono controllate prima di essere pubblicate.",
+      "anonymous": "Anonimo",
+      "error": {
+        "text_too_short": "Il testo è troppo corto.",
+        "text_too_long": "Il testo è troppo lungo.",
+        "invalid_month": "Mese non valido.",
+        "invalid_name": "Nome non valido.",
+        "rate_limited": "Troppi invii, riprova domani.",
+        "generic": "Invio non riuscito, riprova più tardi."
+      }
+    },
     "gallery": "Galleria foto"
   },
   "list": {

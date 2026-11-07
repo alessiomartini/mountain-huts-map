@@ -143,6 +143,26 @@
     "unverified": "Single source, unverified",
     "whoHasBeenHere": "Who's been here",
     "whoHasBeenHereComingSoon": "Soon you'll be able to read and share experiences from people who've visited this place.",
+    "visits": {
+      "empty": "No experiences yet. Be the first to share yours.",
+      "shareTitle": "Share your visit",
+      "text": "Your experience (10-1000 characters)",
+      "month": "Month of the visit (optional)",
+      "name": "Name to display (optional)",
+      "submit": "Send",
+      "sending": "Sending…",
+      "thanks": "Thanks! Your experience will appear after review.",
+      "moderationNote": "Experiences are reviewed before being published.",
+      "anonymous": "Anonymous",
+      "error": {
+        "text_too_short": "The text is too short.",
+        "text_too_long": "The text is too long.",
+        "invalid_month": "Invalid month.",
+        "invalid_name": "Invalid name.",
+        "rate_limited": "Too many submissions, try again tomorrow.",
+        "generic": "Could not send, please try again later."
+      }
+    },
     "gallery": "Photo gallery"
   },
   "list": {

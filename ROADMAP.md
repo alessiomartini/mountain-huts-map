@@ -14,6 +14,8 @@ Unico file per todo, idee, decisioni e diario, letto da Projects Overview
   - [x] Workflow mensile di refresh + PR (`data-refresh-monthly.yml`)
   - [ ] Alessio: abilitare in Settings > Actions > General "Allow GitHub Actions to create and approve pull requests" e lanciare una volta il workflow a mano
 - [ ] Funzione "chi c'è stato"
+  - [x] Codice (migrazione D1, API, UI, test)
+  - [ ] Alessio: creare il D1, applicare la migrazione, impostare i secret IP_SALT e MODERATION_TOKEN, deploy
 - [x] Widget per note/feedback
 - [x] Dati della pagina di attribuzione
 - [x] Contatore dei rifugi per fonte nella pagina di attribuzione e nota sul dataset aggiornata
@@ -83,14 +85,11 @@ Aggiunte alps-fr-w, alps-fr-s, alps-ch-n, alps-at-n, alps-at-e, pyrenees, tatra.
 
 ### Known gaps in the current code
 
-- **Visits / "chi c'è stato" feature**: `src/pages/[lang]/hut/[slug].astro`
-  already renders a `hut-detail__who-has-been-here` section with the copy
-  "Presto potrai leggere e condividere qui le esperienze di chi ha visitato
-  questo posto" (`hut.whoHasBeenHereComingSoon` in `src/i18n/*.json`) — the
-  UI placeholder exists, the backend does not. `wrangler.jsonc` has a comment
-  noting the D1 binding and secrets (`IP_SALT`, `MODERATION_TOKEN`) are
-  "added when that phase lands" (Phase 5) — no D1 database, binding, or API
-  route exists yet anywhere in the repo.
+- **Visits / "chi c'è stato" feature**: il codice c'è (migrazione `migrations/0001_visits.sql`,
+  API `src/pages/api/visits.ts` e `api/moderation/visits.ts`, logica in `src/lib/visits.ts`, form e
+  lista nella pagina rifugio), ma non è attivo: manca il database D1, il binding in `wrangler.jsonc`
+  (oggi solo in un commento) e i secret `IP_SALT` e `MODERATION_TOKEN`. Senza binding l'API risponde
+  `{enabled:false}` e la pagina mostra ancora il segnaposto "Presto potrai…". Passi in README, sezione "Visits".
 - **Full dataset**: `src/data/huts.json` currently holds a test sample
   (`about.testPhaseBody` in the UI says this explicitly), not the full
   European dataset described in the README's ambition. `scripts/build-dataset.ts`
@@ -109,7 +108,12 @@ Aggiunte alps-fr-w, alps-fr-s, alps-ch-n, alps-at-n, alps-at-e, pyrenees, tatra.
 
 Pulsante flottante "Nota" in basso a destra (sopra la legenda) su tutte le pagine, in it/en (chiavi `notes.*` nei dizionari). Apre un pannello con textarea (max 2000 caratteri), invia con `POST` JSON `{text, page, context, website}` a `site-notes` (`/mountain-huts-map/notes`); `website` è il campo honeypot nascosto. Pulsante disabilitato durante l'invio, stati di successo/errore, Escape chiude. Codice: `src/components/NoteWidget.astro`, logica pura (payload) in `src/lib/notes.ts` con test. `context` = `lang=…; hut=<slug>` (solo nelle pagine rifugio) `; filters=<query string>`: i filtri della mappa sono già nell'URL, quindi nessun refactor. Limiti: il rifugio selezionato nella bottom sheet della mappa non è nel contesto (c'è solo lo slug nelle pagine di dettaglio); le note non passano da localStorage, quindi se l'invio fallisce il testo resta nella textarea ma non viene salvato altrove.
 
+### Chi c'è stato: scelte di progetto (2026-11-07)
+
+Nessun documento di design in `docs/` (non esiste): scelte mie. Rotte API Astro `prerender = false` sullo stesso Worker (niente Worker separato); le pagine rifugio restano statiche e caricano le visite lato client da `/api/visits?hut=<slug>`. Il rifugio è identificato dallo slug (non c'è un id numerico stabile) e non viene verificato contro `huts.json` per non caricare 5000 rifugi nel Worker: le visite su slug inesistenti restano `pending` e si scartano in moderazione. Il GET risponde sempre 200 con `{enabled:false}` se manca il binding, così il browser non logga errori di rete. Il POST senza binding risponde 503. Honeypot `website` con finto successo; limite 3 invii per IP hashato (SHA-256 di `IP_SALT:ip`) ogni 24 h, contato in D1 sulla tabella stessa (nessun KV/Durable Object in più); mese con precisione `YYYY-MM`; testo 10-1000 caratteri, nome max 40; il testo utente è sempre inserito con `textContent`. Moderazione con bearer token (confronto a tempo costante, rifiuta secret < 16 caratteri), solo curl, nessuna UI. Il binding D1 non è attivo in `wrangler.jsonc` perché richiede un `database_id` reale: sta in un commento. Il tipo `cloudflare:workers` è dichiarato a mano in `src/env.d.ts` perché `wrangler types` non genera tipi qui. Non provato su D1 reale (nessun comando wrangler remoto eseguito): testata solo la logica pura (vitest) e la pagina senza backend e con API simulata (Playwright). In dev `POST` da curl senza header `Origin` riceve 403 dal controllo CSRF di Astro (non succede dal browser).
+
 ## Log
+- 2026-11-07: 🤖 funzione "chi c'è stato" (codice): migrazione D1, API di invio/lettura/moderazione, form e lista nella pagina rifugio e test; serve ancora creare il D1 e impostare i secret
 - 2026-11-06: widget note con coda locale: se site-notes non risponde la nota resta in localStorage (`site-notes.pending`) e viene reinviata al caricamento successivo. widget note v2 canonico (public/notes-widget.js, lingua it/en) al posto di NoteWidget.astro e notes.ts (migra site-notes.pending); tolte chiavi notes.* dei dizionari.
 - 2026-10-31: 🤖 nuove regioni (Alpi FR/CH/AT, Pirenei, Tatra) in `regions.config.ts` con test di config e dedup per id OSM; dati da rigenerare col refresh
 - 2026-10-31: 🤖 corretto il paese dei rifugi (assegnato per poligono Natural Earth invece che dalla bbox della regione): ~2050 rifugi stranieri non sono più marcati IT; `huts.json` aggiornato solo nel campo country
