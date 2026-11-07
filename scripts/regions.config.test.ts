@@ -36,6 +36,15 @@ describe('REGIONS', () => {
   });
 });
 
+describe('REGIONS coverage', () => {
+  it('includes the 2026-11-07 European ranges', () => {
+    const ids = REGIONS.map((r) => r.id);
+    for (const id of ['alps-si', 'dinaric', 'bulgaria', 'carpathians-ro-s', 'picos', 'sierra-nevada', 'corsica', 'sweden-n', 'scotland']) {
+      expect(ids).toContain(id);
+    }
+  });
+});
+
 describe('dedupeByExternalId', () => {
   it('keeps the first of repeated ids and all candidates without id', () => {
     const mk = (externalId?: string): RawCandidate => ({ sourceName: 'osm', sourceUrl: '', fetchedAt: '', name: 'x', externalId });
