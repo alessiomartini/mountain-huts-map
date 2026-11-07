@@ -29,4 +29,26 @@ export const REGIONS: Region[] = [
   { id: 'alps-at-e', name: 'Alpi austriache (est)', bbox: [46.2, 13.9, 48.2, 16.6], country: 'AT' },
   { id: 'pyrenees', name: 'Pirenei', bbox: [42.2, -2.0, 43.3, 3.2], country: 'FR' },
   { id: 'tatra', name: 'Tatra', bbox: [49.0, 19.5, 49.4, 20.5], country: 'PL' },
+  // Further European mountain ranges (2026-11-07). Same rule: rectangles that overlap neither the
+  // regions above nor each other. Already covered, so deliberately not added: the Dolomites and the
+  // Julian Alps' western half (inside `alps-it`), the Apuan Alps, Gran Sasso and the rest of the
+  // Apennine arc (inside `apennines`). Corsica stops at 9.5 E so as not to touch `apennines`.
+  { id: 'alps-si', name: 'Slovenia e Alpi Giulie orientali', bbox: [45.4, 13.9, 46.2, 16.5], country: 'SI' },
+  { id: 'croatia-w', name: 'Croazia occidentale (Velebit, Gorski Kotar)', bbox: [44.5, 13.9, 45.4, 16.5], country: 'HR' },
+  { id: 'dinaric', name: 'Alpi Dinariche (Bosnia, Montenegro, Serbia ovest)', bbox: [42.0, 16.5, 45.4, 20.5], country: 'BA' },
+  { id: 'balkans-sw', name: 'Albania, Macedonia, Pindo', bbox: [39.5, 19.5, 42.0, 22.0], country: 'AL' },
+  { id: 'bulgaria', name: 'Bulgaria (Rila, Pirin, Balcani)', bbox: [41.0, 22.0, 43.6, 26.5], country: 'BG' },
+  { id: 'carpathians-sk', name: 'Carpazi slovacchi (Fatra, Tatra Basse)', bbox: [48.4, 17.0, 49.4, 19.5], country: 'SK' },
+  { id: 'carpathians-ro-n', name: 'Carpazi rumeni (nord)', bbox: [46.5, 22.0, 48.0, 26.5], country: 'RO' },
+  { id: 'carpathians-ro-s', name: 'Carpazi meridionali (Retezat, Fagaras, Bucegi)', bbox: [44.8, 22.0, 46.5, 26.5], country: 'RO' },
+  { id: 'picos', name: 'Cantabrica e Picos de Europa', bbox: [42.4, -7.0, 43.3, -4.0], country: 'ES' },
+  { id: 'gredos', name: 'Gredos e Guadarrama', bbox: [40.1, -6.5, 41.1, -3.5], country: 'ES' },
+  { id: 'sierra-nevada', name: 'Sierra Nevada', bbox: [36.7, -3.8, 37.4, -2.4], country: 'ES' },
+  { id: 'corsica', name: 'Corsica', bbox: [41.3, 8.5, 43.1, 9.5], country: 'FR' },
+  { id: 'norway-c', name: 'Norvegia centrale (Jotunheimen est, Rondane, Hardangervidda est)', bbox: [59.5, 8.5, 62.0, 12.5], country: 'NO' },
+  { id: 'norway-m', name: 'Norvegia (Romsdal, Trollheimen, Dovrefjell)', bbox: [62.0, 5.0, 63.5, 12.5], country: 'NO' },
+  { id: 'norway-arctic', name: 'Norvegia artica (Narvik, Lofoten, Lyngen)', bbox: [67.0, 12.0, 70.0, 16.0], country: 'NO' },
+  { id: 'sweden-w', name: 'Svezia (Jämtland, Åre)', bbox: [62.5, 12.5, 64.5, 14.8], country: 'SE' },
+  { id: 'sweden-n', name: 'Svezia settentrionale (Kebnekaise, Sarek, Kungsleden)', bbox: [66.5, 16.0, 68.7, 19.5], country: 'SE' },
+  { id: 'scotland', name: 'Highlands scozzesi', bbox: [56.0, -6.5, 58.7, -3.0], country: 'GB' },
 ];
