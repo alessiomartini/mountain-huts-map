@@ -3,7 +3,12 @@
   "name": "mountain-huts-map",
   "compatibility_date": "2026-09-10",
   "compatibility_flags": ["nodejs_compat"]
-  // D1 binding for visits (Phase 5) and secrets (IP_SALT, MODERATION_TOKEN)
-  // are added when that phase lands. Local dev secrets go in .dev.vars
-  // (gitignored), production secrets via `wrangler secret put <NAME>`.
+  // Visits ("chi c'è stato"): code is in place, the D1 binding is NOT enabled yet
+  // because it needs a real database_id. After `wrangler d1 create`, add:
+  //   "d1_databases": [
+  //     { "binding": "DB", "database_name": "mountain-huts-visits",
+  //       "database_id": "<id printed by wrangler d1 create>", "migrations_dir": "migrations" }
+  //   ]
+  // Secrets (never in this file): IP_SALT, MODERATION_TOKEN via `wrangler secret put <NAME>`.
+  // Local dev secrets go in .dev.vars (gitignored). See README "Visits (chi c'è stato)".
 }

@@ -197,9 +197,49 @@ const mapPageHref = `/${lang}/?focus_lat=${hut.coords.lat}&focus_lon=${hut.coord
       <a href={mapPageHref} class="hut-detail__see-on-map">{t('hut.seeOnBigMap')} ↗</a>
     </section>
 
-    <section class="hut-detail__who-has-been-here">
+    <section
+      class="hut-detail__who-has-been-here"
+      id="visits"
+      data-hut={hut.slug}
+      data-lang={lang}
+      data-s-empty={t('hut.visits.empty')}
+      data-s-anonymous={t('hut.visits.anonymous')}
+      data-s-sending={t('hut.visits.sending')}
+      data-s-thanks={t('hut.visits.thanks')}
+      data-s-submit={t('hut.visits.submit')}
+      data-s-err-generic={t('hut.visits.error.generic')}
+      data-s-err-text_too_short={t('hut.visits.error.text_too_short')}
+      data-s-err-text_too_long={t('hut.visits.error.text_too_long')}
+      data-s-err-invalid_month={t('hut.visits.error.invalid_month')}
+      data-s-err-invalid_name={t('hut.visits.error.invalid_name')}
+      data-s-err-rate_limited={t('hut.visits.error.rate_limited')}
+    >
       <h2>{t('hut.whoHasBeenHere')}</h2>
-      <p class="hut-detail__coming-soon">{t('hut.whoHasBeenHereComingSoon')}</p>
+      <!-- Shown until the API reports it is enabled (no D1 yet, or JS off). -->
+      <p class="hut-detail__coming-soon" id="visits-placeholder">{t('hut.whoHasBeenHereComingSoon')}</p>
+      <div id="visits-live" hidden>
+        <ul id="visits-list" class="visits-list"></ul>
+        <p id="visits-empty" class="hut-detail__coming-soon" hidden></p>
+        <form id="visits-form" class="visits-form">
+          <h3>{t('hut.visits.shareTitle')}</h3>
+          <label>{t('hut.visits.text')}
+            <textarea name="body" required minlength="10" maxlength="1000" rows="4"></textarea>
+          </label>
+          <label>{t('hut.visits.month')}
+            <input type="month" name="visitedMonth" />
+          </label>
+          <label>{t('hut.visits.name')}
+            <input type="text" name="displayName" maxlength="40" autocomplete="off" />
+          </label>
+          <!-- Honeypot: hidden from people, bots fill it in. -->
+          <div class="visits-form__hp" aria-hidden="true">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+          <p class="visits-form__note">{t('hut.visits.moderationNote')}</p>
+          <button type="submit">{t('hut.visits.submit')}</button>
+          <p id="visits-status" role="status" class="visits-form__status"></p>
+        </form>
+      </div>
     </section>
 
     <section class="hut-detail__report">
@@ -269,6 +309,84 @@ const mapPageHref = `/${lang}/?focus_lat=${hut.coords.lat}&focus_lon=${hut.coord
         // coordinates are already visible as plain text next to the button.
       }
     });
+
+    // Visits ("chi c'è stato"): the section stays as a "coming soon" note unless
+    // /api/visits answers {enabled:true}. All failures are swallowed silently.
+    (async () => {
+      const root = document.getElementById('visits');
+      if (!root) return;
+      const hut = root.dataset.hut ?? '';
+      const lang = root.dataset.lang === 'en' ? 'en' : 'it';
+      const str = (k: string): string => root.getAttribute(`data-s-${k}`) ?? '';
+      const live = document.getElementById('visits-live') as HTMLElement;
+      const placeholder = document.getElementById('visits-placeholder') as HTMLElement;
+      const list = document.getElementById('visits-list') as HTMLUListElement;
+      const empty = document.getElementById('visits-empty') as HTMLElement;
+      const form = document.getElementById('visits-form') as HTMLFormElement;
+      const status = document.getElementById('visits-status') as HTMLElement;
+
+      let data: { enabled?: boolean; visits?: Array<{ visitedMonth: string | null; body: string; displayName: string | null; createdAt: number }> };
+      try {
+        const res = await fetch(`/api/visits?hut=${encodeURIComponent(hut)}`, { headers: { accept: 'application/json' } });
+        if (!res.ok || !(res.headers.get('content-type') ?? '').includes('json')) return;
+        data = await res.json();
+      } catch {
+        return;
+      }
+      if (!data.enabled) return;
+
+      placeholder.hidden = true;
+      live.hidden = false;
+      const visits = data.visits ?? [];
+      empty.textContent = str('empty');
+      empty.hidden = visits.length > 0;
+      for (const v of visits) {
+        const li = document.createElement('li');
+        const meta = document.createElement('div');
+        meta.className = 'visits-list__meta';
+        const when = v.visitedMonth
+          ? new Date(`${v.visitedMonth}-01T00:00:00Z`).toLocaleDateString(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' })
+          : '';
+        meta.textContent = [v.displayName || str('anonymous'), when].filter(Boolean).join(' · ');
+        const body = document.createElement('p');
+        body.textContent = v.body; // textContent only: user text is never parsed as HTML
+        li.append(meta, body);
+        list.append(li);
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        button.disabled = true;
+        status.textContent = str('sending');
+        try {
+          const res = await fetch('/api/visits', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              hut,
+              lang,
+              body: fd.get('body'),
+              visitedMonth: fd.get('visitedMonth'),
+              displayName: fd.get('displayName'),
+              website: fd.get('website'),
+            }),
+          });
+          if (res.ok) {
+            form.reset();
+            status.textContent = str('thanks');
+          } else {
+            const err = (await res.json().catch(() => ({}))) as { error?: string };
+            status.textContent = str(`err-${err.error ?? 'generic'}`) || str('err-generic');
+          }
+        } catch {
+          status.textContent = str('err-generic');
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
 
     const lightbox = document.getElementById('lightbox') as HTMLDialogElement | null;
     const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement | null;
@@ -440,6 +558,77 @@ const mapPageHref = `/${lang}/?focus_lat=${hut.coords.lat}&focus_lon=${hut.coord
     margin-top: 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
+  }
+
+  .visits-list {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .visits-list li {
+    border-left: 3px solid var(--color-border);
+    padding-left: 0.7rem;
+  }
+
+  .visits-list p {
+    margin: 0.2rem 0 0;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+
+  .visits-list__meta,
+  .visits-form__note,
+  .visits-form__status {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+
+  .visits-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .visits-form h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .visits-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.9rem;
+  }
+
+  .visits-form textarea,
+  .visits-form input {
+    font: inherit;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .visits-form button {
+    align-self: flex-start;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: 0.4rem 1rem;
+    min-height: 40px;
+    cursor: pointer;
+  }
+
+  .visits-form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
   .hut-detail__coming-soon {

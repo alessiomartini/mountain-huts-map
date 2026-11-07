@@ -7,8 +7,8 @@ one-line config change rather than a refactor.
 Status: test phase, deployed at <https://mountain-huts-map.alemarti-2001.workers.dev>. The data
 pipeline, map UI (MapLibre, filters, hut detail pages), and i18n (it/en) are
 built and live with a real dataset (OSM, Wikidata, CAI) covering the Italian
-Alps and Apennines and the Bergen area; other European regions are still to be added. The "chi c'è stato" (visits) feature and its
-Cloudflare D1 backend are not built yet — see `ROADMAP.md`.
+Alps and Apennines and the Bergen area; other European regions are still to be added. The "chi c'è stato" (visits) feature is coded but
+not live until the D1 database is created — see "Visits" below and `ROADMAP.md`.
 
 ## Stack
 
@@ -31,6 +31,44 @@ npm run dev
 npm run build     # typecheck + prerender + build the Worker
 npm run preview   # preview the built Worker locally
 npm run deploy    # build, then `wrangler deploy`
+```
+
+## Visits (chi c'è stato)
+
+Visitors can share a short experience on a hut page. Submissions are stored as
+`pending` in Cloudflare D1 and only shown once approved. Until the D1 binding
+exists the API answers `{"enabled":false}` and the hut page keeps the
+"coming soon" note (no errors).
+
+Code: `migrations/0001_visits.sql`, `src/lib/visits.ts` (validation, IP hash, rate limit, token check; tests in `visits.test.ts`),
+`src/pages/api/visits.ts` (public), `src/pages/api/moderation/visits.ts` (bearer token).
+
+Rules: text 10-1000 chars, optional month (`YYYY-MM`, not in the future) and display name (max 40),
+hidden honeypot field `website`, max 3 submissions per hashed IP per 24 h. The IP is stored only as
+SHA-256(`IP_SALT`:ip). User text is rendered with `textContent` (never as HTML).
+
+### Setup (to do once, by the owner)
+
+```sh
+npx wrangler d1 create mountain-huts-visits          # prints a database_id
+# add the d1_databases block (see the comment in wrangler.jsonc) with that id
+npx wrangler d1 migrations apply mountain-huts-visits --remote
+npx wrangler secret put IP_SALT                      # any long random string
+npx wrangler secret put MODERATION_TOKEN             # any long random string (>= 16 chars)
+npm run deploy
+```
+
+Local dev: `npx wrangler d1 migrations apply mountain-huts-visits --local`, and put `IP_SALT=...` and
+`MODERATION_TOKEN=...` (fake values) in `.dev.vars`.
+
+### Moderation (curl)
+
+```sh
+BASE=https://mountain-huts-map.alemarti-2001.workers.dev
+TOKEN=...   # the MODERATION_TOKEN secret
+curl -H "Authorization: Bearer $TOKEN" "$BASE/api/moderation/visits"                 # list pending (?status=approved|rejected)
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "content-type: application/json" \
+  -d '{"id":1,"status":"approved"}' "$BASE/api/moderation/visits"                   # or "rejected"
 ```
 
 ## Licenses & attribution
