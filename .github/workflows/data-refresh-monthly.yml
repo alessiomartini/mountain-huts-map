@@ -25,6 +25,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 300
     steps:
       - uses: actions/checkout@v4
 
@@ -70,10 +71,14 @@ jobs:
           git add src/data/huts.json
           git commit -m "Aggiornamento mensile del dataset dei rifugi"
           git push --force origin data/refresh
+          # Creating the PR needs the repo setting "Allow GitHub Actions to create and
+          # approve pull requests". If it is off, do not fail the run: the data is
+          # already pushed to data/refresh and a PR can be opened by hand.
           if [ -z "$(gh pr list --head data/refresh --state open --json number --jq '.[0].number')" ]; then
             gh pr create --base main --head data/refresh \
               --title "Aggiornamento mensile del dataset" \
-              --body "Rigenerato con \`npm run data:refresh\` (test passati). Controllare il diff di \`src/data/huts.json\` prima del merge."
+              --body "Rigenerato con \`npm run data:refresh\` (test passati). Controllare il diff di \`src/data/huts.json\` prima del merge." \
+              || echo "::warning::PR non creata (impostazione Actions mancante?): il branch data/refresh e' stato aggiornato, aprire la PR a mano."
           else
             echo "PR already open: branch updated."
           fi

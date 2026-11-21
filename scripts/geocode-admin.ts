@@ -10,7 +10,7 @@
 // without a province name.
 import { existsSync, readFileSync } from 'node:fs';
 import { cached, THIRTY_DAYS_MS } from './lib/cache.ts';
-import { politeFetch } from './lib/http.ts';
+import { politeFetch, sleep } from './lib/http.ts';
 import { haversineMeters, isInBBox, pointInGeometry, type BBox, type GeoJSONGeometry } from './lib/geo.ts';
 import { REGIONS } from './regions.config.ts';
 import { countryAt } from './lib/country.ts';
@@ -198,6 +198,42 @@ interface RegionPeak {
   lon: number;
 }
 
+
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+];
+const OVERPASS_ATTEMPTS = 3;
+
+/**
+ * Overpass query with retry + backoff on transient errors (429/5xx, timeouts)
+ * and a mirror fallback. The monthly CI run got many 502/429 here, which left
+ * nearest_peak / mountain_group empty for whole regions.
+ */
+async function overpassWithRetry(label: string, query: string): Promise<unknown> {
+  let lastError: Error = new Error(`Overpass ${label}: no attempt made`);
+  for (const endpoint of OVERPASS_MIRRORS) {
+    for (let attempt = 1; attempt <= OVERPASS_ATTEMPTS; attempt++) {
+      try {
+        const res = await politeFetch(endpoint, {
+          method: 'POST',
+          body: `data=${encodeURIComponent(query)}`,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          minDelayMs: 2000,
+          timeoutMs: 100_000,
+        });
+        if (res.ok) return await res.json();
+        lastError = new Error(`Overpass ${label} responded ${res.status}`);
+        if (![429, 502, 503, 504].includes(res.status)) break; // not transient: next mirror
+      } catch (err) {
+        lastError = err as Error;
+      }
+      if (attempt < OVERPASS_ATTEMPTS) await sleep(15_000 * attempt);
+    }
+  }
+  throw lastError;
+}
+
 const peaksByRegion = new Map<string, RegionPeak[]>();
 
 async function getRegionPeaks(regionId: string, bbox: BBox): Promise<RegionPeak[]> {
@@ -209,15 +245,7 @@ async function getRegionPeaks(regionId: string, bbox: BBox): Promise<RegionPeak[
   let peaks: RegionPeak[] = [];
   try {
     const { data } = await cached('region-peaks', `${regionId}:${query}`, THIRTY_DAYS_MS, async () => {
-      const res = await politeFetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        body: `data=${encodeURIComponent(query)}`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        minDelayMs: 2000,
-        timeoutMs: 100_000,
-      });
-      if (!res.ok) throw new Error(`Overpass region-peaks responded ${res.status}`);
-      return (await res.json()) as { elements: OverpassPeakElement[] };
+      return (await overpassWithRetry('region-peaks', query)) as { elements: OverpassPeakElement[] };
     });
     peaks = data.elements
       .filter((el): el is Required<Pick<OverpassPeakElement, 'lat' | 'lon'>> & OverpassPeakElement => el.lat != null && el.lon != null && !!el.tags?.name)
@@ -277,15 +305,7 @@ async function getRegionRanges(regionId: string, bbox: BBox): Promise<RegionRang
   let ranges: RegionRange[] = [];
   try {
     const { data } = await cached('region-ranges', `${regionId}:${query}`, THIRTY_DAYS_MS, async () => {
-      const res = await politeFetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        body: `data=${encodeURIComponent(query)}`,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        minDelayMs: 2000,
-        timeoutMs: 100_000,
-      });
-      if (!res.ok) throw new Error(`Overpass region-ranges responded ${res.status}`);
-      return (await res.json()) as { elements: OverpassRelationGeomElement[] };
+      return (await overpassWithRetry('region-ranges', query)) as { elements: OverpassRelationGeomElement[] };
     });
     for (const el of data.elements) {
       if (!el.tags?.name) continue;
