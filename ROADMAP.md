@@ -1,30 +1,30 @@
 # Roadmap
 
 <!--
-Unico file per todo, idee, decisioni e diario, letto da Projects Overview
-(https://alessiomartini.github.io/projects-overview/). Protocollo: templates/ROADMAP.md di projects-overview.
+Single file for todos, ideas, decisions and diary, read by Projects Overview
+(https://alessiomartini.github.io/projects-overview/). Protocol: templates/ROADMAP.md of projects-overview.
 -->
 
-## Da fare
-- [x] Pipeline dei dati, mappa MapLibre con filtri, pagine dei rifugi, it/en
-- [ ] Dataset completo (oggi: dataset reale con 5204 rifugi per Alpi/Appennini italiani e Bergen, non più un campione di test)
-  - [x] Aggiungere regioni in `scripts/regions.config.ts` (Alpi FR/CH/AT, Pirenei, Tatra; 2026-10-31); 2026-11-07: Slovenia, Croazia ovest, Dinariche, Albania/Macedonia/Pindo, Bulgaria (Rila, Pirin), Carpazi SK/RO, Picos de Europa, Gredos, Sierra Nevada, Corsica, Norvegia centrale/Romsdal/artica, Svezia, Highlands scozzesi; Dolomiti, Alpi Giulie ovest e Apuane erano già coperte da `alps-it`/`apennines`; i dati arrivano al prossimo refresh)
-  - [ ] Primo refresh con le nuove regioni (workflow mensile o manuale): `huts.json` non le contiene ancora. Il run del 2026-11-01 ha prodotto 7864 rifugi (10 regioni) ed è già sul branch `data/refresh` (solo le 10 regioni di allora, senza le 18 del 2026-11-07); rilanciato il 2026-11-21 dopo la correzione
-  - [ ] Alessio: abilitare Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests" (senza, la PR non viene creata; ora il workflow non fallisce più e avvisa)
-  - [ ] Dopo il run: controllare la PR `data/refresh` (diff di `huts.json`, 91 scartati dalla validazione, ~4369 da rivedere) e fare il merge a mano
-  - [ ] Rieseguire `npm run data:refresh` da una rete con accesso a Overpass: l'ultimo `huts.json` non contiene rifugi con fonte ut.no
-  - [x] Workflow mensile di refresh + PR (`data-refresh-monthly.yml`)
-  - [ ] Alessio: abilitare in Settings > Actions > General "Allow GitHub Actions to create and approve pull requests" e lanciare una volta il workflow a mano
-- [ ] Funzione "chi c'è stato"
-  - [x] Codice (migrazione D1, API, UI, test)
-  - [ ] Alessio: creare il D1, applicare la migrazione, impostare i secret IP_SALT e MODERATION_TOKEN, deploy
-- [x] Widget per note/feedback
-- [x] Dati della pagina di attribuzione
-- [x] Contatore dei rifugi per fonte nella pagina di attribuzione e nota sul dataset aggiornata
-- [x] Attribuzione di OpenStreetMap (ODbL), Wikidata (CC0) e Wikipedia (CC BY-SA 4.0) nel registro, con licenza e contatore
+## To do
+- [x] Data pipeline, MapLibre map with filters, hut pages, it/en
+- [ ] Complete dataset (today: a real dataset with 5204 huts for the Italian Alps/Apennines and Bergen, no longer a test sample)
+  - [x] Add regions in `scripts/regions.config.ts` (Alps FR/CH/AT, Pyrenees, Tatra; 2026-10-31); 2026-11-07: Slovenia, western Croatia, Dinaric Alps, Albania/Macedonia/Pindus, Bulgaria (Rila, Pirin), Carpathians SK/RO, Picos de Europa, Gredos, Sierra Nevada, Corsica, central Norway/Romsdal/Arctic Norway, Sweden, Scottish Highlands; the Dolomites, western Julian Alps and Apuan Alps were already covered by `alps-it`/`apennines`; the data arrives at the next refresh)
+  - [ ] First refresh with the new regions (monthly or manual workflow): `huts.json` does not contain them yet. The 2026-11-01 run produced 7864 huts (10 regions) and is already on the `data/refresh` branch (only the 10 regions of that time, without the 18 of 2026-11-07); rerun on 2026-11-21 after the fix
+  - [ ] Alessio: enable Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests" (without it, the PR is not created; the workflow no longer fails and now warns)
+  - [ ] After the run: check the `data/refresh` PR (diff of `huts.json`, 91 discarded by validation, ~4369 to review) and merge by hand
+  - [ ] Rerun `npm run data:refresh` from a network with access to Overpass: the latest `huts.json` contains no huts from the ut.no source
+  - [x] Monthly refresh workflow + PR (`data-refresh-monthly.yml`)
+  - [ ] Alessio: enable "Allow GitHub Actions to create and approve pull requests" in Settings > Actions > General and run the workflow once by hand
+- [ ] "Who has been there" feature
+  - [x] Code (D1 migration, API, UI, tests)
+  - [ ] Alessio: create the D1, apply the migration, set the secrets IP_SALT and MODERATION_TOKEN, deploy
+- [x] Notes/feedback widget
+- [x] Attribution page data
+- [x] Hut counter per source on the attribution page and updated dataset note
+- [x] Attribution of OpenStreetMap (ODbL), Wikidata (CC0) and Wikipedia (CC BY-SA 4.0) in the registry, with license and counter
 
-## Idee
-- [ ] Fonte "dny-hytte" per la Norvegia: dominio non trovato (dny-hytte.no/.com non risolvono), serve l'indirizzo esatto
+## Ideas
+- [ ] "dny-hytte" source for Norway: domain not found (dny-hytte.no/.com do not resolve), the exact address is needed
 
 ### Planned: user note / feedback widget
 
@@ -47,7 +47,7 @@ Notes always reach the server, never only localStorage. Rate limiting, if
 needed, belongs in `site-notes`, not here. This no longer waits for the
 visits/D1 backend (Phase 5).
 
-## Decisioni e cose provate
+## Decisions and things tried
 
 This file tracks features that are planned but not implemented, so a new
 session can see what's next without guessing. It reflects the actual code as
@@ -55,47 +55,47 @@ of 2026-09-21, not the (currently stale-sounding) "scaffolding only" line
 that used to be in the README — the map, hut detail pages, filters, i18n,
 and data pipeline are built and deployed; see README.md for what's live.
 
-### Niente dominio di produzione (2026-10-19)
+### No production domain (2026-10-19)
 
-Un dominio proprio (es. rifugi.qualcosa.it) costa ~10 €/anno e serve solo per un indirizzo più bello.
-Scelta la soluzione più semplice: l'indirizzo resta https://mountain-huts-map.alemarti-2001.workers.dev,
-impostato in `astro.config.mjs` (prima puntava a `mountain-huts-map.workers.dev`, che non esiste).
-GitHub Pages del repo spento (era un 404).
+A custom domain (e.g. rifugi.something.it) costs ~10 €/year and only buys a nicer address.
+The simplest solution was chosen: the address stays https://mountain-huts-map.alemarti-2001.workers.dev,
+set in `astro.config.mjs` (it used to point to `mountain-huts-map.workers.dev`, which does not exist).
+The repo's GitHub Pages was turned off (it was a 404).
 
-### Fonte ut.no (2026-10-18)
+### ut.no source (2026-10-18)
 
-L'API GraphQL di ut.no risponde 403 alle query anonime sulle hytte e il sito non ha sitemap, quindi
-`scripts/sources/utno.ts` parte dai rifugi OSM con `website=ut.no/hytte/<id>` (~800 in tutta la Norvegia)
-e legge la pagina pubblica. Limite: le hytte che OSM non collega a ut.no restano fuori; ut.no ha precedenza
-su OSM per livello di servizio e posti letto, le coordinate restano di OSM.
+The ut.no GraphQL API answers 403 to anonymous queries on the huts and the site has no sitemap, so
+`scripts/sources/utno.ts` starts from the OSM huts with `website=ut.no/hytte/<id>` (~800 in all of Norway)
+and reads the public page. Limit: huts that OSM does not link to ut.no stay out; ut.no takes precedence
+over OSM for service level and number of beds, while coordinates stay from OSM.
 
-### Dataset completo: indagine (2026-10-31)
+### Complete dataset: investigation (2026-10-31)
 
-`src/data/huts.json` è versionato e contiene già un dataset reale (5204 rifugi; fonti osm, wikidata, wikipedia, cai), non più il campione di test: il testo "Fase di test" in /about era obsoleto ed è stato sostituito con la copertura reale. Cosa manca per "completo": (1) `regions.config.ts` ha solo alps-it, apennines, bergen; (2) nessun rifugio cita ut.no, quindi l'ultimo refresh è precedente a quella fonte; (3) nessun refresh pianificato (solo `data-refresh-check.yml` manuale, che non committa nulla). Il sito non rigenera i dati in build, e non va fatto (il deploy dipenderebbe dalla rete): il dataset resta un file versionato aggiornato via PR. Non verificato `data:refresh` in locale: dalla sandbox Overpass risponde con connessione resettata.
+`src/data/huts.json` is versioned and already contains a real dataset (5204 huts; sources osm, wikidata, wikipedia, cai), no longer the test sample: the "Test phase" text in /about was obsolete and has been replaced with the real coverage. What is missing for "complete": (1) `regions.config.ts` has only alps-it, apennines, bergen; (2) no hut cites ut.no, so the last refresh predates that source; (3) no scheduled refresh (only the manual `data-refresh-check.yml`, which commits nothing). The site does not regenerate the data at build time, and it should not (the deploy would depend on the network): the dataset stays a versioned file updated via PR. `data:refresh` not verified locally: from the sandbox Overpass answers with a connection reset.
 
-### Refresh mensile: primo run fallito (2026-11-21)
+### Monthly refresh: first run failed (2026-11-21)
 
-Run 41295398039 (2026-11-01, 1h44m): `data:refresh` e `test` sono riusciti (7864 rifugi), il fallimento era solo nell'ultimo passo: `gh pr create` -> "GitHub Actions is not permitted to create or approve pull requests" (impostazione del repo, non toccata). I dati erano comunque stati pushati su `data/refresh`. Secondo problema: Overpass ha risposto 502/429 a molte query di cime e catene montuose in `geocode-admin.ts` (nessun retry), quindi `nearest_peak`/`mountain_group` mancano per varie regioni. Correzioni: retry con backoff + mirror (`overpassWithRetry`), passo PR non fatale (warning), `timeout-minutes: 300`.
+Run 41295398039 (2026-11-01, 1h44m): `data:refresh` and `test` succeeded (7864 huts), the failure was only in the last step: `gh pr create` -> "GitHub Actions is not permitted to create or approve pull requests" (a repo setting, not touched). The data had been pushed to `data/refresh` anyway. Second problem: Overpass answered 502/429 to many peak and mountain-range queries in `geocode-admin.ts` (no retry), so `nearest_peak`/`mountain_group` are missing for several regions. Fixes: retry with backoff + mirror (`overpassWithRetry`), non-fatal PR step (warning), `timeout-minutes: 300`.
 
-### Refresh mensile (2026-10-31)
+### Monthly refresh (2026-10-31)
 
-`.github/workflows/data-refresh-monthly.yml` (cron il 1° del mese alle 03:00 UTC + manuale): `npm ci`, `data:refresh`, `test`; se `huts.json` cambia lo pusha sul branch fisso `data/refresh` (force) e apre o aggiorna la PR con `gh`. Solo azioni ufficiali, non tocca main né il deploy. Richiede l'impostazione del repo "Allow GitHub Actions to create and approve pull requests" (da abilitare a mano). Non provato in CI da qui. Se il refresh fallisce a metà il file non viene scritto (vedi `build-dataset.ts`), quindi nessuna PR.
+`.github/workflows/data-refresh-monthly.yml` (cron on the 1st of the month at 03:00 UTC + manual): `npm ci`, `data:refresh`, `test`; if `huts.json` changes it pushes it to the fixed branch `data/refresh` (force) and opens or updates the PR with `gh`. Official actions only, it touches neither main nor the deploy. It requires the repo setting "Allow GitHub Actions to create and approve pull requests" (to be enabled by hand). Not tried in CI from here. If the refresh fails halfway the file is not written (see `build-dataset.ts`), so no PR.
 
-### Paese per poligono (2026-10-31)
+### Country by polygon (2026-10-31)
 
-Bug: il `country` di ogni rifugio OSM veniva dal `country` della regione la cui bbox lo conteneva; la bbox `alps-it` copre anche Svizzera, Francia, Austria e Slovenia, quindi ~2050 rifugi stranieri erano marcati IT. Fix: `scripts/lib/country.ts` assegna il paese per point-in-polygon su `scripts/data/countries-europe.geojson` (Natural Earth admin-0 via datasets/geo-countries, PDDL / pubblico dominio; semplificato a ~200 m, 1,2 MB, rigenerabile con `scripts/build-country-boundaries.ts`); `resolveGeoContext` usa prima il poligono, poi `countryHint`, poi il vecchio fallback a bbox. Ricalcolo su `huts.json` (solo il campo `location.country`): IT->IT 3026, IT->CH 766, IT->AT 551, IT->FR 638, IT->SI 77, IT->HR 18, IT->BA 2, NO->NO 122, NO->null 4 (mare/buco di poligono: tenuto NO). Limiti: la semplificazione a ~200 m può sbagliare paese per un rifugio a meno di ~200 m dal confine; regione/provincia/comune dei rifugi ora stranieri restano quelli già nel file (per fuori Italia erano null, non ricalcolati). Natural Earth è nel registro di attribuzione.
+Bug: the `country` of each OSM hut came from the `country` of the region whose bbox contained it; the `alps-it` bbox also covers Switzerland, France, Austria and Slovenia, so ~2050 foreign huts were marked IT. Fix: `scripts/lib/country.ts` assigns the country by point-in-polygon on `scripts/data/countries-europe.geojson` (Natural Earth admin-0 via datasets/geo-countries, PDDL / public domain; simplified to ~200 m, 1.2 MB, regenerable with `scripts/build-country-boundaries.ts`); `resolveGeoContext` uses the polygon first, then `countryHint`, then the old bbox fallback. Recomputation on `huts.json` (only the `location.country` field): IT->IT 3026, IT->CH 766, IT->AT 551, IT->FR 638, IT->SI 77, IT->HR 18, IT->BA 2, NO->NO 122, NO->null 4 (sea/polygon hole: kept NO). Limits: the ~200 m simplification can get the country wrong for a hut less than ~200 m from the border; region/province/municipality of the now-foreign huts stay those already in the file (for outside Italy they were null, not recomputed). Natural Earth is in the attribution registry.
 
-### Nuove regioni (2026-10-31)
+### New regions (2026-10-31)
 
-Aggiunte alps-fr-w, alps-fr-s, alps-ch-n, alps-at-n, alps-at-e, pyrenees, tatra. Le Alpine sono il complemento di `alps-it` (che già arriva in CH/FR/AT/SI fino a 47,2 N): rettangoli senza sovrapposizione, quindi nessuna query doppia e la ricerca della cima più vicina (prima regione che contiene il punto) non cambia per i rifugi già presenti. Test di config: id unici, bbox valide, nessuna sovrapposizione tranne alps-it/apennines (preesistente). `fetchOsmAll` ora deduplica per `externalId`. `country` della regione è solo un suggerimento (vale il poligono). Limite: un rifugio vicino al bordo di una regione può non vedere cime della regione vicina (raggio 3 km), come già prima. `huts.json` non rigenerato (Overpass non raggiungibile da qui).
+Added alps-fr-w, alps-fr-s, alps-ch-n, alps-at-n, alps-at-e, pyrenees, tatra. The Alpine ones complement `alps-it` (which already reaches into CH/FR/AT/SI up to 47.2 N): non-overlapping rectangles, so no duplicate queries and the nearest-peak search (first region containing the point) does not change for the huts already present. Config test: unique ids, valid bboxes, no overlap except alps-it/apennines (pre-existing). `fetchOsmAll` now deduplicates by `externalId`. The region's `country` is only a hint (the polygon wins). Limit: a hut near the edge of a region may not see peaks of the neighbouring region (3 km radius), as before. `huts.json` not regenerated (Overpass not reachable from here).
 
 ### Known gaps in the current code
 
-- **Visits / "chi c'è stato" feature**: il codice c'è (migrazione `migrations/0001_visits.sql`,
-  API `src/pages/api/visits.ts` e `api/moderation/visits.ts`, logica in `src/lib/visits.ts`, form e
-  lista nella pagina rifugio), ma non è attivo: manca il database D1, il binding in `wrangler.jsonc`
-  (oggi solo in un commento) e i secret `IP_SALT` e `MODERATION_TOKEN`. Senza binding l'API risponde
-  `{enabled:false}` e la pagina mostra ancora il segnaposto "Presto potrai…". Passi in README, sezione "Visits".
+- **Visits / "chi c'è stato" feature**: the code is there (migration `migrations/0001_visits.sql`,
+  API `src/pages/api/visits.ts` and `api/moderation/visits.ts`, logic in `src/lib/visits.ts`, form and
+  list in the hut page), but it is not active: the D1 database is missing, as are the binding in `wrangler.jsonc`
+  (today only in a comment) and the secrets `IP_SALT` and `MODERATION_TOKEN`. Without the binding the API answers
+  `{enabled:false}` and the page still shows the placeholder "Presto potrai…". Steps in the README, "Visits" section.
 - **Full dataset**: `src/data/huts.json` currently holds a test sample
   (`about.testPhaseBody` in the UI says this explicitly), not the full
   European dataset described in the README's ambition. `scripts/build-dataset.ts`
@@ -107,29 +107,29 @@ Aggiunte alps-fr-w, alps-fr-s, alps-ch-n, alps-at-n, alps-at-e, pyrenees, tatra.
   list" of source licenses; confirm it's kept in sync as new sources are
   added in `scripts/sources/`.
 
-- **Dati della pagina di attribuzione (fatto)**: l'elenco sta in `scripts/sources/attribution.ts` (chiave = `sourceName` dello scraper), letto da `attribution.astro`; `attribution.test.ts` fallisce se uno scraper non ha voce o se una voce senza scraper non è marcata `retired`. Tre voci (CAI Bergamo, Abitare l'Estremo, Parco delle Orobie Valtellinesi) non hanno più un modulo (assorbite da `cai.ts`) ma restano visibili, marcate `retired`. Nessun campo licenza: nessun modulo ne dichiara una. Fatto poi (2026-10-31): contatore dei rifugi per fonte (calcolato in build da huts.json con `src/lib/source-counts.ts`, un rifugio conta una volta per fonte; 0 per le fonti ritirate o senza rifugi) e `seedDataNote` sostituita da `datasetNote` (numero di rifugi letto da huts.json, nessuna affermazione sulla completezza).
-- **Lockfile ri-sincronizzato (2026-10-31)**: `npm ci` falliva perché `package-lock.json` non era allineato a `package.json` (mancavano `@emnapi/core` e `@emnapi/runtime`, opzionali). `npm install` senza nuove dipendenze né bump: diff di ~30 righe, `npm ci` ora funziona. Il campo `license` del registro è opzionale e valorizzato solo per osm/wikidata/wikipedia (licenze verificate); le fonti da pipeline sono elencate in `PIPELINE_SOURCES`. Attribuzione della mappa non toccata: il footer cita già OSM e lo stile OpenFreeMap porta la sua.
+- **Attribution page data (done)**: the list lives in `scripts/sources/attribution.ts` (key = the scraper's `sourceName`), read by `attribution.astro`; `attribution.test.ts` fails if a scraper has no entry or if an entry without a scraper is not marked `retired`. Three entries (CAI Bergamo, Abitare l'Estremo, Parco delle Orobie Valtellinesi) no longer have a module (absorbed by `cai.ts`) but stay visible, marked `retired`. No license field: no module declares one. Done afterwards (2026-10-31): hut counter per source (computed at build time from huts.json with `src/lib/source-counts.ts`, a hut counts once per source; 0 for retired sources or sources without huts) and `seedDataNote` replaced by `datasetNote` (number of huts read from huts.json, no claim about completeness).
+- **Lockfile re-synced (2026-10-31)**: `npm ci` was failing because `package-lock.json` was not aligned with `package.json` (the optional `@emnapi/core` and `@emnapi/runtime` were missing). `npm install` with no new dependencies or bumps: ~30-line diff, `npm ci` now works. The registry's `license` field is optional and set only for osm/wikidata/wikipedia (verified licenses); pipeline sources are listed in `PIPELINE_SOURCES`. Map attribution not touched: the footer already cites OSM and the OpenFreeMap style carries its own.
 
-### Widget note/feedback (fatto 2026-10-24)
+### Notes/feedback widget (done 2026-10-24)
 
-Pulsante flottante "Nota" in basso a destra (sopra la legenda) su tutte le pagine, in it/en (chiavi `notes.*` nei dizionari). Apre un pannello con textarea (max 2000 caratteri), invia con `POST` JSON `{text, page, context, website}` a `site-notes` (`/mountain-huts-map/notes`); `website` è il campo honeypot nascosto. Pulsante disabilitato durante l'invio, stati di successo/errore, Escape chiude. Codice: `src/components/NoteWidget.astro`, logica pura (payload) in `src/lib/notes.ts` con test. `context` = `lang=…; hut=<slug>` (solo nelle pagine rifugio) `; filters=<query string>`: i filtri della mappa sono già nell'URL, quindi nessun refactor. Limiti: il rifugio selezionato nella bottom sheet della mappa non è nel contesto (c'è solo lo slug nelle pagine di dettaglio); le note non passano da localStorage, quindi se l'invio fallisce il testo resta nella textarea ma non viene salvato altrove.
+Floating "Nota" button at the bottom right (above the legend) on all pages, in it/en (`notes.*` keys in the dictionaries). It opens a panel with a textarea (max 2000 characters), sends a JSON `POST` `{text, page, context, website}` to `site-notes` (`/mountain-huts-map/notes`); `website` is the hidden honeypot field. Button disabled while sending, success/error states, Escape closes. Code: `src/components/NoteWidget.astro`, pure logic (payload) in `src/lib/notes.ts` with tests. `context` = `lang=…; hut=<slug>` (only on hut pages) `; filters=<query string>`: the map filters are already in the URL, so no refactor. Limits: the hut selected in the map's bottom sheet is not in the context (only the slug on detail pages); notes do not go through localStorage, so if sending fails the text stays in the textarea but is not saved elsewhere.
 
-### Chi c'è stato: scelte di progetto (2026-11-07)
+### Who has been there: design choices (2026-11-07)
 
-Nessun documento di design in `docs/` (non esiste): scelte mie. Rotte API Astro `prerender = false` sullo stesso Worker (niente Worker separato); le pagine rifugio restano statiche e caricano le visite lato client da `/api/visits?hut=<slug>`. Il rifugio è identificato dallo slug (non c'è un id numerico stabile) e non viene verificato contro `huts.json` per non caricare 5000 rifugi nel Worker: le visite su slug inesistenti restano `pending` e si scartano in moderazione. Il GET risponde sempre 200 con `{enabled:false}` se manca il binding, così il browser non logga errori di rete. Il POST senza binding risponde 503. Honeypot `website` con finto successo; limite 3 invii per IP hashato (SHA-256 di `IP_SALT:ip`) ogni 24 h, contato in D1 sulla tabella stessa (nessun KV/Durable Object in più); mese con precisione `YYYY-MM`; testo 10-1000 caratteri, nome max 40; il testo utente è sempre inserito con `textContent`. Moderazione con bearer token (confronto a tempo costante, rifiuta secret < 16 caratteri), solo curl, nessuna UI. Il binding D1 non è attivo in `wrangler.jsonc` perché richiede un `database_id` reale: sta in un commento. Il tipo `cloudflare:workers` è dichiarato a mano in `src/env.d.ts` perché `wrangler types` non genera tipi qui. Non provato su D1 reale (nessun comando wrangler remoto eseguito): testata solo la logica pura (vitest) e la pagina senza backend e con API simulata (Playwright). In dev `POST` da curl senza header `Origin` riceve 403 dal controllo CSRF di Astro (non succede dal browser).
+No design document in `docs/` (it does not exist): choices are mine. Astro API routes with `prerender = false` on the same Worker (no separate Worker); the hut pages stay static and load visits client-side from `/api/visits?hut=<slug>`. The hut is identified by its slug (there is no stable numeric id) and is not checked against `huts.json` to avoid loading 5000 huts into the Worker: visits on nonexistent slugs stay `pending` and are discarded in moderation. The GET always answers 200 with `{enabled:false}` if the binding is missing, so the browser logs no network errors. The POST without binding answers 503. Honeypot `website` with fake success; limit of 3 submissions per hashed IP (SHA-256 of `IP_SALT:ip`) every 24 h, counted in D1 on the table itself (no extra KV/Durable Object); month with `YYYY-MM` precision; text 10-1000 characters, name max 40; user text is always inserted with `textContent`. Moderation with a bearer token (constant-time comparison, rejects secrets < 16 characters), curl only, no UI. The D1 binding is not active in `wrangler.jsonc` because it requires a real `database_id`: it sits in a comment. The `cloudflare:workers` type is declared by hand in `src/env.d.ts` because `wrangler types` does not generate types here. Not tried on a real D1 (no remote wrangler command run): only the pure logic (vitest) and the page without backend and with a simulated API (Playwright) were tested. In dev, a `POST` from curl without an `Origin` header gets 403 from Astro's CSRF check (it does not happen from the browser).
 
 ## Log
-- 2026-11-21: 🤖 diagnosi del refresh mensile fallito (PR non creabile per impostazione Actions; 502/429 Overpass su cime e catene): retry+mirror in `geocode-admin.ts`, passo PR non fatale, timeout; workflow rilanciato
-- 2026-11-07: 🤖 funzione "chi c'è stato" (codice): migrazione D1, API di invio/lettura/moderazione, form e lista nella pagina rifugio e test; serve ancora creare il D1 e impostare i secret 🤖 altre 18 regioni europee in `regions.config.ts` (Balcani, Carpazi, Spagna, Corsica, Scandinavia, Scozia) senza sovrapposizioni, con test; dati al prossimo refresh
-- 2026-11-06: widget note con coda locale: se site-notes non risponde la nota resta in localStorage (`site-notes.pending`) e viene reinviata al caricamento successivo. widget note v2 canonico (public/notes-widget.js, lingua it/en) al posto di NoteWidget.astro e notes.ts (migra site-notes.pending); tolte chiavi notes.* dei dizionari.
-- 2026-10-31: 🤖 nuove regioni (Alpi FR/CH/AT, Pirenei, Tatra) in `regions.config.ts` con test di config e dedup per id OSM; dati da rigenerare col refresh
-- 2026-10-31: 🤖 corretto il paese dei rifugi (assegnato per poligono Natural Earth invece che dalla bbox della regione): ~2050 rifugi stranieri non sono più marcati IT; `huts.json` aggiornato solo nel campo country
-- 2026-10-31: 🤖 workflow mensile `data-refresh-monthly.yml` (refresh + test + PR su `data/refresh`); serve l'impostazione Actions per creare PR
-- 2026-10-31: 🤖 indagine sul dataset completo: `huts.json` è già reale (5204 rifugi, IT + Bergen); corretto il testo obsoleto "fase di test" in /about e README; sotto-compiti per regioni, refresh con ut.no e workflow mensile
-- 2026-10-31: 🤖 pagina di attribuzione: contatore dei rifugi per fonte calcolato in build e nota sul dataset aggiornata (la vecchia nota sul set di prova era obsoleta); aggiunte le voci osm/wikidata/wikipedia (con licenza) e test che ogni fonte di huts.json abbia una voce; ripristinato `package-lock.json` (mancavano `@emnapi/*`, `npm ci` falliva)
-- 2026-10-24: 🤖 widget note/feedback verso site-notes
-- 2026-10-20: 🤖 pagina di attribuzione guidata dai dati: elenco delle fonti in `scripts/sources/attribution.ts`, con test che lo confronta con gli scraper
-- 2026-10-19: deciso il backend delle note: quello condiviso `site-notes`; installabile come app a sé dal telefono (manifest con nome, icona e perimetro propri)
-- 2026-10-19: indirizzo del sito corretto (canonical e sitemap puntavano a un dominio inesistente); niente dominio di produzione; GitHub Pages spento
-- 2026-10-18: FUTURE-ARCHITECTURE.md unito in ROADMAP.md (protocollo unico); nuova fonte ut.no (DNT) per i rifugi norvegesi: posti letto, livello di servizio, gestore, telefono, link di prenotazione
-- 2026-10-15: creata la roadmap per Projects Overview
+- 2026-11-21: 🤖 ROADMAP translated to English (language rule: projects in English or bilingual EN/IT). 🤖 diagnosis of the failed monthly refresh (PR not creatable because of the Actions setting; Overpass 502/429 on peaks and mountain ranges): retry+mirror in `geocode-admin.ts`, non-fatal PR step, timeout; workflow rerun
+- 2026-11-07: 🤖 "who has been there" feature (code): D1 migration, submit/read/moderation API, form and list in the hut page, and tests; the D1 still has to be created and the secrets set 🤖 another 18 European regions in `regions.config.ts` (Balkans, Carpathians, Spain, Corsica, Scandinavia, Scotland) without overlaps, with tests; data at the next refresh
+- 2026-11-06: notes widget with local queue: if site-notes does not answer, the note stays in localStorage (`site-notes.pending`) and is resent at the next load. canonical notes widget v2 (public/notes-widget.js, language it/en) in place of NoteWidget.astro and notes.ts (migrates site-notes.pending); removed the notes.* dictionary keys.
+- 2026-10-31: 🤖 new regions (Alps FR/CH/AT, Pyrenees, Tatra) in `regions.config.ts` with config test and dedup by OSM id; data to regenerate with the refresh
+- 2026-10-31: 🤖 fixed the country of the huts (assigned by Natural Earth polygon instead of the region's bbox): ~2050 foreign huts are no longer marked IT; `huts.json` updated only in the country field
+- 2026-10-31: 🤖 monthly workflow `data-refresh-monthly.yml` (refresh + test + PR on `data/refresh`); the Actions setting is needed to create PRs
+- 2026-10-31: 🤖 investigation of the complete dataset: `huts.json` is already real (5204 huts, IT + Bergen); fixed the obsolete "test phase" text in /about and README; subtasks for regions, refresh with ut.no and monthly workflow
+- 2026-10-31: 🤖 attribution page: hut counter per source computed at build time and updated dataset note (the old note about the test set was obsolete); added the osm/wikidata/wikipedia entries (with license) and a test that every source in huts.json has an entry; restored `package-lock.json` (`@emnapi/*` were missing, `npm ci` was failing)
+- 2026-10-24: 🤖 notes/feedback widget towards site-notes
+- 2026-10-20: 🤖 data-driven attribution page: list of sources in `scripts/sources/attribution.ts`, with a test comparing it to the scrapers
+- 2026-10-19: decided the notes backend: the shared `site-notes`; installable as a standalone app from the phone (manifest with its own name, icon and scope)
+- 2026-10-19: fixed the site address (canonical and sitemap pointed to a nonexistent domain); no production domain; GitHub Pages turned off
+- 2026-10-18: FUTURE-ARCHITECTURE.md merged into ROADMAP.md (single protocol); new ut.no (DNT) source for Norwegian huts: beds, service level, operator, phone, booking link
+- 2026-10-15: created the roadmap for Projects Overview
